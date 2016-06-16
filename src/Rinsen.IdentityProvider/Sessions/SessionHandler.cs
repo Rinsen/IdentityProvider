@@ -25,7 +25,7 @@ namespace Rinsen.IdentityProvider.Sessions
 
         public string CreateSession(string userEmail, string password)
         {
-            var user = _localAccountService.GetLocalAccount(userEmail, password);
+            var user = _localAccountService.GetIdentityId(userEmail, password);
 
             if (user == null)
             {

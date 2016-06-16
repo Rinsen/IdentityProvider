@@ -6,6 +6,7 @@ namespace Rinsen.IdentityProvider.LocalAccounts
     {
         void Create(LocalAccount localAccount);
         LocalAccount Get(Guid identityId);
+        LocalAccount Get(string userName);
         void Update(LocalAccount localAccount);
         void Delete(LocalAccount localAccount);
     }
