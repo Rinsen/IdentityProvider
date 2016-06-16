@@ -9,5 +9,6 @@ namespace Rinsen.IdentityProvider.LocalAccounts
         LocalAccount Get(string userName);
         void Update(LocalAccount localAccount);
         void Delete(LocalAccount localAccount);
+        void UpdateFailedLoginCount(LocalAccount localAccount);
     }
 }
