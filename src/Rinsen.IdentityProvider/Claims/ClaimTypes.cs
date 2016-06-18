@@ -16,7 +16,7 @@
 
     public static class ActorType
     {
-        public const string User = "User";
+        public const string Identity = "Identity";
 
         public const string Api = "Api";
         

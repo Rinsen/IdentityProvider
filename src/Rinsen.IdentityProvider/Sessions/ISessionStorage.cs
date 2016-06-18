@@ -8,7 +8,7 @@ namespace Rinsen.IdentityProvider.Sessions
 
         int Delete(string sessionId);
 
-        IEnumerable<Session> Get(int userId);
+        IEnumerable<Session> Get(int loginId);
 
         Session Get(string sessionId);
     }

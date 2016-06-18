@@ -8,7 +8,7 @@ namespace Rinsen.IdentityProvider.LocalAccounts
 
         public Guid IdentityId { get; set; }
 
-        public string UserName { get; set; }
+        public string LoginId { get; set; }
         
         public byte[] PasswordHash { get; set; }
 

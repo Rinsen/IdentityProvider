@@ -5,14 +5,14 @@ namespace Rinsen.IdentityProvider.LocalAccounts
 {
     public class LocalAccountService : ILocalAccountService
     {
-        private readonly IIdentityAccessor _identity;
+        private readonly IIdentityAccessor _identityAccessor;
         private readonly ILocalAccountStorage _localAccountStorage;
         private readonly IdentityOptions _options;
         private readonly PasswordHashGenerator _passwordHashGenerator;
         private readonly IRandomDataGenerator _randomDataGenerator;
         private readonly ILogger<LocalAccountService> _log;
 
-        public LocalAccountService(IIdentityAccessor identity,
+        public LocalAccountService(IIdentityAccessor identityAccessor,
             ILocalAccountStorage localAccountStorage,
             IdentityOptions options,
             IRandomDataGenerator randomDataGenerator,
@@ -20,15 +20,16 @@ namespace Rinsen.IdentityProvider.LocalAccounts
             ILogger<LocalAccountService> log)
         {
             _localAccountStorage = localAccountStorage;
-            _identity = identity;
+            _identityAccessor = identityAccessor;
             _options = options;
             _randomDataGenerator = randomDataGenerator;
             _passwordHashGenerator = passwordHashGenerator;
+            _identityAccessor = identityAccessor;
             _log = log;
         }
 
 
-        public void ChangeUserPassword(string oldPassword, string newPassword)
+        public void ChangePassword(string oldPassword, string newPassword)
         {
             var localAccount = GetLocalAccount(oldPassword);
 
@@ -38,14 +39,14 @@ namespace Rinsen.IdentityProvider.LocalAccounts
             _localAccountStorage.Update(localAccount);
         }
 
-        public void CreateLocalAccount(Guid identityId, string userName, string password)
+        public void CreateLocalAccount(Guid identityId, string loginId, string password)
         {
             var localAccount = new LocalAccount
             {
                 IdentityId = identityId,
                 IterationCount = _options.IterationCount,
                 PasswordSalt = _randomDataGenerator.GetRandomByteArray(_options.NumberOfBytesInPasswordSalt),
-                UserName = userName,
+                LoginId = loginId,
                 Created = DateTimeOffset.Now,
                 Updated = DateTimeOffset.Now
             };
@@ -68,24 +69,18 @@ namespace Rinsen.IdentityProvider.LocalAccounts
 
         private LocalAccount GetLocalAccount(string password)
         {
-            var localAccount = _localAccountStorage.Get(_identity.IdentityId);
+            var localAccount = _localAccountStorage.Get(_identityAccessor.IdentityId);
 
-            if (localAccount.PasswordHash != GetPasswordHash(password, localAccount))
-            {
-                InvalidPassword(localAccount);
-            }
+            ValidatePassword(localAccount, password);
 
             return localAccount;
         }
 
-        public Guid GetIdentityId(string userName, string password)
+        public Guid GetIdentityId(string loginId, string password)
         {
-            var localAccount = _localAccountStorage.Get(userName);
+            var localAccount = _localAccountStorage.Get(loginId);
 
-            if (localAccount.PasswordHash != GetPasswordHash(password, localAccount))
-            {
-                InvalidPassword(localAccount);
-            }
+            ValidatePassword(localAccount, password);
 
             if (localAccount.FailedLoginCount > 0)
             {
@@ -112,6 +107,20 @@ namespace Rinsen.IdentityProvider.LocalAccounts
             _localAccountStorage.UpdateFailedLoginCount(localAccount);
             
             throw new UnauthorizedAccessException("Invalid password");
+        }
+
+        public void ValidatePassword(string password)
+        {
+            var localAccount = _localAccountStorage.Get(_identityAccessor.IdentityId);
+            ValidatePassword(localAccount, password);
+        }
+
+        private void ValidatePassword(LocalAccount localAccount, string password)
+        {
+            if (localAccount.PasswordHash != GetPasswordHash(password, localAccount))
+            {
+                InvalidPassword(localAccount);
+            }
         }
     }
 }

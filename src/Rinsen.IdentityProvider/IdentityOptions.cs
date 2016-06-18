@@ -16,7 +16,7 @@ namespace Rinsen.IdentityProvider
             MaxFailedLoginSleepCount = 30;
             ClaimsProviders = new ClaimsProviderCollection();
             ClaimsCacheTimeout = new TimeSpan(0, 30, 0);
-            ClaimsProviders.Add(typeof(UserClaimsProvider));
+            ClaimsProviders.Add(typeof(IdentityClaimsProvider));
         }
 
         public string ConnectionString { get; set; }

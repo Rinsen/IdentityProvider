@@ -4,7 +4,7 @@ using System;
 
 namespace Rinsen.IdentityProvider
 {
-    public class UserService : IIdentityService
+    public class IdentityService : IIdentityService
     {
         readonly IIdentityAccessor _claimsPrincipalAccessor;
         readonly IdentityOptions _identityOptions;
@@ -12,10 +12,10 @@ namespace Rinsen.IdentityProvider
         readonly ILogger _log;
         readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(IIdentityAccessor claimsPrincipalAccessor,
+        public IdentityService(IIdentityAccessor claimsPrincipalAccessor,
             IdentityOptions identityOptions,
             IIdentityStorage identityStorage,
-            ILogger<UserService> log,
+            ILogger<IdentityService> log,
             IHttpContextAccessor httpContextAccessor)
         {
             _claimsPrincipalAccessor = claimsPrincipalAccessor;
@@ -25,36 +25,32 @@ namespace Rinsen.IdentityProvider
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public Guid CreateUser(Identity identity)
+        public void CreateIdentity(Identity identity)
         {
             identity.Created = DateTimeOffset.Now;
             identity.Updated = DateTimeOffset.Now;
-
-            Guid newIdentityId;
             try
             {
-                newIdentityId = _identityStorage.Create(identity);
+                _identityStorage.Create(identity);
             }
-            catch (UserAlreadyExistException e)
+            catch (IdentityAlreadyExistException e)
             {
-                _log.LogWarning("User {0} already exist from address {1}", identity.Email, _httpContextAccessor.HttpContext.GetClientIPAddressString());
+                _log.LogWarning("Identity {0} already exist from address {1}", identity.Email, _httpContextAccessor.HttpContext.GetClientIPAddressString());
                 throw e;
             }
-
-            return newIdentityId;
         }
 
-        public Identity GetUser()
+        public Identity GetIdentity()
         {
             return _identityStorage.Get(_claimsPrincipalAccessor.IdentityId);
         }
 
-        public Identity GetUser(Guid identityId)
+        public Identity GetIdentity(Guid identityId)
         {
             return _identityStorage.Get(identityId);
         }
 
-        public void UpdateUserDetails(string firstName, string lastName, string email, string phoneNumber)
+        public void UpdateIdentityDetails(string firstName, string lastName, string email, string phoneNumber)
         {
             throw new NotImplementedException();
         }

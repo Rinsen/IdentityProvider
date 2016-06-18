@@ -23,15 +23,8 @@ namespace Rinsen.IdentityProvider.Sessions
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string CreateSession(string userEmail, string password)
+        public string CreateSession(string email, string password)
         {
-            var user = _localAccountService.GetIdentityId(userEmail, password);
-
-            if (user == null)
-            {
-                return string.Empty;
-            }
-
             var session = new Session
             {
                 Id = _randomDataGenerator.GetRandomString(_identityOptions.SessionIdLength),
@@ -39,7 +32,7 @@ namespace Rinsen.IdentityProvider.Sessions
                 CreatedFromIpAddress = _httpContextAccessor.HttpContext.GetClientIPAddress(),
                 LastUsed = DateTimeOffset.Now,
                 LastUsedFromIpAddress = _httpContextAccessor.HttpContext.GetClientIPAddress(),
-                IdentityId = user.IdentityId
+                IdentityId = _localAccountService.GetIdentityId(email, password)
             };
 
             _sessionStorage.Create(session);
