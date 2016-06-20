@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Rinsen.IdentityProvider")]
+[assembly: AssemblyProduct("Rinsen.IdentityProvider.Core")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -16,4 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e3c6ae4e-2d91-464a-96f9-782ae0034d07")]
+[assembly: Guid("c2ac9117-2bdc-4227-b3c0-79a70884e05b")]

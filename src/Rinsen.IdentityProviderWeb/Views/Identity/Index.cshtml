@@ -1,0 +1,22 @@
+﻿@model Rinsen.IdentityProviderWeb.Models.IdentityModel
+@{
+    ViewBag.Title = "Rinsen.se";
+}
+
+<div class="container">
+    @if (User.Identity.IsAuthenticated)
+    {
+        await Html.RenderPartialAsync("_IdentityDetails", Model);
+    }
+    else
+    {
+        await Html.RenderPartialAsync("_LoginAndCreateIdentityForms", Model);
+    }
+    @{ await Html.RenderPartialAsync("_Footer"); }
+</div>
+
+@section Scripts{
+    <script src="~/app/debug/common/common.js" asp-append-version="true"></script>
+    <script src="~/app/debug/common/exceptionhandler.js" asp-append-version="true"></script>
+    <script src="~/app/debug/common/logger.js" asp-append-version="true"></script>
+}
