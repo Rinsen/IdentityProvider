@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProviderWeb.Models
 {
-    public class CreateIdentityModel
+    public class CreateIdentityModel : IValidatableObject
     {
         public CreateIdentityModel()
         {
