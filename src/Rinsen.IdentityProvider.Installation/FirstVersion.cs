@@ -19,8 +19,8 @@ namespace Rinsen.IdentityProvider.Installation
         public override void AddDbChanges(List<IDbChange> dbChangeList)
         {
             var identitiesTable = dbChangeList.AddNewTable<Identity>("Identities");
-            identitiesTable.AddAutoIncrementColumn(m => m.Id);
-            identitiesTable.AddColumn(m => m.IdentityId).PrimaryKey().Unique();
+            identitiesTable.AddAutoIncrementColumn(m => m.Id, primaryKey: false);
+            identitiesTable.AddColumn(m => m.IdentityId).PrimaryKey();
             identitiesTable.AddColumn(m => m.Created);
             identitiesTable.AddColumn(m => m.Email);
             identitiesTable.AddColumn(m => m.EmailConfirmed);
@@ -38,8 +38,8 @@ namespace Rinsen.IdentityProvider.Installation
             localAccountsTable.AddColumn(m => m.IsDisabled);
             localAccountsTable.AddColumn(m => m.IterationCount);
             localAccountsTable.AddColumn(m => m.LoginId);
-            localAccountsTable.AddColumn(m => m.PasswordHash);
-            localAccountsTable.AddColumn(m => m.PasswordSalt);
+            localAccountsTable.AddColumn(m => m.PasswordHash, 16);
+            localAccountsTable.AddColumn(m => m.PasswordSalt, 16);
             localAccountsTable.AddColumn(m => m.Updated);
         }
     }

@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rinsen.IdentityProvider;
 using Rinsen.Logger;
+using Rinsen.DatabaseInstaller;
+using Rinsen.IdentityProvider.Installation;
 
 namespace Rinsen.IdentityProviderWeb
 {
@@ -47,6 +49,8 @@ namespace Rinsen.IdentityProviderWeb
                 options.MinLevel = LogLevel.Warning;
             });
 
+            services.AddDatabaseInstaller(Configuration["Data:DefaultConnection:ConnectionString"]);
+
             // Add framework services.
             services.AddMvc();
         }
@@ -55,8 +59,10 @@ namespace Rinsen.IdentityProviderWeb
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.UseLogger(app);
-            app.UseLoggerDatabaseLogWriter();
 
+
+            app.RunDatabaseInstaller(new[] { new FirstVersion() });
+            
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
