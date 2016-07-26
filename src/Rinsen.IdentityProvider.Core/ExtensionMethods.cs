@@ -116,7 +116,7 @@ namespace Rinsen.IdentityProvider.Core
 
             var httpConnectionFeature = context.Features.Get<IHttpConnectionFeature>();
 
-            if (httpConnectionFeature != null)
+            if (httpConnectionFeature == null)
             {
                 throw new NullReferenceException("HttpConnectionFeature is null and no forwarded remote address is found in headers");
             }

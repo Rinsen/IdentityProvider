@@ -7,10 +7,7 @@ using Rinsen.IdentityProvider.Core.LocalAccounts;
 using Rinsen.IdentityProvider.Core.Sessions;
 using Rinsen.IdentityProviderWeb.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProviderWeb.Controllers
 {
@@ -90,11 +87,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
                 {
                     var identity = model.CreateIdentityModel.MapToIdentity();
 
-                    _identityService.CreateIdentity(identity);
-
-                    _localAccountService.CreateLocalAccount(identity.IdentityId, model.CreateIdentityModel.Email, model.CreateIdentityModel.Password);
-                    
-                    _log.LogInformation("New identity created for email {0}, with name {1}, {2} and phone number {3}", identity.Email, identity.FirstName, identity.LastName, identity.PhoneNumber);
+                    _identityService.CreateIdentity(identity, model.CreateIdentityModel.Email, model.CreateIdentityModel.Password);
 
                     var sessionId = _sessionHandler.CreateSession(model.CreateIdentityModel.Email, model.CreateIdentityModel.Password);
 
