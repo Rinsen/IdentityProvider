@@ -46,7 +46,7 @@ namespace Rinsen.IdentityProviderWeb
             {
                 options.ConnectionString = Configuration["Data:DefaultConnection:ConnectionString"];
                 options.EnvironmentName = _env.EnvironmentName;
-                options.MinLevel = LogLevel.Warning;
+                options.MinLevel = LogLevel.Trace;
             });
 
             services.AddDatabaseInstaller(Configuration["Data:DefaultConnection:ConnectionString"]);
@@ -56,10 +56,14 @@ namespace Rinsen.IdentityProviderWeb
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IRinsenLoggerInitializer logInitializer)
         {
-            loggerFactory.UseLogger(app);
+            logInitializer.Run(new FilterLoggerSettings {
+                { "Microsoft", LogLevel.Warning },
+                { "Rinsen", LogLevel.Information }
+            });
 
+            app.UseLogMiddleware();
 
             app.RunDatabaseInstaller(new[] { new FirstVersion() });
             
