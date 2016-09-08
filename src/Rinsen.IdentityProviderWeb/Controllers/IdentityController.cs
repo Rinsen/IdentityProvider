@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Rinsen.IdentityProvider.Core;
+using Rinsen.IdentityProvider.Core.Host;
 using Rinsen.IdentityProvider.Core.LocalAccounts;
 using Rinsen.IdentityProvider.Core.Sessions;
 using Rinsen.IdentityProviderWeb.Models;
@@ -19,12 +20,14 @@ namespace Rinsen.IdentityProviderWeb.Controllers
         readonly ILocalAccountService _localAccountService;
         readonly ILogger<IdentityController> _log;
         readonly IIdentityAccessor _identityAccessor;
+        readonly HostValidator _hostValidator;
 
         public IdentityController(IIdentityService identityService,
             ISessionHandler sessionHandler,
             IdentityOptions identityOptions,
             IIdentityAccessor identityAccessor,
             ILocalAccountService localAccountService,
+            HostValidator hostValidator,
             ILogger<IdentityController> log)
         {
             _identityService = identityService;
@@ -32,35 +35,35 @@ namespace Rinsen.IdentityProviderWeb.Controllers
             _identityOptions = identityOptions;
             _identityAccessor = identityAccessor;
             _localAccountService = localAccountService;
+            _hostValidator = hostValidator;
             _log = log;
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult Index(string returnUrl)
+        public IActionResult Index(LoginFromModel model)
         {
-            var identityModel = new IdentityModel();
-
-            if (!User.Identity.IsAuthenticated)
+            if (ModelState.IsValid && _hostValidator.IsValid(model.Host))
             {
-                identityModel.LoginModel = new LoginModel();
-                identityModel.CreateIdentityModel = new CreateIdentityModel();
+                var identityModel = new IdentityModel();
 
-                if (string.IsNullOrEmpty(returnUrl) && Request.Headers.ContainsKey("Referer"))
-                    returnUrl = WebUtility.UrlEncode(Request.Headers["Referer"]);
-
-                if (/*Url.IsLocalUrl(returnUrl) && */!string.IsNullOrEmpty(returnUrl))
+                if (!User.Identity.IsAuthenticated)
                 {
-                    identityModel.LoginModel.ReturnUrl = returnUrl;
+                    identityModel.LoginModel = new LoginModel();
+                    identityModel.CreateIdentityModel = new CreateIdentityModel();
+
+                    identityModel.LoginModel.ReturnUrl = model.ReturnTo;
                 }
-            }
-            else
-            {
-                identityModel.IdentityDetailsModel = CreateIdentityDetailsModel();
-                identityModel.ChangePasswordModel = new ChangePasswordModel();
+                else
+                {
+                    identityModel.IdentityDetailsModel = CreateIdentityDetailsModel();
+                    identityModel.ChangePasswordModel = new ChangePasswordModel();
+                }
+
+                return View(identityModel);
             }
 
-            return View(identityModel);
+            return RedirectToAction("InvalidSite", "Error");
         }
 
         IdentityDetailsModel CreateIdentityDetailsModel()

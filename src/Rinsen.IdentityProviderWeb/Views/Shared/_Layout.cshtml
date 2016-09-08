@@ -17,44 +17,8 @@
     </environment>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-controller="Home" asp-action="Index" class="navbar-brand">Rinsen.IdentityProvider</a>
-            </div>
-            @if (User.Identity.IsAuthenticated)
-            {
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-
-                    </ul>
-                    <p class="nav navbar-text navbar-right" style="margin-right: 0">Signed in as <a href="@Url.Action("Index", "Identity")" class="navbar-link">@(User.Identity.Name)</a></p>
-                </div>
-            }
-            else
-            {
-                <ul class="nav navbar-nav navbar-right" style="padding-right:2em;">
-                    <li><a href="@Url.Action("Index", "User")">Login</a></li>
-                </ul>
-            }
-            @*<div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-                </ul>
-            </div>*@
-        </div>
-    </div>
     <div class="container body-content">
         @RenderBody()
-        <hr />
         <footer>
             <p>&copy; 2016 - Rinsen.IdentityProvider</p>
         </footer>

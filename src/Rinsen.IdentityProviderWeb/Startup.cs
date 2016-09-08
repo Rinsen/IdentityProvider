@@ -64,8 +64,10 @@ namespace Rinsen.IdentityProviderWeb
             });
 
             app.UseLogMiddleware();
-
-            app.RunDatabaseInstaller(new[] { new FirstVersion() });
+            if (env.IsDevelopment())
+            {
+                app.RunDatabaseInstaller(new[] { new FirstVersion() });
+            }
             
             app.UseStaticFiles();
 
