@@ -1,8 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -19,7 +15,7 @@ namespace Rinsen.IdentityProvider.Token
 
         protected override AuthenticationHandler<TokenOptions> CreateHandler()
         {
-            throw new NotImplementedException();
+            return new TokenHandler();
         }
     }
 }

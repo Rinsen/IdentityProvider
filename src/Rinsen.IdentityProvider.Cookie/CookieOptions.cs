@@ -10,12 +10,6 @@ namespace Rinsen.IdentityProvider.Cookie
     public class CookieOptions : AuthenticationOptions, IOptions<CookieOptions>
     {
 
-        public CookieOptions Value
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public CookieOptions Value { get { return this; } }
     }
 }

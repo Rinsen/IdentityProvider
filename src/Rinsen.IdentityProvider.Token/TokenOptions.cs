@@ -9,14 +9,12 @@ namespace Rinsen.IdentityProvider.Token
 {
     public class TokenOptions : AuthenticationOptions, IOptions<TokenOptions>
     {
+        public string ExternalIdentityProviderIdentifier { get; set; }
 
+        public string ExternalIdentityProviderBaseAddress { get; set; }
 
-        public TokenOptions Value
-        {
-            get
-            {
-                return this;
-            }
-        }
+        public string CookieAuthenticationScheme { get; set; }
+
+        public TokenOptions Value { get { return this; } }
     }
 }

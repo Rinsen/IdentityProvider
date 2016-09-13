@@ -10,7 +10,7 @@ namespace Rinsen.IdentityProvider.Cookie
     {
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }
