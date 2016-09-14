@@ -10,6 +10,11 @@ namespace Rinsen.IdentityProvider.Cookie
     public class CookieOptions : AuthenticationOptions, IOptions<CookieOptions>
     {
 
+        public CookieOptions()
+        {
+            AuthenticationScheme = CookieDefaults.AuthenticationScheme;
+        }
+
         public CookieOptions Value { get { return this; } }
     }
 }

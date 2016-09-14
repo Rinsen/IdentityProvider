@@ -29,7 +29,7 @@ namespace Rinsen.IdentityProvider.Token
             ExternalIdentity externalIdentity;
             using (var httpClient = new HttpClient())
             {
-                using (var stream = await httpClient.GetStreamAsync($"{Options.ExternalIdentityProviderBaseAddress}/api/Identity/Get?Token={authorizationToken}"))
+                using (var stream = await httpClient.GetStreamAsync($"{Options.ExternalIdentityProviderBaseAddress}/api/Identity/Get?Token={authorizationToken}&ApplicationKey={Options.ApplicationKey}"))
                 using (StreamReader streamReader = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(streamReader))
                 {
@@ -40,7 +40,7 @@ namespace Rinsen.IdentityProvider.Token
 
                 var claims = new List<Claim>
                             {
-                                new Claim(ClaimTypes.NameIdentifier, externalIdentity.IdentityId.ToString(), nameof(Guid), Options.ExternalIdentityProviderIdentifier),
+                                new Claim(ClaimTypes.NameIdentifier, externalIdentity.IdentityId.ToString(), nameof(Guid), externalIdentity.Issuer),
                                 new Claim(ClaimTypes.Name, $"{externalIdentity.FirstName} {externalIdentity.LastName}")
                             };
 

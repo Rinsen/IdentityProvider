@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProviderWeb.Areas.Api
 {
+    [Area("api")]
     public class IdentityController : Controller
     {
 

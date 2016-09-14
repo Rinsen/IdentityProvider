@@ -8,9 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using Rinsen.IdentityProvider.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Rinsen.IdentityProvider.Token;
+using Rinsen.IdentityProvider.Cookie;
 
 namespace IdentityClientWeb
 {
@@ -69,10 +70,14 @@ namespace IdentityClientWeb
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseRinsenAuthentication(new RinsenAuthenticationOptions
+            app.UseTokenAuthentication(new TokenOptions
             {
-                AutomaticAuthenticate = false
+                AutomaticAuthenticate = false,
+                ApplicationKey = "MyKey",
+                ExternalIdentityProviderBaseAddress = "http://localhost:58468",
             });
+
+            app.UseCookieAuthentication();
 
             app.UseStaticFiles();
 

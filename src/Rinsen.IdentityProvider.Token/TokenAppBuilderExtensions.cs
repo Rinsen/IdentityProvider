@@ -15,7 +15,7 @@ namespace Rinsen.IdentityProvider.Token
             return app.UseMiddleware<TokenMiddleware>();
         }
 
-        public static IApplicationBuilder UseTokenAuthentication(this IApplicationBuilder app, TokenMiddleware options)
+        public static IApplicationBuilder UseTokenAuthentication(this IApplicationBuilder app, TokenOptions options)
         {
             if (app == null)
             {

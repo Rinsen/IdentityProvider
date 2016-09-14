@@ -76,6 +76,10 @@ namespace Rinsen.IdentityProviderWeb
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Identity}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "areaRoute",
+                    template: "{area:exists}/{controller}/{action}");
             });
         }
     }

@@ -13,5 +13,8 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
 
         public string LastName { get; set; }
 
+        public string Issuer { get; set; }
+
+
     }
 }
