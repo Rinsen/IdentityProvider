@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Rinsen.IdentityProvider.Core;
 using Rinsen.IdentityProviderWeb.Models;
 using System;
@@ -79,14 +80,16 @@ namespace Rinsen.IdentityProviderWeb.Controllers
                 return Redirect(returnUrl);
             }
 
-            if (_externalHostValidator.Validate(returnUrl))
+            var result = _externalHostValidator.ValidateAsync(returnUrl);
+
+            if (result.Succeeded)
             {
-                var token = _externalTokenService.GetToken();
+                var uriBuilder = new UriBuilder(returnUrl);
+                var query = QueryHelpers.ParseQuery(uriBuilder.Query);
+                query["Token"] = result.Token;
+                uriBuilder.Query = query.ToString();
 
-                var returnUri = new Uri(returnUrl);
-                http://stackoverflow.com/questions/14517798/append-values-to-query-string
-
-                return Redirect(returnUri);
+                return Redirect(uriBuilder.ToString());
             }
 
             return RedirectToAction(nameof(HomeController.Index), "Home");
