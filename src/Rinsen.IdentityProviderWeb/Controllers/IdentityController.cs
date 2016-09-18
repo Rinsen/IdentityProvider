@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Rinsen.IdentityProvider.Core;
+using Rinsen.IdentityProvider.Core.ExternalApplications;
+using Rinsen.IdentityProvider.Core.LocalAccounts;
 using Rinsen.IdentityProviderWeb.Models;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,14 @@ namespace Rinsen.IdentityProviderWeb.Controllers
     public class IdentityController : Controller
     {
         private readonly ILoginService _loginService;
+        private readonly IExternalApplicationService _externalApplicationService;
+        private readonly IIdentityService _identityService;
+        private readonly ILocalAccountService _localAccountService;
+
+        public IdentityController(ILoginService loginService, IExternalApplicationService externalApplicationService)
+        {
+
+        }
 
         [HttpGet]
         [AllowAnonymous]
@@ -47,17 +57,37 @@ namespace Rinsen.IdentityProviderWeb.Controllers
         [AllowAnonymous]
         public IActionResult Create()
         {
+            
 
 
-
-            return View();
+            return View(new CreateIdentityModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(LoginModel model)
+        public async Task<IActionResult> Create(CreateIdentityModel model)
         {
+            if (ModelState.IsValid)
+            {
+                var createIdentityResult = await _identityService.CreateAsync(model.FirstName, model.LastName, model.Email, model.PhoneNumber);
 
+                if (createIdentityResult.Succeeded)
+                {
+                    var createLocalAccountResult = await _localAccountService.CreateAsync(createIdentityResult.Identity.IdentityId, model.Email, model.Password);
+
+                    if (createLocalAccountResult.Succeeded)
+                    {
+                        var loginResult = await _loginService.LoginAsync(model.Email, model.Password, false);
+
+                        if (loginResult.Succeeded)
+                        {
+                            return RedirectToLocalOrTrustedHostOnly(model.ReturnUrl);
+                        }
+                    }
+                }
+
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            }
 
             return View(model);
         }
@@ -78,7 +108,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
                 return Redirect(returnUrl);
             }
 
-            var result = _externalHostValidator.ValidateAsync(returnUrl);
+            var result = _externalApplicationService.ValidateAsync(returnUrl);
 
             if (result.Succeeded)
             {

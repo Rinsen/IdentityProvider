@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProviderWeb.Models
 {
-    public class LoginFromModel : IValidatableObject
+    public class OldLoginFromModel : IValidatableObject
     {
         public string ReturnTo { get; set; }
 
