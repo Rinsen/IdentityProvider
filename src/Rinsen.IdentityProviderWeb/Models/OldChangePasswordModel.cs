@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProviderWeb.Models
 {
-    public class ChangePasswordModel : IValidatableObject
+    public class OldChangePasswordModel : IValidatableObject
     {
         [Display(Name = "Current password")]
         [Required(ErrorMessage = "The current password field is required")]

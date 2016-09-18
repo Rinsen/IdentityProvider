@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProviderWeb.Models
 {
-    public class IdentityDetailsModel
+    public class OldIdentityDetailsModel
     {
         [Display(Name = "First name")]
         [Required(ErrorMessage = "The first name field is required")]

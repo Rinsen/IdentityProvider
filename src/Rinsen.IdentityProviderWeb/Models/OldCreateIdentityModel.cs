@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProviderWeb.Models
 {
-    public class CreateIdentityModel : IValidatableObject
+    public class OldCreateIdentityModel : IValidatableObject
     {
-        public CreateIdentityModel()
+        public OldCreateIdentityModel()
         {
             Password = string.Empty;
         }
