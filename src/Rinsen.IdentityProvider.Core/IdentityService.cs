@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Rinsen.IdentityProvider.Core.LocalAccounts;
 using System;
+using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.Core
 {
@@ -29,31 +30,33 @@ namespace Rinsen.IdentityProvider.Core
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public void CreateIdentity(Identity identity, string loginId, string password)
+        public async Task<CreateIdentityResult> CreateAsync(string firstName, string lastName, string email, string phoneNumber)
         {
-            CreateIdentity(identity);
+            var identity = new Identity
+            {
+                IdentityId = Guid.NewGuid(),
+                Created = DateTimeOffset.Now,
+                Email = email,
+                EmailConfirmed = false,
+                FirstName = firstName,
+                LastName = lastName,
+                PhoneNumber = phoneNumber,
+                PhoneNumberConfirmed = false,
+                Updated = DateTimeOffset.Now
+            };
 
-            _localAccountService.CreateLocalAccount(identity.IdentityId, loginId, password);
-
-            _log.LogInformation("New identity created for email {0}, with name {1}, {2} and phone number {3}", identity.Email, identity.FirstName, identity.LastName, identity.PhoneNumber);
-        }
-
-        private void CreateIdentity(Identity identity)
-        {
-            identity.IdentityId = Guid.NewGuid();
-            identity.Created = DateTimeOffset.Now;
-            identity.Updated = DateTimeOffset.Now;
             try
             {
-                _identityStorage.Create(identity);
+                await _identityStorage.CreateAsync(identity);
             }
             catch (IdentityAlreadyExistException e)
             {
                 _log.LogWarning("Identity {0} already exist from address {1}", identity.Email, _httpContextAccessor.HttpContext.GetClientIPAddressString());
                 throw e;
             }
+            _log.LogInformation("New identity created for email {0}, with name {1}, {2} and phone number {3}", identity.Email, identity.FirstName, identity.LastName, identity.PhoneNumber);
         }
-
+        
         public Identity GetIdentity()
         {
             return _identityStorage.Get(_claimsPrincipalAccessor.IdentityId);
@@ -65,6 +68,11 @@ namespace Rinsen.IdentityProvider.Core
         }
 
         public void UpdateIdentityDetails(string firstName, string lastName, string email, string phoneNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CreateIdentityResult> CreateAsync(string firstName, string lastName, string email, string phoneNumber)
         {
             throw new NotImplementedException();
         }

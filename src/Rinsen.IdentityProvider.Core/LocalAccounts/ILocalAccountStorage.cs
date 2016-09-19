@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.Core.LocalAccounts
 {
     public interface ILocalAccountStorage
     {
-        void Create(LocalAccount localAccount);
+        Task CreateAsync(LocalAccount localAccount);
         LocalAccount Get(Guid identityId);
         LocalAccount Get(string loginId);
         void Update(LocalAccount localAccount);

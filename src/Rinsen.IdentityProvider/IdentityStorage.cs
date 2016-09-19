@@ -1,6 +1,7 @@
 ﻿using Rinsen.IdentityProvider.Core;
 using System;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider
 {
@@ -13,7 +14,7 @@ namespace Rinsen.IdentityProvider
             _identityOptions = identityOptions;
         }
 
-        public void Create(Identity identity)
+        public async Task CreateAsync(Identity identity)
         {
             string sql = @"INSERT INTO Identities (Created, Email, EmailConfirmed, FirstName, IdentityId, LastName, PhoneNumber, PhoneNumberConfirmed, Updated) VALUES (@Created, @Email, @EmailConfirmed, @FirstName, @IdentityId, @LastName, @PhoneNumber, @PhoneNumberConfirmed, @Updated); SELECT CAST(SCOPE_IDENTITY() as int)";
             using (var connection = new SqlConnection(_identityOptions.ConnectionString))
@@ -34,8 +35,7 @@ namespace Rinsen.IdentityProvider
                         
                         connection.Open();
 
-                        var id = (int)command.ExecuteScalar();
-                        identity.Id = id;
+                        identity.Id = (int)await command.ExecuteScalarAsync();
                     }
                 }
                 catch (SqlException ex)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.Core.LocalAccounts
 {
@@ -39,7 +40,7 @@ namespace Rinsen.IdentityProvider.Core.LocalAccounts
             _localAccountStorage.Update(localAccount);
         }
 
-        public void CreateLocalAccount(Guid identityId, string loginId, string password)
+        public async Task<CreateLocalAccountResult> CreateAsync(Guid identityId, string loginId, string password)
         {
             var localAccount = new LocalAccount
             {
@@ -52,7 +53,18 @@ namespace Rinsen.IdentityProvider.Core.LocalAccounts
             };
             localAccount.PasswordHash = GetPasswordHash(password, localAccount);
 
-            _localAccountStorage.Create(localAccount);
+            try
+            {
+                await _localAccountStorage.CreateAsync(localAccount);
+            }
+            catch (IdentityAlreadyExistException e)
+            {
+                _log.LogError(0, e, "Local account already exist");
+
+                return CreateLocalAccountResult.AlreadyExist();
+            }
+
+            return CreateLocalAccountResult.Success(localAccount);
         }
 
         private byte[] GetPasswordHash(string password, LocalAccount localAccount)

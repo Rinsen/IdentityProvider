@@ -8,7 +8,7 @@ namespace Rinsen.IdentityProvider.Core
         public IdentityOptions()
         {
             SessionCookieOnlySecureTransfer = true;
-            IterationCount = 10000;
+            IterationCount = 100000;
             NumberOfBytesInPasswordHash = 128 / 8;
             NumberOfBytesInPasswordSalt = 128 / 8;
             SessionKeyName = "rkey";

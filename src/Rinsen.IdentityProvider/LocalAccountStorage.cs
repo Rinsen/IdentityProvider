@@ -76,7 +76,7 @@ namespace Rinsen.IdentityProvider
             _identityOptions = identityOptions;
         }
 
-        public void Create(LocalAccount localAccount)
+        public async void CreateAsync(LocalAccount localAccount)
         {
             using (var connection = new SqlConnection(_identityOptions.ConnectionString))
             {
@@ -96,7 +96,7 @@ namespace Rinsen.IdentityProvider
 
                         connection.Open();
 
-                        localAccount.LocalAccountId = (int)command.ExecuteScalar();
+                        localAccount.LocalAccountId = (int)await command.ExecuteScalarAsync();
                     }
                 }
                 catch (SqlException ex)
@@ -105,7 +105,7 @@ namespace Rinsen.IdentityProvider
                     // 2627 - Violation in unique constraint
                     if (ex.Number == 2601 || ex.Number == 2627)
                     {
-                        throw new IdentityAlreadyExistException(string.Format("Identity {0} already exist for user {1}", localAccount.LoginId, localAccount.IdentityId), ex);
+                        throw new LocalAccountAlreadyExistException(string.Format("Identity {0} already exist for user {1}", localAccount.LoginId, localAccount.IdentityId), ex);
                     }
                     throw;
                 }

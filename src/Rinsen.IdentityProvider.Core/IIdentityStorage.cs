@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.Core
 {
     public interface IIdentityStorage
     {
-        void Create(Identity identity);
+        Task CreateAsync(Identity identity);
         Identity Get(Guid identityId);
     }
 }

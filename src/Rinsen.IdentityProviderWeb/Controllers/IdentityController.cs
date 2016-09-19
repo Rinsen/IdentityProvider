@@ -19,9 +19,15 @@ namespace Rinsen.IdentityProviderWeb.Controllers
         private readonly IIdentityService _identityService;
         private readonly ILocalAccountService _localAccountService;
 
-        public IdentityController(ILoginService loginService, IExternalApplicationService externalApplicationService)
+        public IdentityController(ILoginService loginService,
+            IExternalApplicationService externalApplicationService,
+            IIdentityService identityService,
+            LocalAccountService localAccountService)
         {
-
+            _loginService = loginService;
+            _externalApplicationService = externalApplicationService;
+            _identityService = identityService;
+            _localAccountService = localAccountService;
         }
 
         [HttpGet]
@@ -86,7 +92,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
                     }
                 }
 
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ModelState.AddModelError(string.Empty, "Create user invalid.");
             }
 
             return View(model);
