@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Rinsen.IdentityProvider.Core.LocalAccounts;
 using System;
+using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.Core.Sessions
 {
@@ -23,7 +24,7 @@ namespace Rinsen.IdentityProvider.Core.Sessions
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string CreateSession(string email, string password)
+        public async Task<string> CreateSessionAsync(string email, string password)
         {
             var session = new Session
             {
@@ -32,7 +33,7 @@ namespace Rinsen.IdentityProvider.Core.Sessions
                 CreatedFromIpAddress = _httpContextAccessor.HttpContext.GetClientIPAddress(),
                 LastUsed = DateTimeOffset.Now,
                 LastUsedFromIpAddress = _httpContextAccessor.HttpContext.GetClientIPAddress(),
-                IdentityId = _localAccountService.GetIdentityId(email, password)
+                IdentityId = await _localAccountService.GetIdentityIdAsync(email, password)
             };
 
             _sessionStorage.Create(session);

@@ -63,7 +63,10 @@ namespace Rinsen.IdentityProviderWeb
                 { "Rinsen", LogLevel.Information }
             });
 
+            app.UseDeveloperExceptionPage();
+
             app.UseLogMiddleware();
+
             if (env.IsDevelopment())
             {
                 app.RunDatabaseInstaller(new[] { new FirstVersion() });

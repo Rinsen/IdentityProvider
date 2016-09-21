@@ -6,8 +6,6 @@ using Rinsen.IdentityProvider.Core.ExternalApplications;
 using Rinsen.IdentityProvider.Core.LocalAccounts;
 using Rinsen.IdentityProviderWeb.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProviderWeb.Controllers
@@ -22,7 +20,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
         public IdentityController(ILoginService loginService,
             IExternalApplicationService externalApplicationService,
             IIdentityService identityService,
-            LocalAccountService localAccountService)
+            ILocalAccountService localAccountService)
         {
             _loginService = loginService;
             _externalApplicationService = externalApplicationService;

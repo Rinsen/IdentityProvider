@@ -2,6 +2,7 @@
 using Rinsen.IdentityProvider.Core.LocalAccounts;
 using System;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider
 {
@@ -76,7 +77,7 @@ namespace Rinsen.IdentityProvider
             _identityOptions = identityOptions;
         }
 
-        public async void CreateAsync(LocalAccount localAccount)
+        public async Task CreateAsync(LocalAccount localAccount)
         {
             using (var connection = new SqlConnection(_identityOptions.ConnectionString))
             {
@@ -112,12 +113,12 @@ namespace Rinsen.IdentityProvider
             }
         }
 
-        public void Delete(LocalAccount localAccount)
+        public async Task DeleteAsync(LocalAccount localAccount)
         {
             throw new NotImplementedException();
         }
 
-        public LocalAccount Get(string loginId)
+        public async Task<LocalAccount> GetAsync(string loginId)
         {
             using (var connection = new SqlConnection(_identityOptions.ConnectionString))
             {
@@ -125,7 +126,7 @@ namespace Rinsen.IdentityProvider
                 {
                     command.Parameters.Add(new SqlParameter("@LoginId", loginId));
                     connection.Open();
-                    var reader = command.ExecuteReader();
+                    var reader = await command.ExecuteReaderAsync();
 
                     if (reader.HasRows)
                     {
@@ -140,7 +141,7 @@ namespace Rinsen.IdentityProvider
             return default(LocalAccount);
         }
 
-        public LocalAccount Get(Guid identityId)
+        public async Task<LocalAccount> GetAsync(Guid identityId)
         {
             using (var connection = new SqlConnection(_identityOptions.ConnectionString))
             {
@@ -148,7 +149,7 @@ namespace Rinsen.IdentityProvider
                 {
                     command.Parameters.Add(new SqlParameter("@IdentityId", identityId));
                     connection.Open();
-                    var reader = command.ExecuteReader();
+                    var reader = await command.ExecuteReaderAsync();
 
                     if (reader.HasRows)
                     {
@@ -180,12 +181,12 @@ namespace Rinsen.IdentityProvider
             };
         }
 
-        public void Update(LocalAccount localAccount)
+        public Task UpdateAsync(LocalAccount localAccount)
         {
             throw new NotImplementedException();
         }
 
-        public void UpdateFailedLoginCount(LocalAccount localAccount)
+        public async Task UpdateFailedLoginCountAsync(LocalAccount localAccount)
         {
             using (var connection = new SqlConnection(_identityOptions.ConnectionString))
             {
@@ -196,7 +197,7 @@ namespace Rinsen.IdentityProvider
                     command.Parameters.Add(new SqlParameter("@IdentityId", localAccount.IdentityId));
                     connection.Open();
 
-                    var result = command.ExecuteNonQuery();
+                    var result = await command.ExecuteNonQueryAsync();
                 }
             }
         }

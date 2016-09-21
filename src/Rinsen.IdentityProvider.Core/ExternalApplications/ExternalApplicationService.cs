@@ -5,7 +5,13 @@ using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.Core.ExternalApplications
 {
-    public class ExternalApplicationService
+    public class ExternalApplicationService : IExternalApplicationService
     {
+
+
+        public ValidationResult ValidateAsync(string returnUrl)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

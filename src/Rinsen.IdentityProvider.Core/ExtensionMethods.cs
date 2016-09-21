@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Rinsen.IdentityProvider.Core.LocalAccounts;
+using Rinsen.IdentityProvider.Core.ExternalApplications;
 
 namespace Rinsen.IdentityProvider.Core
 {
@@ -34,7 +35,8 @@ namespace Rinsen.IdentityProvider.Core
             services.AddTransient<IdentityClaimsProvider, IdentityClaimsProvider>();
             services.AddSingleton<IClaimsCache, NullClaimsCache>();
             services.AddTransient<ILocalAccountService, LocalAccountService>();
-
+            services.AddTransient<ILoginService, LoginService>();
+            services.AddTransient<IExternalApplicationService, ExternalApplicationService>();
         }
 
         public static string GetClaimStringValue(this ClaimsPrincipal claimsPrincipal, string claimType)

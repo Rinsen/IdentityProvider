@@ -26,8 +26,8 @@ namespace Rinsen.IdentityProvider.Core
             _identityOptions = identityOptions;
             _identityStorage = identityStorage;
             _localAccountService = localAccountService;
-            _log = log;
             _httpContextAccessor = httpContextAccessor;
+            _log = log;
         }
 
         public async Task<CreateIdentityResult> CreateAsync(string firstName, string lastName, string email, string phoneNumber)
@@ -51,10 +51,13 @@ namespace Rinsen.IdentityProvider.Core
             }
             catch (IdentityAlreadyExistException e)
             {
-                _log.LogWarning("Identity {0} already exist from address {1}", identity.Email, _httpContextAccessor.HttpContext.GetClientIPAddressString());
-                throw e;
+                _log.LogWarning(0, e, $"Identity {identity.Email} already exist from address {_httpContextAccessor.HttpContext.GetClientIPAddressString()}");
+                return CreateIdentityResult.AlreadyExist();
             }
-            _log.LogInformation("New identity created for email {0}, with name {1}, {2} and phone number {3}", identity.Email, identity.FirstName, identity.LastName, identity.PhoneNumber);
+
+            _log.LogInformation($"New identity created for email {identity.Email}, with name {identity.FirstName}, {identity.LastName} and phone number {identity.PhoneNumber}");
+
+            return CreateIdentityResult.Success(identity);
         }
         
         public Identity GetIdentity()
@@ -68,11 +71,6 @@ namespace Rinsen.IdentityProvider.Core
         }
 
         public void UpdateIdentityDetails(string firstName, string lastName, string email, string phoneNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CreateIdentityResult> CreateAsync(string firstName, string lastName, string email, string phoneNumber)
         {
             throw new NotImplementedException();
         }

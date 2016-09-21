@@ -30,14 +30,14 @@ namespace Rinsen.IdentityProvider.Core.LocalAccounts
         }
 
 
-        public void ChangePassword(string oldPassword, string newPassword)
+        public async Task ChangePasswordAsync(string oldPassword, string newPassword)
         {
-            var localAccount = GetLocalAccount(oldPassword);
+            var localAccount = await GetLocalAccountAsync(oldPassword);
 
             localAccount.PasswordHash = GetPasswordHash(newPassword, localAccount);
             localAccount.Updated = DateTimeOffset.Now;
 
-            _localAccountStorage.Update(localAccount);
+            await _localAccountStorage.UpdateAsync(localAccount);
         }
 
         public async Task<CreateLocalAccountResult> CreateAsync(Guid identityId, string loginId, string password)
@@ -72,25 +72,25 @@ namespace Rinsen.IdentityProvider.Core.LocalAccounts
             return _passwordHashGenerator.GetPasswordHash(localAccount.PasswordSalt, password, localAccount.IterationCount, _options.NumberOfBytesInPasswordHash);
         }
 
-        public void DeleteLocalAccount(string password)
+        public async Task DeleteLocalAccountAsync(string password)
         {
-            var localAccount = GetLocalAccount(password);
+            var localAccount = await GetLocalAccountAsync(password);
 
-            _localAccountStorage.Delete(localAccount);
+            await _localAccountStorage.DeleteAsync(localAccount);
         }
 
-        private LocalAccount GetLocalAccount(string password)
+        private async Task<LocalAccount> GetLocalAccountAsync(string password)
         {
-            var localAccount = _localAccountStorage.Get(_identityAccessor.IdentityId);
+            var localAccount = await _localAccountStorage.GetAsync(_identityAccessor.IdentityId);
 
             ValidatePassword(localAccount, password);
 
             return localAccount;
         }
 
-        public Guid GetIdentityId(string loginId, string password)
+        public async Task<Guid> GetIdentityIdAsync(string loginId, string password)
         {
-            var localAccount = _localAccountStorage.Get(loginId);
+            var localAccount = await _localAccountStorage.GetAsync(loginId);
 
             ValidatePassword(localAccount, password);
 
@@ -106,7 +106,7 @@ namespace Rinsen.IdentityProvider.Core.LocalAccounts
         {
             localAccount.FailedLoginCount = 0;
             localAccount.Updated = DateTimeOffset.Now;
-            _localAccountStorage.UpdateFailedLoginCount(localAccount);
+            _localAccountStorage.UpdateFailedLoginCountAsync(localAccount);
         }
 
         private void InvalidPassword(LocalAccount localAccount)
@@ -116,14 +116,14 @@ namespace Rinsen.IdentityProvider.Core.LocalAccounts
 
             _log.LogWarning("Invalid password for local account {0} with iteration count {1}", localAccount.IdentityId, localAccount.IterationCount);
 
-            _localAccountStorage.UpdateFailedLoginCount(localAccount);
+            _localAccountStorage.UpdateFailedLoginCountAsync(localAccount);
             
             throw new UnauthorizedAccessException("Invalid password");
         }
 
-        public void ValidatePassword(string password)
+        public async Task ValidatePasswordAsync(string password)
         {
-            var localAccount = _localAccountStorage.Get(_identityAccessor.IdentityId);
+            var localAccount = await _localAccountStorage.GetAsync(_identityAccessor.IdentityId);
             ValidatePassword(localAccount, password);
         }
 
