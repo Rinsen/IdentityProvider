@@ -60,14 +60,14 @@ namespace Rinsen.IdentityProvider.Core
             return CreateIdentityResult.Success(identity);
         }
         
-        public Identity GetIdentity()
+        public async Task<Identity> GetIdentity()
         {
-            return _identityStorage.Get(_claimsPrincipalAccessor.IdentityId);
+            return await _identityStorage.GetAsync(_claimsPrincipalAccessor.IdentityId);
         }
 
-        public Identity GetIdentity(Guid identityId)
+        public async Task<Identity> GetIdentityAsync(Guid identityId)
         {
-            return _identityStorage.Get(identityId);
+            return await _identityStorage.GetAsync(identityId);
         }
 
         public void UpdateIdentityDetails(string firstName, string lastName, string email, string phoneNumber)

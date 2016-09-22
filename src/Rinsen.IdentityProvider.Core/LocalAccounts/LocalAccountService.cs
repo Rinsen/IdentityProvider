@@ -87,13 +87,18 @@ namespace Rinsen.IdentityProvider.Core.LocalAccounts
 
             return localAccount;
         }
-
-        public async Task<Guid> GetIdentityIdAsync(string loginId, string password)
+        
+        public async Task<Guid?> GetIdentityIdAsync(string loginId, string password)
         {
             var localAccount = await _localAccountStorage.GetAsync(loginId);
 
-            ValidatePassword(localAccount, password);
+            if (localAccount == default(LocalAccount))
+            {
+                return null;
+            }
 
+            ValidatePassword(localAccount, password);
+            
             if (localAccount.FailedLoginCount > 0)
             {
                 SetFailedLoginCountToZero(localAccount);

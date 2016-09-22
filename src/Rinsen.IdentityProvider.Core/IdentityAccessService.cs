@@ -25,7 +25,7 @@ namespace Rinsen.IdentityProvider.Core
         {
             get
             {
-                return ClaimsPrincipal.GetClaimStringValue(ClaimTypes.SessionId);
+                return ClaimsPrincipal.GetClaimStringValue(RinsenClaimTypes.SessionId);
             }
         }
 
@@ -33,7 +33,7 @@ namespace Rinsen.IdentityProvider.Core
         {
             get
             {
-                return ClaimsPrincipal.GetClaimGuidValue(ClaimTypes.IdentityId);
+                return ClaimsPrincipal.GetClaimGuidValue(RinsenClaimTypes.IdentityId);
             }
         }
     }

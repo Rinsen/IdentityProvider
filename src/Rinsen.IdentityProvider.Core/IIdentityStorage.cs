@@ -6,6 +6,6 @@ namespace Rinsen.IdentityProvider.Core
     public interface IIdentityStorage
     {
         Task CreateAsync(Identity identity);
-        Identity Get(Guid identityId);
+        Task<Identity> GetAsync(Guid identityId);
     }
 }

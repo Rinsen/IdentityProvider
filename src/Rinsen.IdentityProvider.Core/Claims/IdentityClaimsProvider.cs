@@ -20,7 +20,7 @@ namespace Rinsen.IdentityProvider.Core.Claims
             var claimsList = new List<Claim>
             {
                 new Claim(System.Security.Claims.ClaimTypes.Name, identity.FirstName + " " + identity.LastName),
-                new Claim(ClaimTypes.IdentityId, identity.IdentityId.ToString()),
+                new Claim(RinsenClaimTypes.IdentityId, identity.IdentityId.ToString()),
             };
 
             return claimsList;

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.Core.Sessions
 {
@@ -10,7 +11,7 @@ namespace Rinsen.IdentityProvider.Core.Sessions
         /// <param name="loginId"></param>
         /// <param name="password"></param>
         /// <returns>Session id</returns>
-        Task<string> CreateSessionAsync(string loginId, string password);
+        Task<string> CreateSessionAsync(Guid id);
         void DeleteSession();
     }
 }

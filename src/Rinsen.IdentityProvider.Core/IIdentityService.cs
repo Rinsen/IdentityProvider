@@ -5,8 +5,8 @@ namespace Rinsen.IdentityProvider.Core
 {
     public interface IIdentityService
     {
-        Identity GetIdentity(Guid identityId);
-        Identity GetIdentity();
+        Task<Identity> GetIdentityAsync(Guid identityId);
+        Identity GetIdentityAsync();
         void UpdateIdentityDetails(string firstName, string lastName, string email, string phoneNumber);
         Task<CreateIdentityResult> CreateAsync(string firstName, string lastName, string email, string phoneNumber);
     }

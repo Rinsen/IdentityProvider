@@ -49,7 +49,7 @@ namespace Rinsen.IdentityProvider
             }
         }
         
-        public Identity Get(Guid identityId)
+        public async Task<Identity> GetAsync(Guid identityId)
         {
             using (var connection = new SqlConnection(_identityOptions.ConnectionString))
             {
@@ -57,7 +57,7 @@ namespace Rinsen.IdentityProvider
                 {
                     command.Parameters.Add(new SqlParameter("@IdentityId", identityId));
                     connection.Open();
-                    var reader = command.ExecuteReader();
+                    var reader = await command.ExecuteReaderAsync();
 
                     if (reader.HasRows)
                     {

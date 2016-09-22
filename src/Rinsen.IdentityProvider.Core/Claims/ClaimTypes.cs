@@ -1,25 +1,12 @@
 ﻿namespace Rinsen.IdentityProvider.Core
 {
-    public static class ClaimTypes
+    public static class RinsenClaimTypes
     {
-        public const string SessionId = "Rinsen.SessionId";
+        public const string SessionId = "http://rinsen.se/claims/sessionid";
 
-        public const string IdentityId = "Rinsen.Identity";
+        public const string IdentityId = "http://rinsen.se/claims/identity";
 
-        public const string Role = "Rinsen.Role";
-    }
-
-    public static class ClaimValues
-    {
-        public const string Administrator = "Administrator";
-    }
-
-    public static class ActorType
-    {
-        public const string Identity = "Identity";
-
-        public const string Api = "Api";
-        
+        public const string Role = "http://rinsen.se/claims/role";
     }
 }
 

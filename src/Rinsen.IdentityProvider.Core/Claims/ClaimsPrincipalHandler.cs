@@ -30,7 +30,7 @@ namespace Rinsen.IdentityProvider.Core.Claims
             {
                 var claims = GetClaimsList(session.IdentityId);
 
-                claims.Add(new Claim(ClaimTypes.SessionId, session.Id));
+                claims.Add(new Claim(RinsenClaimTypes.SessionId, session.Id));
 
                 _claimsCache.Add(claims);
 
