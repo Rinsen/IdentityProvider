@@ -10,13 +10,7 @@ namespace Rinsen.IdentityProvider.Core
         public LoginResult()
         {
         }
-
-        public LoginResult(Guid id)
-        {
-            LocalAccountId = id;
-        }
-
-        public Guid LocalAccountId { get; }
+        
         public bool Succeeded { get; private set; }
         public bool Failed { get; private set; }
 
@@ -25,9 +19,9 @@ namespace Rinsen.IdentityProvider.Core
             return new LoginResult() { Failed = true };
         }
 
-        public static LoginResult Success(Guid id)
+        public static LoginResult Success()
         {
-            return new LoginResult(id) { Succeeded = true };
+            return new LoginResult() { Succeeded = true };
         }
     }
 }

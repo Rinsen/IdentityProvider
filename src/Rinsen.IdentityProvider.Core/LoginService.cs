@@ -43,7 +43,9 @@ namespace Rinsen.IdentityProvider.Core
                 new Claim(ClaimTypes.Surname, identity.LastName, ClaimValueTypes.String, "RinsenIdentityProvider")
             };
 
-            await _httpContextAccessor.HttpContext.Authentication.SignInAsync("", new ClaimsPrincipal(new ClaimsIdentity(claims, "Password")));
+            await _httpContextAccessor.HttpContext.Authentication.SignInAsync("RinsenCookie", new ClaimsPrincipal(new ClaimsIdentity(claims, "RinsenPassword")));
+
+            return LoginResult.Success();
         }
 
         public Task LogoutAsync()
