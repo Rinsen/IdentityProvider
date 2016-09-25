@@ -24,7 +24,7 @@ namespace Rinsen.IdentityProvider.Core.Sessions
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<string> CreateSessionAsync(string email, string password)
+        public async Task<string> CreateSessionAsync(Guid identityId)
         {
             var session = new Session
             {
@@ -33,17 +33,19 @@ namespace Rinsen.IdentityProvider.Core.Sessions
                 CreatedFromIpAddress = _httpContextAccessor.HttpContext.GetClientIPAddress(),
                 LastUsed = DateTimeOffset.Now,
                 LastUsedFromIpAddress = _httpContextAccessor.HttpContext.GetClientIPAddress(),
-                IdentityId = await _localAccountService.GetIdentityIdAsync(email, password)
+                IdentityId = identityId
             };
 
-            _sessionStorage.Create(session);
+            await _sessionStorage.CreateAsync(session);
 
             return session.Id;
         }
 
         public void DeleteSession()
         {
-            _sessionStorage.Delete(_claimsPrincipalAccessor.SessionId);
+            throw new NotImplementedException();
+
+            //_sessionStorage.Delete(_claimsPrincipalAccessor.SessionId);
         }
     }
 }

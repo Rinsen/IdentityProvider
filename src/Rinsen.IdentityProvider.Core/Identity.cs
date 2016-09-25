@@ -8,9 +8,9 @@ namespace Rinsen.IdentityProvider.Core
 
         public Guid IdentityId { get; set; }
 
-        public string FirstName { get; set; }
+        public string GivenName { get; set; }
 
-        public string LastName { get; set; }
+        public string Surname { get; set; }
 
         public string Email { get; set; }
 

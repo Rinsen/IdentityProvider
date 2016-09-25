@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.Core.LocalAccounts
@@ -114,18 +115,6 @@ namespace Rinsen.IdentityProvider.Core.LocalAccounts
             _localAccountStorage.UpdateFailedLoginCountAsync(localAccount);
         }
 
-        private void InvalidPassword(LocalAccount localAccount)
-        {
-            localAccount.FailedLoginCount++;
-            localAccount.Updated = DateTimeOffset.Now;
-
-            _log.LogWarning("Invalid password for local account {0} with iteration count {1}", localAccount.IdentityId, localAccount.IterationCount);
-
-            _localAccountStorage.UpdateFailedLoginCountAsync(localAccount);
-            
-            throw new UnauthorizedAccessException("Invalid password");
-        }
-
         public async Task ValidatePasswordAsync(string password)
         {
             var localAccount = await _localAccountStorage.GetAsync(_identityAccessor.IdentityId);
@@ -134,10 +123,22 @@ namespace Rinsen.IdentityProvider.Core.LocalAccounts
 
         private void ValidatePassword(LocalAccount localAccount, string password)
         {
-            if (localAccount.PasswordHash != GetPasswordHash(password, localAccount))
+            if (!localAccount.PasswordHash.SequenceEqual(GetPasswordHash(password, localAccount)))
             {
                 InvalidPassword(localAccount);
             }
+        }
+
+        private void InvalidPassword(LocalAccount localAccount)
+        {
+            localAccount.FailedLoginCount++;
+            localAccount.Updated = DateTimeOffset.Now;
+
+            _log.LogWarning("Invalid password for local account {0} with iteration count {1}", localAccount.IdentityId, localAccount.IterationCount);
+
+            _localAccountStorage.UpdateFailedLoginCountAsync(localAccount);
+
+            throw new UnauthorizedAccessException("Invalid password");
         }
     }
 }

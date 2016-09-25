@@ -73,7 +73,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var createIdentityResult = await _identityService.CreateAsync(model.FirstName, model.LastName, model.Email, model.PhoneNumber);
+                var createIdentityResult = await _identityService.CreateAsync(model.GivenName, model.Surname, model.Email, model.PhoneNumber);
 
                 if (createIdentityResult.Succeeded)
                 {

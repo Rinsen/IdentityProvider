@@ -36,11 +36,11 @@ namespace Rinsen.IdentityProvider.Core
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, identity.FirstName + " " + identity.LastName, ClaimValueTypes.String, "RinsenIdentityProvider"),
+                new Claim(ClaimTypes.Name, identity.GivenName + " " + identity.Surname, ClaimValueTypes.String, "RinsenIdentityProvider"),
                 new Claim(ClaimTypes.NameIdentifier, identity.IdentityId.ToString(), ClaimValueTypes.String, "RinsenIdentityProvider"),
                 new Claim(ClaimTypes.Email, identity.Email, ClaimValueTypes.String, "RinsenIdentityProvider"),
-                new Claim(ClaimTypes.GivenName, identity.FirstName, ClaimValueTypes.String, "RinsenIdentityProvider"),
-                new Claim(ClaimTypes.Surname, identity.LastName, ClaimValueTypes.String, "RinsenIdentityProvider")
+                new Claim(ClaimTypes.GivenName, identity.GivenName, ClaimValueTypes.String, "RinsenIdentityProvider"),
+                new Claim(ClaimTypes.Surname, identity.Surname, ClaimValueTypes.String, "RinsenIdentityProvider")
             };
 
             await _httpContextAccessor.HttpContext.Authentication.SignInAsync("RinsenCookie", new ClaimsPrincipal(new ClaimsIdentity(claims, "RinsenPassword")));

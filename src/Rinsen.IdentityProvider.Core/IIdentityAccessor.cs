@@ -6,7 +6,7 @@ namespace Rinsen.IdentityProvider.Core
     public interface IIdentityAccessor
     {
         ClaimsPrincipal ClaimsPrincipal { get; }
-        string SessionId { get; }
+        //string SessionId { get; }
         Guid IdentityId { get; }
     }
 }

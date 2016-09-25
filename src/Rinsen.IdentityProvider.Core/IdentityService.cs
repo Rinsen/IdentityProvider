@@ -38,8 +38,8 @@ namespace Rinsen.IdentityProvider.Core
                 Created = DateTimeOffset.Now,
                 Email = email,
                 EmailConfirmed = false,
-                FirstName = firstName,
-                LastName = lastName,
+                GivenName = firstName,
+                Surname = lastName,
                 PhoneNumber = phoneNumber,
                 PhoneNumberConfirmed = false,
                 Updated = DateTimeOffset.Now
@@ -55,12 +55,12 @@ namespace Rinsen.IdentityProvider.Core
                 return CreateIdentityResult.AlreadyExist();
             }
 
-            _log.LogInformation($"New identity created for email {identity.Email}, with name {identity.FirstName}, {identity.LastName} and phone number {identity.PhoneNumber}");
+            _log.LogInformation($"New identity created for email {identity.Email}, with name {identity.GivenName}, {identity.Surname} and phone number {identity.PhoneNumber}");
 
             return CreateIdentityResult.Success(identity);
         }
         
-        public async Task<Identity> GetIdentity()
+        public async Task<Identity> GetIdentityAsync()
         {
             return await _identityStorage.GetAsync(_claimsPrincipalAccessor.IdentityId);
         }

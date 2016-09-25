@@ -24,8 +24,8 @@ namespace Rinsen.IdentityProvider.Installation
             identitiesTable.AddColumn(m => m.Created);
             identitiesTable.AddColumn(m => m.Email);
             identitiesTable.AddColumn(m => m.EmailConfirmed);
-            identitiesTable.AddColumn(m => m.FirstName);
-            identitiesTable.AddColumn(m => m.LastName);
+            identitiesTable.AddColumn(m => m.GivenName);
+            identitiesTable.AddColumn(m => m.Surname);
             identitiesTable.AddColumn(m => m.PhoneNumber);
             identitiesTable.AddColumn(m => m.PhoneNumberConfirmed);
             identitiesTable.AddColumn(m => m.Updated);

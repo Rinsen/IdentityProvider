@@ -1,5 +1,4 @@
-﻿using Rinsen.IdentityProvider.Core.Claims;
-using System;
+﻿using System;
 
 namespace Rinsen.IdentityProvider.Core
 {
@@ -14,9 +13,9 @@ namespace Rinsen.IdentityProvider.Core
             SessionKeyName = "rkey";
             SessionIdLength = 40;
             MaxFailedLoginSleepCount = 30;
-            ClaimsProviders = new ClaimsProviderCollection();
+            //ClaimsProviders = new ClaimsProviderCollection();
             ClaimsCacheTimeout = new TimeSpan(0, 30, 0);
-            ClaimsProviders.Add(typeof(IdentityClaimsProvider));
+            //ClaimsProviders.Add(typeof(IdentityClaimsProvider));
         }
 
         public string ConnectionString { get; set; }
@@ -37,7 +36,7 @@ namespace Rinsen.IdentityProvider.Core
 
         public int MaxFailedLoginSleepCount { get; set; }
 
-        public ClaimsProviderCollection ClaimsProviders { get; private set; }
+        //public ClaimsProviderCollection ClaimsProviders { get; private set; }
 
     }
 }

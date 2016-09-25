@@ -64,8 +64,8 @@ namespace Rinsen.IdentityProviderWeb.Models
             return new Identity
             {
                 Email = Email,
-                FirstName = FirstName,
-                LastName = LastName,
+                GivenName = FirstName,
+                Surname = LastName,
                 PhoneNumber = PhoneNumber
             };
         }

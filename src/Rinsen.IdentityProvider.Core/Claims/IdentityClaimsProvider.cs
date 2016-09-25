@@ -1,29 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Security.Claims;
+//using System.Threading.Tasks;
 
-namespace Rinsen.IdentityProvider.Core.Claims
-{
-    public class IdentityClaimsProvider : IClaimsProvider
-    {
-        readonly IIdentityStorage _identityStorage;
+//namespace Rinsen.IdentityProvider.Core.Claims
+//{
+//    public class IdentityClaimsProvider : IClaimsProvider
+//    {
+//        readonly IIdentityStorage _identityStorage;
 
-        public IdentityClaimsProvider(IIdentityStorage identityStorage)
-        {
-            _identityStorage = identityStorage;
-        }
+//        public IdentityClaimsProvider(IIdentityStorage identityStorage)
+//        {
+//            _identityStorage = identityStorage;
+//        }
 
-        public IEnumerable<Claim> GetClaims(Guid identityId)
-        {
-            var identity = _identityStorage.Get(identityId);
+//        public Task<IEnumerable<Claim>> GetClaimsAsync(Guid identityId)
+//        {
+//            var identity = await _identityStorage.GetAsync(identityId);
 
-            var claimsList = new List<Claim>
-            {
-                new Claim(System.Security.Claims.ClaimTypes.Name, identity.FirstName + " " + identity.LastName),
-                new Claim(RinsenClaimTypes.IdentityId, identity.IdentityId.ToString()),
-            };
+//            var claimsList = new List<Claim>
+//            {
+//                new Claim(ClaimTypes.Name, identity.FirstName + " " + identity.LastName),
+//                new Claim(RinsenClaimTypes.IdentityId, identity.IdentityId.ToString()),
+//            };
 
-            return claimsList;
-        }
-    }
-}
+//            return claimsList;
+//        }
+//    }
+//}

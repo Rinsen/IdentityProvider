@@ -13,13 +13,13 @@ namespace Rinsen.IdentityProviderWeb.Models
         [Required(ErrorMessage = "The email field is required")]
         public string Email { get; set; }
 
-        [Display(Name = "First name")]
-        [Required(ErrorMessage = "The first name field is required")]
-        public string FirstName { get; set; }
+        [Display(Name = "Given name")]
+        [Required(ErrorMessage = "The given name field is required")]
+        public string GivenName { get; set; }
 
-        [Display(Name = "Last name")]
+        [Display(Name = "Surname")]
         [Required(ErrorMessage = "The last name field is required")]
-        public string LastName { get; set; }
+        public string Surname { get; set; }
 
         [Display(Name = "Phone number")]
         public string PhoneNumber { get; set; }
@@ -35,7 +35,7 @@ namespace Rinsen.IdentityProviderWeb.Models
         [Required(ErrorMessage = "Invite code is required")]
         public string InviteCode { get; set; }
 
-        public string ReturnUrl { get; internal set; }
+        public string ReturnUrl { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

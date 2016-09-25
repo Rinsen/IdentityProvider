@@ -13,6 +13,11 @@ namespace Rinsen.IdentityProvider
             throw new NotImplementedException();
         }
 
+        public Task CreateAsync(Session session)
+        {
+            throw new NotImplementedException();
+        }
+
         public int Delete(string sessionId)
         {
             throw new NotImplementedException();

@@ -21,19 +21,19 @@ namespace Rinsen.IdentityProvider.Core
             }
         }
 
-        public string SessionId
-        {
-            get
-            {
-                return ClaimsPrincipal.GetClaimStringValue(RinsenClaimTypes.SessionId);
-            }
-        }
+        //public string SessionId
+        //{
+        //    get
+        //    {
+        //        return ClaimsPrincipal.GetClaimStringValue(ClaimTypes.NameIdentifier);
+        //    }
+        //}
 
         public Guid IdentityId
         {
             get
             {
-                return ClaimsPrincipal.GetClaimGuidValue(RinsenClaimTypes.IdentityId);
+                return ClaimsPrincipal.GetClaimGuidValue(ClaimTypes.NameIdentifier);
             }
         }
     }

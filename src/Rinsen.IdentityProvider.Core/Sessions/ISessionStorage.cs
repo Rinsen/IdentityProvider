@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.Core.Sessions
 {
     public interface ISessionStorage
     {
-        void Create(Session session);
+        Task CreateAsync(Session session);
 
         int Delete(string sessionId);
 
