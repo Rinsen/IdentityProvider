@@ -11,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Rinsen.IdentityProvider.Token;
-using Rinsen.IdentityProvider.Cookie;
 
 namespace IdentityClientWeb
 {

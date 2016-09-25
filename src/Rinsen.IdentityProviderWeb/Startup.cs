@@ -11,6 +11,7 @@ using Rinsen.IdentityProvider;
 using Rinsen.Logger;
 using Rinsen.DatabaseInstaller;
 using Rinsen.IdentityProvider.Installation;
+using Rinsen.IdentityProvider.Core;
 
 namespace Rinsen.IdentityProviderWeb
 {
@@ -73,6 +74,13 @@ namespace Rinsen.IdentityProviderWeb
             }
             
             app.UseStaticFiles();
+
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AutomaticAuthenticate = true,
+                SessionStore = new SqlTicketStore(),
+                AuthenticationScheme = "RinsenCookie"
+            });
 
             app.UseMvc(routes =>
             {
