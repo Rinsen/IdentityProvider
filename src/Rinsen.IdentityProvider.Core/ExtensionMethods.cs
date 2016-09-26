@@ -23,16 +23,9 @@ namespace Rinsen.IdentityProvider.Core
             services.AddSingleton(identityOptions);
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddTransient<ISessionHandler, SessionHandler>();
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<PasswordHashGenerator, PasswordHashGenerator>();
-            services.AddTransient<IRandomDataGenerator, RandomDataGenerator>();
             services.AddTransient<IIdentityAccessor, IdentityAccessService>();
-            //services.AddTransient<IdentityProvider, IdentityProvider>();
-            //services.AddTransient<IClaimsPrincipalHandler, ClaimsPrincipalHandler>();
-            //services.AddTransient<ClaimsProvidersFactory, ClaimsProvidersFactory>();
-            //services.AddTransient<IdentityClaimsProvider, IdentityClaimsProvider>();
-            //services.AddSingleton<IClaimsCache, NullClaimsCache>();
             services.AddTransient<ILocalAccountService, LocalAccountService>();
             services.AddTransient<ILoginService, LoginService>();
             services.AddTransient<IExternalApplicationService, ExternalApplicationService>();

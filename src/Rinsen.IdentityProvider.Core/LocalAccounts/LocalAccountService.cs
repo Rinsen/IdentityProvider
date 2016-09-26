@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.Core.LocalAccounts
@@ -11,20 +12,19 @@ namespace Rinsen.IdentityProvider.Core.LocalAccounts
         private readonly ILocalAccountStorage _localAccountStorage;
         private readonly IdentityOptions _options;
         private readonly PasswordHashGenerator _passwordHashGenerator;
-        private readonly IRandomDataGenerator _randomDataGenerator;
         private readonly ILogger<LocalAccountService> _log;
+
+        private static readonly RandomNumberGenerator CryptoRandom = RandomNumberGenerator.Create();
 
         public LocalAccountService(IIdentityAccessor identityAccessor,
             ILocalAccountStorage localAccountStorage,
             IdentityOptions options,
-            IRandomDataGenerator randomDataGenerator,
             PasswordHashGenerator passwordHashGenerator,
             ILogger<LocalAccountService> log)
         {
             _localAccountStorage = localAccountStorage;
             _identityAccessor = identityAccessor;
             _options = options;
-            _randomDataGenerator = randomDataGenerator;
             _passwordHashGenerator = passwordHashGenerator;
             _identityAccessor = identityAccessor;
             _log = log;
@@ -43,15 +43,19 @@ namespace Rinsen.IdentityProvider.Core.LocalAccounts
 
         public async Task<CreateLocalAccountResult> CreateAsync(Guid identityId, string loginId, string password)
         {
+            var bytes = new byte[_options.NumberOfBytesInPasswordSalt];
+            CryptoRandom.GetBytes(bytes);
+
             var localAccount = new LocalAccount
             {
                 IdentityId = identityId,
                 IterationCount = _options.IterationCount,
-                PasswordSalt = _randomDataGenerator.GetRandomByteArray(_options.NumberOfBytesInPasswordSalt),
+                PasswordSalt = bytes,
                 LoginId = loginId,
                 Created = DateTimeOffset.Now,
                 Updated = DateTimeOffset.Now
             };
+
             localAccount.PasswordHash = GetPasswordHash(password, localAccount);
 
             try

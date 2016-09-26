@@ -2,16 +2,21 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Rinsen.IdentityProvider.Core.Sessions;
+using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace Rinsen.IdentityProvider.Core
 {
     public class SqlTicketStore : ITicketStore
     {
-        private readonly TicketSerializer _ticketSerializer;
+        private readonly TicketSerializer _ticketSerializer = new TicketSerializer();
+        private readonly ISessionStorage _sessionStorage;
+        private readonly RandomNumberGenerator CryptoRandom = RandomNumberGenerator.Create();
 
-        public SqlTicketStore()
+        public SqlTicketStore(ISessionStorage sessionStorage)
         {
-            _ticketSerializer = new TicketSerializer();
+            _sessionStorage = sessionStorage;
         }
 
         public Task RemoveAsync(string key)
@@ -31,21 +36,23 @@ namespace Rinsen.IdentityProvider.Core
             throw new NotImplementedException();
         }
 
-        public Task<string> StoreAsync(AuthenticationTicket ticket)
+        public async Task<string> StoreAsync(AuthenticationTicket ticket)
         {
-            var ticket2 = _ticketSerializer.Serialize(ticket);
-            throw new NotImplementedException();
+            var bytes = new byte[32];
+            CryptoRandom.GetBytes(bytes);
+            var correlationId = Base64UrlTextEncoder.Encode(bytes);
+
+            var session = new Session
+            {
+                Id = correlationId,
+                IdentityId = ticket.Principal.GetClaimGuidValue(ClaimTypes.NameIdentifier),
+                LastAccess = DateTimeOffset.Now,
+                SerializedTicket = _ticketSerializer.Serialize(ticket)
+            };
+
+            await _sessionStorage.CreateAsync(session);
+
+            return session.Id;
         }
     }
 }
-
-
-// Session data
-
-    //Id
-    //Device Browser?
-    //Ip
-    //Last used DateTime, but only care about date
-    //Created DateTime
-    //Session data byte[]
-

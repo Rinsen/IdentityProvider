@@ -8,9 +8,11 @@ namespace Rinsen.IdentityProvider
 {
     public class SessionStorage : ISessionStorage
     {
-        public void Create(Session session)
+        private string _connectionString;
+        
+        public SessionStorage(string connectionString)
         {
-            throw new NotImplementedException();
+            _connectionString = connectionString;
         }
 
         public Task CreateAsync(Session session)
@@ -18,17 +20,17 @@ namespace Rinsen.IdentityProvider
             throw new NotImplementedException();
         }
 
-        public int Delete(string sessionId)
+        public Task DeleteAsync(string sessionId)
         {
             throw new NotImplementedException();
         }
 
-        public Session Get(string sessionId)
+        public Task<Session> GetAsync(string sessionId)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Session> Get(int loginId)
+        public Task<IEnumerable<Session>> GetAsync(Guid identityId)
         {
             throw new NotImplementedException();
         }

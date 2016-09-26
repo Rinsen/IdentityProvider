@@ -78,7 +78,7 @@ namespace Rinsen.IdentityProviderWeb
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AutomaticAuthenticate = true,
-                SessionStore = new SqlTicketStore(),
+                SessionStore = new SqlTicketStore(new SessionStorage(Configuration["Data:DefaultConnection:ConnectionString"])),
                 AuthenticationScheme = "RinsenCookie"
             });
 
