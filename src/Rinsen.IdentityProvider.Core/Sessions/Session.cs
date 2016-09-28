@@ -5,7 +5,8 @@ namespace Rinsen.IdentityProvider.Core.Sessions
 {
     public class Session
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
+        public string SessionId { get; set; }
         public Guid IdentityId { get; set; }
         public DateTimeOffset LastAccess { get; set; }
         public byte[] SerializedTicket { get; set; }

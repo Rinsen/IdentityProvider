@@ -11,7 +11,7 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
 
         public ValidationResult ValidateAsync(string returnUrl)
         {
-            throw new NotImplementedException();
+            return ValidationResult.Failure();
         }
     }
 }

@@ -31,9 +31,13 @@ namespace Rinsen.IdentityProvider.Core
             throw new NotImplementedException();
         }
 
-        public Task<AuthenticationTicket> RetrieveAsync(string key)
+        public async Task<AuthenticationTicket> RetrieveAsync(string key)
         {
-            throw new NotImplementedException();
+            var session = await _sessionStorage.GetAsync(key);
+
+            var ticket = _ticketSerializer.Deserialize(session.SerializedTicket);
+
+            return ticket;
         }
 
         public async Task<string> StoreAsync(AuthenticationTicket ticket)
@@ -44,7 +48,7 @@ namespace Rinsen.IdentityProvider.Core
 
             var session = new Session
             {
-                Id = correlationId,
+                SessionId = correlationId,
                 IdentityId = ticket.Principal.GetClaimGuidValue(ClaimTypes.NameIdentifier),
                 LastAccess = DateTimeOffset.Now,
                 SerializedTicket = _ticketSerializer.Serialize(ticket)
@@ -52,7 +56,7 @@ namespace Rinsen.IdentityProvider.Core
 
             await _sessionStorage.CreateAsync(session);
 
-            return session.Id;
+            return session.SessionId;
         }
     }
 }

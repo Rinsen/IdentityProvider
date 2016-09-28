@@ -75,12 +75,14 @@ namespace Rinsen.IdentityProviderWeb
             
             app.UseStaticFiles();
 
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            var options = new CookieAuthenticationOptions
             {
                 AutomaticAuthenticate = true,
                 SessionStore = new SqlTicketStore(new SessionStorage(Configuration["Data:DefaultConnection:ConnectionString"])),
                 AuthenticationScheme = "RinsenCookie"
-            });
+            };
+
+            app.UseCookieAuthentication(options);
 
             app.UseMvc(routes =>
             {

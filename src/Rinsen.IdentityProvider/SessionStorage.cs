@@ -1,6 +1,7 @@
 ﻿using Rinsen.IdentityProvider.Core.Sessions;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,15 +10,63 @@ namespace Rinsen.IdentityProvider
     public class SessionStorage : ISessionStorage
     {
         private string _connectionString;
-        
+
+        private const string _insertSql = @"INSERT INTO UserSessions (
+                                                SessionId,
+                                                IdentityId,
+                                                LastAccess,
+                                                SerializedTicket) 
+                                            VALUES (
+                                                @SessionId,
+                                                @IdentityId,
+                                                @LastAccess,
+                                                @SerializedTicket); 
+                                            SELECT CAST(SCOPE_IDENTITY() as int)";
+
+        private const string _getSql = @"SELECT 
+                                            Id,
+                                            SessionId,
+                                            IdentityId,
+                                            LastAccess, 
+                                            SerializedTicket
+                                        FROM 
+                                            UserSessions 
+                                        WHERE 
+                                            SessionId=@SessionId";
+
         public SessionStorage(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public Task CreateAsync(Session session)
+        public async Task CreateAsync(Session session)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    using (var command = new SqlCommand(_insertSql, connection))
+                    {
+                        command.Parameters.Add(new SqlParameter("@SessionId", session.SessionId));
+                        command.Parameters.Add(new SqlParameter("@IdentityId", session.IdentityId));
+                        command.Parameters.Add(new SqlParameter("@LastAccess", session.LastAccess));
+                        command.Parameters.Add(new SqlParameter("@SerializedTicket", session.SerializedTicket));
+                        connection.Open();
+
+                        session.Id = (int)await command.ExecuteScalarAsync();
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    // 2601 - Violation in unique index
+                    // 2627 - Violation in unique constraint
+                    if (ex.Number == 2601 || ex.Number == 2627)
+                    {
+                        throw new SessionAlreadyExistException(string.Format("Session {0} already exist while trying to create for user {1}", session.SessionId, session.IdentityId), ex);
+                    }
+                    throw;
+                }
+            }
         }
 
         public Task DeleteAsync(string sessionId)
@@ -25,14 +74,64 @@ namespace Rinsen.IdentityProvider
             throw new NotImplementedException();
         }
 
-        public Task<Session> GetAsync(string sessionId)
+        public async Task<Session> GetAsync(string sessionId)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand(_getSql, connection))
+                {
+                    command.Parameters.Add(new SqlParameter("@SessionId", sessionId));
+                    connection.Open();
+                    var reader = await command.ExecuteReaderAsync();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            return MapSession(reader);
+                        }
+                    }
+                }
+            }
+
+            return default(Session);
         }
 
-        public Task<IEnumerable<Session>> GetAsync(Guid identityId)
+        public async Task<IEnumerable<Session>> GetAsync(Guid identityId)
         {
-            throw new NotImplementedException();
+            var result = new List<Session>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand(_getSql, connection))
+                {
+                    command.Parameters.Add(new SqlParameter("@SessionId", identityId));
+                    connection.Open();
+                    var reader = await command.ExecuteReaderAsync();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            result.Add(MapSession(reader));
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private static Session MapSession(SqlDataReader reader)
+        {
+            return new Session
+            {
+                Id = (int)reader["Id"],
+                SessionId = (string)reader["SessionId"],
+                IdentityId = (Guid)reader["IdentityId"],
+                LastAccess = (DateTimeOffset)reader["LastAccess"],
+                SerializedTicket = (byte[])reader["SerializedTicket"]
+            };
         }
     }
 }

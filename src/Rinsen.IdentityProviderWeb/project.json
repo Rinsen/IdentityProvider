@@ -17,7 +17,7 @@
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0",
     "Rinsen.IdentityProvider": "1.0.0-*",
     "Rinsen.Logger": "0.2.1-beta",
-    "Rinsen.DatabaseInstaller": "0.3.3-beta",
+    "Rinsen.DatabaseInstaller": "0.3.4-beta",
     "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0",
     "Microsoft.Extensions.Logging.Filter": "1.0.0",
     "Rinsen.IdentityProvider.Installation": "1.0.0-*"
