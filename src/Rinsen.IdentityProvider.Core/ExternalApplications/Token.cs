@@ -5,14 +5,12 @@ using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.Core.ExternalApplications
 {
-    public class ExternalApplication
+    public class Token
     {
-        public int ClusteredId { get; set; }
+        public string TokenId { get; set; }
         public Guid ExternalApplicationId { get; set; }
-        public string Password { get; set; }
-        public string HostName { get; set; }
-        public bool Active { get; set; }
-
+        public DateTimeOffset Created { get; set; }
+        public Guid IdentityId { get; set; }
 
     }
 }

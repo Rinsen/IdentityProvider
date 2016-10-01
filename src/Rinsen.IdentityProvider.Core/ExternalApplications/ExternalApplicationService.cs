@@ -11,7 +11,11 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
 
         public ValidationResult ValidateAsync(string returnUrl)
         {
-            return ValidationResult.Failure();
+            var uri = new Uri(returnUrl);
+
+
+
+            return ValidationResult.Success("MyToken");
         }
     }
 }

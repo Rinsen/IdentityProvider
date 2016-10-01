@@ -35,7 +35,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
             
 
-            return View(new LoginModel());
+            return View(new LoginModel { ReturnUrl = returnUrl } );
         }
 
         [HttpPost]
@@ -116,16 +116,16 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
             if (result.Succeeded)
             {
-                // This
-                var uriBuilder = new UriBuilder(returnUrl);
-                var query = QueryHelpers.ParseQuery(uriBuilder.Query);
-                query["Token"] = result.Token;
-                uriBuilder.Query = query.ToString();
+                //// This
+                //var uriBuilder = new UriBuilder(returnUrl);
+                //var query = QueryHelpers.ParseQuery(uriBuilder.Query);
+                //query["Token"] = result.Token;
+                //uriBuilder.Query = query.ToString();
 
                 // Or this?
                 var uri = QueryHelpers.AddQueryString(returnUrl, "Token", result.Token);
 
-                return Redirect(uriBuilder.ToString());
+                return Redirect(uri);
             }
 
             return RedirectToAction(nameof(HomeController.Index), "Home");

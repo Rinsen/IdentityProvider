@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0-*",
+  "testRunner": "xunit",
+  "dependencies": {
+    "Rinsen.IdentityProvider.Core": "1.0.0-*",
+    "xunit": "2.2.0-*",
+    "dotnet-test-xunit": "2.2.0-*"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": "dotnet5.4",
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        },
+        "System.Diagnostics.TraceSource": "4.0.0-*",
+        "System.Xml.XmlDocument": "4.0.1-*"
+      }
+    }
+  }
+}

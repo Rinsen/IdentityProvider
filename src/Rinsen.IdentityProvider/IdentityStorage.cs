@@ -36,7 +36,7 @@ namespace Rinsen.IdentityProvider
                                             Email,
                                             EmailConfirmed,
                                             GivenName, 
-                                            Id, 
+                                            ClusterId, 
                                             IdentityId, 
                                             Surname,
                                             PhoneNumber, 
@@ -72,14 +72,14 @@ namespace Rinsen.IdentityProvider
                         
                         connection.Open();
 
-                        identity.Id = (int)await command.ExecuteScalarAsync();
+                        identity.ClusterId = (int)await command.ExecuteScalarAsync();
                     }
                 }
                 catch (SqlException ex)
                 {
                     if (ex.Number == 2601 || ex.Number == 2627)
                     {
-                        throw new IdentityAlreadyExistException(string.Format("Identity {0} already exist", identity.IdentityId), ex);
+                        throw new IdentityAlreadyExistException($"Identity {identity.IdentityId} already exist", ex);
                     }
                     throw;
                 }
@@ -107,7 +107,7 @@ namespace Rinsen.IdentityProvider
                                 EmailConfirmed = (bool)reader["EmailConfirmed"],
                                 GivenName = (string)reader["GivenName"],
                                 Surname = (string)reader["Surname"],
-                                Id = (int)reader["Id"],
+                                ClusterId = (int)reader["ClusterId"],
                                 IdentityId = (Guid)reader["IdentityId"],
                                 PhoneNumber = (string)reader["PhoneNumber"],
                                 PhoneNumberConfirmed = (bool)reader["PhoneNumberConfirmed"],
@@ -130,7 +130,7 @@ namespace Rinsen.IdentityProvider
                 EmailConfirmed = (bool)reader["EmailConfirmed"],
                 GivenName = (string)reader["GivenName"],
                 Surname = (string)reader["Surname"],
-                Id = (int)reader["Id"],
+                ClusterId = (int)reader["ClusterId"],
                 IdentityId = (Guid)reader["IdentityId"],
                 PhoneNumber = (string)reader["PhoneNumber"],
                 PhoneNumberConfirmed = (bool)reader["PhoneNumberConfirmed"],

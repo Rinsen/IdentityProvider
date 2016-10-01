@@ -53,7 +53,7 @@ namespace Rinsen.IdentityProvider
                         command.Parameters.Add(new SqlParameter("@SerializedTicket", session.SerializedTicket));
                         connection.Open();
 
-                        session.Id = (int)await command.ExecuteScalarAsync();
+                        session.ClusterId = (int)await command.ExecuteScalarAsync();
                     }
                 }
                 catch (SqlException ex)
@@ -62,14 +62,14 @@ namespace Rinsen.IdentityProvider
                     // 2627 - Violation in unique constraint
                     if (ex.Number == 2601 || ex.Number == 2627)
                     {
-                        throw new SessionAlreadyExistException(string.Format("Session {0} already exist while trying to create for user {1}", session.SessionId, session.IdentityId), ex);
+                        throw new SessionAlreadyExistException($"Session {session.SessionId} already exist while trying to create for user {session.IdentityId}", ex);
                     }
                     throw;
                 }
             }
         }
 
-        public Task DeleteAsync(string sessionId)
+        public async Task DeleteAsync(string sessionId)
         {
             throw new NotImplementedException();
         }
@@ -126,7 +126,7 @@ namespace Rinsen.IdentityProvider
         {
             return new Session
             {
-                Id = (int)reader["Id"],
+                ClusterId = (int)reader["Id"],
                 SessionId = (string)reader["SessionId"],
                 IdentityId = (Guid)reader["IdentityId"],
                 LastAccess = (DateTimeOffset)reader["LastAccess"],

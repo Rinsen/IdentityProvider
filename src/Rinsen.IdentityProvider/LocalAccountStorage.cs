@@ -48,7 +48,7 @@ namespace Rinsen.IdentityProvider
                                     WHERE 
                                         IdentityId=@IdentityId";
 
-        const string _selectWithLoginId = @"SELECT LocalAccountId,
+        const string _selectWithLoginId = @"SELECT ClusterId,
                                         Created,
                                         FailedLoginCount,
                                         IdentityId,
@@ -97,7 +97,7 @@ namespace Rinsen.IdentityProvider
 
                         connection.Open();
 
-                        localAccount.LocalAccountId = (int)await command.ExecuteScalarAsync();
+                        localAccount.ClusterId = (int)await command.ExecuteScalarAsync();
                     }
                 }
                 catch (SqlException ex)
@@ -106,7 +106,7 @@ namespace Rinsen.IdentityProvider
                     // 2627 - Violation in unique constraint
                     if (ex.Number == 2601 || ex.Number == 2627)
                     {
-                        throw new LocalAccountAlreadyExistException(string.Format("Identity {0} already exist for user {1}", localAccount.LoginId, localAccount.IdentityId), ex);
+                        throw new LocalAccountAlreadyExistException($"Identity {localAccount.LoginId} already exist for user {localAccount.IdentityId}", ex);
                     }
                     throw;
                 }
@@ -173,7 +173,7 @@ namespace Rinsen.IdentityProvider
                 IdentityId = (Guid)reader["IdentityId"],
                 IsDisabled = (bool)reader["IsDisabled"],
                 IterationCount = (int)reader["IterationCount"],
-                LocalAccountId = (int)reader["LocalAccountId"],
+                ClusterId = (int)reader["ClusterId"],
                 LoginId = (string)reader["LoginId"],
                 PasswordHash = (byte[])reader["PasswordHash"],
                 PasswordSalt = (byte[])reader["PasswordSalt"],

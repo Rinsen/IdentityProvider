@@ -19,14 +19,14 @@ namespace Rinsen.IdentityProvider.Core
             _sessionStorage = sessionStorage;
         }
 
-        public Task RemoveAsync(string key)
+        public async Task RemoveAsync(string key)
         {
-            throw new NotImplementedException();
+            await _sessionStorage.DeleteAsync(key);
         }
 
         public Task RenewAsync(string key, AuthenticationTicket ticket)
         {
-             var ticket2 = _ticketSerializer.Serialize(ticket);
+            var serializedTicket = _ticketSerializer.Serialize(ticket);
 
             throw new NotImplementedException();
         }

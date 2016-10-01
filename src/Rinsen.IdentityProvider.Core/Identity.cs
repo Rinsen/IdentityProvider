@@ -4,7 +4,7 @@ namespace Rinsen.IdentityProvider.Core
 {
     public class Identity
     {
-        public int Id { get; set; }
+        public int ClusterId { get; set; }
 
         public Guid IdentityId { get; set; }
 
