@@ -13,6 +13,5 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
         public string HostName { get; set; }
         public bool Active { get; set; }
 
-
     }
 }

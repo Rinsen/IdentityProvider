@@ -8,18 +8,20 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
 {
     public class ValidationResult
     {
-        public bool Succeeded { get; set; }
-        public bool Failed { get; set; }
-        public StringValues Token { get; set; }
+        private bool _succeeded;
+
+        public bool Succeeded { get { return _succeeded; } }
+        public bool Failed { get { return !_succeeded; } }
+        public string Token { get; private set; }
 
         public static ValidationResult Failure()
         {
-            return new ValidationResult() { Failed = true };
+            return new ValidationResult() { _succeeded = false };
         }
 
         public static ValidationResult Success(string token)
         {
-            return new ValidationResult() { Succeeded = true, Token = token };
+            return new ValidationResult() { _succeeded = true, Token = token };
         }
     }
 }

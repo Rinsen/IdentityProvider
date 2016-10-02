@@ -48,7 +48,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToLocalOrTrustedHostOnly(model.ReturnUrl);
+                    return await RedirectToLocalOrTrustedHostOnlyAsync(model.ReturnUrl);
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -85,7 +85,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
                         if (loginResult.Succeeded)
                         {
-                            return RedirectToLocalOrTrustedHostOnly(model.ReturnUrl);
+                            return await RedirectToLocalOrTrustedHostOnlyAsync(model.ReturnUrl);
                         }
                     }
                 }
@@ -105,14 +105,14 @@ namespace Rinsen.IdentityProviderWeb.Controllers
             return View();
         }
 
-        private IActionResult RedirectToLocalOrTrustedHostOnly(string returnUrl)
+        private async Task<IActionResult> RedirectToLocalOrTrustedHostOnlyAsync(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }
 
-            var result = _externalApplicationService.ValidateAsync(returnUrl);
+            var result = await _externalApplicationService.GetTokenForValidHostAsync(returnUrl);
 
             if (result.Succeeded)
             {

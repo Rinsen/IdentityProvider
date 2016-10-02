@@ -4,7 +4,8 @@
   "dependencies": {
     "Rinsen.IdentityProvider.Core": "1.0.0-*",
     "xunit": "2.2.0-*",
-    "dotnet-test-xunit": "2.2.0-*"
+    "dotnet-test-xunit": "2.2.0-*",
+    "Moq": "4.6.38-alpha"
   },
 
   "frameworks": {

@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.Core.ExternalApplications
 {
-    public class ExternalApplicationStorage
+    public interface ITokenStorage
     {
+        Task CreateAsync(Token token);
+        Task<Token> GetAsync(string tokenId);
     }
 }
