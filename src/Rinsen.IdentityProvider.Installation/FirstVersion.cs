@@ -18,7 +18,7 @@ namespace Rinsen.IdentityProvider.Installation
         public override void AddDbChanges(List<IDbChange> dbChangeList)
         {
             var identitiesTable = dbChangeList.AddNewTable<Identity>("Identities");
-            identitiesTable.AddAutoIncrementColumn(m => m.ClusterId, primaryKey: false);
+            identitiesTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
             identitiesTable.AddColumn(m => m.IdentityId).PrimaryKey();
             identitiesTable.AddColumn(m => m.Created);
             identitiesTable.AddColumn(m => m.Email, 256).Unique();
@@ -30,7 +30,7 @@ namespace Rinsen.IdentityProvider.Installation
             identitiesTable.AddColumn(m => m.Updated);
 
             var localAccountsTable = dbChangeList.AddNewTable<LocalAccount>();
-            localAccountsTable.AddAutoIncrementColumn(m => m.ClusterId);
+            localAccountsTable.AddAutoIncrementColumn(m => m.ClusteredId);
             localAccountsTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId").Unique().NotNull();
             localAccountsTable.AddColumn(m => m.Created);
             localAccountsTable.AddColumn(m => m.FailedLoginCount);
@@ -42,7 +42,7 @@ namespace Rinsen.IdentityProvider.Installation
             localAccountsTable.AddColumn(m => m.Updated);
 
             var sessionsTable = dbChangeList.AddNewTable<Session>("UserSessions");
-            sessionsTable.AddAutoIncrementColumn(m => m.ClusterId, primaryKey: false);
+            sessionsTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
             sessionsTable.AddColumn(m => m.SessionId, 60).PrimaryKey();
             sessionsTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId");
             sessionsTable.AddColumn(m => m.LastAccess);
@@ -53,7 +53,14 @@ namespace Rinsen.IdentityProvider.Installation
             externalApplicationTable.AddColumn(m => m.ExternalApplicationId).PrimaryKey();
             externalApplicationTable.AddColumn(m => m.HostName, 512).Unique();
             externalApplicationTable.AddColumn(m => m.Active);
+            externalApplicationTable.AddColumn(m => m.Password, 256);
 
+            var tokenTable = dbChangeList.AddNewTable<Token>();
+            tokenTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
+            tokenTable.AddColumn(m => m.ExternalApplicationId).ForeignKey<ExternalApplication>(m => m.ExternalApplicationId);
+            tokenTable.AddColumn(m => m.Created);
+            tokenTable.AddColumn(m => m.IdentityId);
+            tokenTable.AddColumn(m => m.TokenId, 50).PrimaryKey();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -11,21 +12,21 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
     {
         private readonly IExternalApplicationStorage _externalApplicationStorage;
         private readonly ITokenStorage _tokenStorage;
-        private readonly IIdentityAccessor _identityAccessor;
 
         private static readonly RandomNumberGenerator CryptoRandom = RandomNumberGenerator.Create();
 
         public ExternalApplicationService(IExternalApplicationStorage externalApplicationStorage,
-            ITokenStorage tokenStorage,
-            IIdentityAccessor identityAccessor)
+            ITokenStorage tokenStorage)
         {
             _externalApplicationStorage = externalApplicationStorage;
             _tokenStorage = tokenStorage;
-            _identityAccessor = identityAccessor;
         }
 
-        public async Task<ValidationResult> GetTokenForValidHostAsync(string returnUrl)
+        public async Task<ValidationResult> GetTokenForValidHostAsync(string returnUrl, Guid identityId)
         {
+            if (string.IsNullOrEmpty(returnUrl))
+                return ValidationResult.Failure();
+
             var uri = new Uri(returnUrl);
 
             var externalApplication = await _externalApplicationStorage.GetAsync(uri.Host);
@@ -44,7 +45,7 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
                 TokenId = tokenId,
                 Created = DateTimeOffset.Now,
                 ExternalApplicationId = externalApplication.ExternalApplicationId,
-                IdentityId = _identityAccessor.IdentityId
+                IdentityId = identityId
             };
 
             await _tokenStorage.CreateAsync(token);

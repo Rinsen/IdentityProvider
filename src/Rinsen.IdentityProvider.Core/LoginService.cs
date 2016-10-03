@@ -49,7 +49,7 @@ namespace Rinsen.IdentityProvider.Core
 
             await _httpContextAccessor.HttpContext.Authentication.SignInAsync("RinsenCookie", new ClaimsPrincipal(new ClaimsIdentity(claims, "RinsenPassword")), authenticationProperties);
 
-            return LoginResult.Success();
+            return LoginResult.Success(identity);
 
         }
 

@@ -7,6 +7,7 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
 {
     public class Token
     {
+        public int ClusteredId { get; set; }
         public string TokenId { get; set; }
         public Guid ExternalApplicationId { get; set; }
         public DateTimeOffset Created { get; set; }

@@ -48,7 +48,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
                 if (result.Succeeded)
                 {
-                    return await RedirectToLocalOrTrustedHostOnlyAsync(model.ReturnUrl);
+                    return await RedirectToLocalOrTrustedHostOnlyAsync(model.ReturnUrl, result.Identity.IdentityId);
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -85,7 +85,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
                         if (loginResult.Succeeded)
                         {
-                            return await RedirectToLocalOrTrustedHostOnlyAsync(model.ReturnUrl);
+                            return await RedirectToLocalOrTrustedHostOnlyAsync(model.ReturnUrl, createIdentityResult.Identity.IdentityId);
                         }
                     }
                 }
@@ -105,24 +105,17 @@ namespace Rinsen.IdentityProviderWeb.Controllers
             return View();
         }
 
-        private async Task<IActionResult> RedirectToLocalOrTrustedHostOnlyAsync(string returnUrl)
+        private async Task<IActionResult> RedirectToLocalOrTrustedHostOnlyAsync(string returnUrl, Guid identityId)
         {
             if (Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }
 
-            var result = await _externalApplicationService.GetTokenForValidHostAsync(returnUrl);
+            var result = await _externalApplicationService.GetTokenForValidHostAsync(returnUrl, identityId);
 
             if (result.Succeeded)
             {
-                //// This
-                //var uriBuilder = new UriBuilder(returnUrl);
-                //var query = QueryHelpers.ParseQuery(uriBuilder.Query);
-                //query["Token"] = result.Token;
-                //uriBuilder.Query = query.ToString();
-
-                // Or this?
                 var uri = QueryHelpers.AddQueryString(returnUrl, "Token", result.Token);
 
                 return Redirect(uri);

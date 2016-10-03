@@ -33,7 +33,7 @@ namespace Rinsen.IdentityProvider
                                         @Updated); 
                                     SELECT CAST(SCOPE_IDENTITY() as int)";
 
-        const string _selectWithIdentityId = @"SELECT LocalAccountId,
+        const string _selectWithIdentityId = @"SELECT ClusteredId,
                                         Created,
                                         FailedLoginCount,
                                         IdentityId,
@@ -48,7 +48,7 @@ namespace Rinsen.IdentityProvider
                                     WHERE 
                                         IdentityId=@IdentityId";
 
-        const string _selectWithLoginId = @"SELECT ClusterId,
+        const string _selectWithLoginId = @"SELECT ClusteredId,
                                         Created,
                                         FailedLoginCount,
                                         IdentityId,
@@ -97,7 +97,7 @@ namespace Rinsen.IdentityProvider
 
                         connection.Open();
 
-                        localAccount.ClusterId = (int)await command.ExecuteScalarAsync();
+                        localAccount.ClusteredId = (int)await command.ExecuteScalarAsync();
                     }
                 }
                 catch (SqlException ex)
@@ -173,7 +173,7 @@ namespace Rinsen.IdentityProvider
                 IdentityId = (Guid)reader["IdentityId"],
                 IsDisabled = (bool)reader["IsDisabled"],
                 IterationCount = (int)reader["IterationCount"],
-                ClusterId = (int)reader["ClusterId"],
+                ClusteredId = (int)reader["ClusteredId"],
                 LoginId = (string)reader["LoginId"],
                 PasswordHash = (byte[])reader["PasswordHash"],
                 PasswordSalt = (byte[])reader["PasswordSalt"],

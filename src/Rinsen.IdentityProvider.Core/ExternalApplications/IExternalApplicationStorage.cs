@@ -5,10 +5,10 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
 {
     public interface IExternalApplicationStorage
     {
-        Task CreateAsync(ExternalApplication localAccount);
+        Task CreateAsync(ExternalApplication externalApplication);
         Task<ExternalApplication> GetAsync(string host);
         Task<IEnumerable<ExternalApplication>> GetAllAsync();
-        Task UpdateAsync(ExternalApplication localAccount);
-        Task DeleteAsync(ExternalApplication localAccount);
+        Task UpdateAsync(ExternalApplication externalApplication);
+        Task DeleteAsync(ExternalApplication externalApplication);
     }
 }

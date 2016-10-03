@@ -7,27 +7,19 @@ namespace Rinsen.IdentityProvider.Core
 {
     public class CreateIdentityResult
     {
-        public CreateIdentityResult()
-        {
-        }
 
-        public CreateIdentityResult(Identity identity)
-        {
-            Identity = identity;
-        }
-
-        public Identity Identity { get; }
+        public Identity Identity { get; private set; }
         public bool Succeeded { get; private set; }
-        public bool IdentityAlreadyExist { get; private set; }
+        public bool IdentityAlreadyExist { get { return !Succeeded; } }
 
         public static CreateIdentityResult AlreadyExist()
         {
-            return new CreateIdentityResult() { IdentityAlreadyExist = true };
+            return new CreateIdentityResult() { Succeeded = false };
         }
 
         public static CreateIdentityResult Success(Identity identity)
         {
-            return new CreateIdentityResult(identity) { Succeeded = true };
+            return new CreateIdentityResult() { Succeeded = true, Identity = identity };
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Rinsen.IdentityProvider
                                             Email,
                                             EmailConfirmed,
                                             GivenName, 
-                                            ClusterId, 
+                                            ClusteredId, 
                                             IdentityId, 
                                             Surname,
                                             PhoneNumber, 
@@ -72,7 +72,7 @@ namespace Rinsen.IdentityProvider
                         
                         connection.Open();
 
-                        identity.ClusterId = (int)await command.ExecuteScalarAsync();
+                        identity.ClusteredId = (int)await command.ExecuteScalarAsync();
                     }
                 }
                 catch (SqlException ex)
@@ -107,7 +107,7 @@ namespace Rinsen.IdentityProvider
                                 EmailConfirmed = (bool)reader["EmailConfirmed"],
                                 GivenName = (string)reader["GivenName"],
                                 Surname = (string)reader["Surname"],
-                                ClusterId = (int)reader["ClusterId"],
+                                ClusteredId = (int)reader["ClusteredId"],
                                 IdentityId = (Guid)reader["IdentityId"],
                                 PhoneNumber = (string)reader["PhoneNumber"],
                                 PhoneNumberConfirmed = (bool)reader["PhoneNumberConfirmed"],
@@ -130,7 +130,7 @@ namespace Rinsen.IdentityProvider
                 EmailConfirmed = (bool)reader["EmailConfirmed"],
                 GivenName = (string)reader["GivenName"],
                 Surname = (string)reader["Surname"],
-                ClusterId = (int)reader["ClusterId"],
+                ClusteredId = (int)reader["ClusteredId"],
                 IdentityId = (Guid)reader["IdentityId"],
                 PhoneNumber = (string)reader["PhoneNumber"],
                 PhoneNumberConfirmed = (bool)reader["PhoneNumberConfirmed"],

@@ -8,6 +8,6 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
     public interface ITokenStorage
     {
         Task CreateAsync(Token token);
-        Task<Token> GetAsync(string tokenId);
+        Task<Token> GetAndDeleteAsync(string tokenId);
     }
 }

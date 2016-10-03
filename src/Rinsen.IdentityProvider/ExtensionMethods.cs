@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Rinsen.IdentityProvider.Core;
+using Rinsen.IdentityProvider.Core.ExternalApplications;
 using Rinsen.IdentityProvider.Core.LocalAccounts;
 using Rinsen.IdentityProvider.Core.Sessions;
 using System;
@@ -15,6 +16,8 @@ namespace Rinsen.IdentityProvider
             services.AddTransient<ILocalAccountStorage, LocalAccountStorage>();
             services.AddTransient<IIdentityStorage, IdentityStorage>();
             services.AddTransient<ISessionStorage, SessionStorage>();
+            services.AddTransient<IExternalApplicationStorage, ExternalApplicationStorage>();
+            services.AddTransient<ITokenStorage, TokenStorage>();
         }
     }
 }

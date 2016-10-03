@@ -4,7 +4,7 @@ namespace Rinsen.IdentityProvider.Core.LocalAccounts
 {
     public class LocalAccount
     {
-        public int ClusterId { get; set; }
+        public int ClusteredId { get; set; }
 
         public Guid IdentityId { get; set; }
 

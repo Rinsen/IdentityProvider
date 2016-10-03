@@ -10,14 +10,29 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
     public class ExternalApplicationServiceTests
     {
 
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void WhenNoHostIsProvided_GetFailedValidationResultAndNullToken(string data)
+        {
+            
+            var externalApplicationService = new ExternalApplicationService(null, null);
+
+            var result = externalApplicationService.GetTokenForValidHostAsync(data, Guid.Empty).Result;
+
+            Assert.True(result.Failed);
+            Assert.False(result.Succeeded);
+            Assert.Null(result.Token);
+        }
+
         [Fact]
         public void WhenHostIsNotFound_GetFailedValidationResultAndNullToken()
         {
             var externalApplicationStorageMock = new Mock<IExternalApplicationStorage>();
 
-            var externalApplicationService = new ExternalApplicationService(externalApplicationStorageMock.Object, null, null);
+            var externalApplicationService = new ExternalApplicationService(externalApplicationStorageMock.Object, null);
 
-            var result = externalApplicationService.GetTokenForValidHostAsync("http://www.rinsen.se/Example").Result;
+            var result = externalApplicationService.GetTokenForValidHostAsync("http://www.rinsen.se/Example", Guid.Empty).Result;
 
             Assert.True(result.Failed);
             Assert.False(result.Succeeded);
@@ -39,17 +54,17 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
                 });
 
             var tokenStorageMock = new Mock<ITokenStorage>();
-            var identityAccessorMock = new Mock<IIdentityAccessor>();
-            identityAccessorMock.Setup(m => m.IdentityId).Returns(identity);
 
-            var externalApplicationService = new ExternalApplicationService(externalApplicationStorageMock.Object, tokenStorageMock.Object, identityAccessorMock.Object);
+            var externalApplicationService = new ExternalApplicationService(externalApplicationStorageMock.Object, tokenStorageMock.Object);
 
-            var result = externalApplicationService.GetTokenForValidHostAsync("http://www.rinsen.se/Example").Result;
+            var result = externalApplicationService.GetTokenForValidHostAsync("http://www.rinsen.se/Example", Guid.Empty).Result;
 
+            tokenStorageMock.Verify(mock => mock.CreateAsync(It.Is<Token>(token => token.TokenId == result.Token && token.ExternalApplicationId == externalApplicationId && token.IdentityId == Guid.Empty)), Times.Once);
+            Assert.True(result.Token.Length >= 40);
             Assert.False(result.Failed);
             Assert.True(result.Succeeded);
-            
-            
         }
+
+
     }
 }

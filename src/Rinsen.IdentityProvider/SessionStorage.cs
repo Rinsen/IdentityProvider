@@ -24,7 +24,7 @@ namespace Rinsen.IdentityProvider
                                             SELECT CAST(SCOPE_IDENTITY() as int)";
 
         private const string _getSql = @"SELECT 
-                                            Id,
+                                            ClusteredId,
                                             SessionId,
                                             IdentityId,
                                             LastAccess, 
@@ -53,7 +53,7 @@ namespace Rinsen.IdentityProvider
                         command.Parameters.Add(new SqlParameter("@SerializedTicket", session.SerializedTicket));
                         connection.Open();
 
-                        session.ClusterId = (int)await command.ExecuteScalarAsync();
+                        session.ClusteredId = (int)await command.ExecuteScalarAsync();
                     }
                 }
                 catch (SqlException ex)
@@ -126,7 +126,7 @@ namespace Rinsen.IdentityProvider
         {
             return new Session
             {
-                ClusterId = (int)reader["Id"],
+                ClusteredId = (int)reader["ClusteredId"],
                 SessionId = (string)reader["SessionId"],
                 IdentityId = (Guid)reader["IdentityId"],
                 LastAccess = (DateTimeOffset)reader["LastAccess"],
