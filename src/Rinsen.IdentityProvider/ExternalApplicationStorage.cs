@@ -23,7 +23,7 @@ namespace Rinsen.IdentityProvider
                                                 @Password); 
                                             SELECT CAST(SCOPE_IDENTITY() as int)";
 
-        private const string _getSql = @"SELECT 
+        private const string _getFromHostNameSql = @"SELECT 
                                             Active,
                                             ClusteredId,
                                             ExternalApplicationId,
@@ -33,6 +33,17 @@ namespace Rinsen.IdentityProvider
                                             ExternalApplications 
                                         WHERE 
                                             HostName=@HostName";
+
+        private const string _getFromApplicationKeySql = @"SELECT 
+                                            Active,
+                                            ClusteredId,
+                                            ExternalApplicationId,
+                                            HostName, 
+                                            ApplicationKey
+                                        FROM 
+                                            ExternalApplications 
+                                        WHERE 
+                                            ApplicationKey=@ApplicationKey";
 
         private const string _getAllSql = @"SELECT 
                                                 Active,
@@ -60,7 +71,7 @@ namespace Rinsen.IdentityProvider
                         command.Parameters.Add(new SqlParameter("@ClusteredId", externalApplication.ClusteredId));
                         command.Parameters.Add(new SqlParameter("@ExternalApplicationId", externalApplication.ExternalApplicationId));
                         command.Parameters.Add(new SqlParameter("@HostName", externalApplication.HostName));
-                        command.Parameters.Add(new SqlParameter("@Password", externalApplication.Password));
+                        command.Parameters.Add(new SqlParameter("@Password", externalApplication.ApplicationKey));
                         connection.Open();
 
                         externalApplication.ClusteredId = (int)await command.ExecuteScalarAsync();
@@ -107,13 +118,36 @@ namespace Rinsen.IdentityProvider
         }
         
 
-        public async Task<ExternalApplication> GetAsync(string host)
+        public async Task<ExternalApplication> GetFromHostAsync(string host)
         {
             using (var connection = new SqlConnection(_identityOptions.ConnectionString))
             {
-                using (var command = new SqlCommand(_getSql, connection))
+                using (var command = new SqlCommand(_getFromHostNameSql, connection))
                 {
                     command.Parameters.Add(new SqlParameter("@HostName", host));
+                    connection.Open();
+                    var reader = await command.ExecuteReaderAsync();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            return MapExternalApplication(reader);
+                        }
+                    }
+                }
+            }
+
+            return default(ExternalApplication);
+        }
+
+        public async Task<ExternalApplication> GetFromApplicationKeyAsync(string applicationKey)
+        {
+            using (var connection = new SqlConnection(_identityOptions.ConnectionString))
+            {
+                using (var command = new SqlCommand(_getFromApplicationKeySql, connection))
+                {
+                    command.Parameters.Add(new SqlParameter("@ApplicationKey", applicationKey));
                     connection.Open();
                     var reader = await command.ExecuteReaderAsync();
 
@@ -138,7 +172,7 @@ namespace Rinsen.IdentityProvider
                 ClusteredId = (int)reader["ClusteredId"],
                 ExternalApplicationId = (Guid)reader["ExternalApplicationId"],
                 HostName = (string)reader["HostName"],
-                Password = (string)reader["Password"]
+                ApplicationKey = (string)reader["ApplicationKey"]
             };
         }
 
@@ -146,5 +180,7 @@ namespace Rinsen.IdentityProvider
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

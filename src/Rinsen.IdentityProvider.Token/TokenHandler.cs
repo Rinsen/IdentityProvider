@@ -41,7 +41,7 @@ namespace Rinsen.IdentityProvider.Token
                 var claims = new List<Claim>
                             {
                                 new Claim(ClaimTypes.NameIdentifier, externalIdentity.IdentityId.ToString(), nameof(Guid), externalIdentity.Issuer),
-                                new Claim(ClaimTypes.Name, $"{externalIdentity.FirstName} {externalIdentity.LastName}")
+                                new Claim(ClaimTypes.Name, $"{externalIdentity.GivenName} {externalIdentity.Surname}")
                             };
 
                 var claimsIdentiy = new ClaimsIdentity(claims, Options.AuthenticationScheme);
