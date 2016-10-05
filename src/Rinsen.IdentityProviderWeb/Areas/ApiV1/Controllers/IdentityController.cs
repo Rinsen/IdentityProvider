@@ -2,15 +2,12 @@
 using Rinsen.IdentityProvider.Core;
 using Rinsen.IdentityProvider.Core.ExternalApplications;
 using Rinsen.IdentityProviderWeb.Areas.Api.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProviderWeb.Areas.Api
 {
-    [Area("api")]
+    [Route("api/v1/[controller]")]
     public class IdentityController : Controller
     {
         private readonly IExternalApplicationService _externalApplicationService;
@@ -22,7 +19,8 @@ namespace Rinsen.IdentityProviderWeb.Areas.Api
             _identityService = identityService;
         }
 
-        public async Task<ExternalIdentity> Get(string token, string applicationKey)
+        [Route("[action]")]
+        public async Task<ExternalIdentityResult> Get(string token, string applicationKey)
         {
             var identityResult = await _externalApplicationService.GetIdentityForTokenAndApplicationKeyAsync(token, applicationKey);
 
@@ -33,11 +31,13 @@ namespace Rinsen.IdentityProviderWeb.Areas.Api
 
             var identity = await _identityService.GetIdentityAsync(identityResult.IdentityId);
 
-            return new ExternalIdentity
+            return new ExternalIdentityResult
             {
                 GivenName = identity.GivenName,
                 IdentityId = identity.IdentityId,
                 Surname = identity.Surname,
+                Email = identity.Email,
+                PhoneNumber = identity.PhoneNumber,
                 Issuer = "RinsenIdentityProvider"
             };
         }

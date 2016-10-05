@@ -90,9 +90,9 @@ namespace Rinsen.IdentityProviderWeb
                     name: "default",
                     template: "{controller=Identity}/{action=Login}/{id?}");
 
-                routes.MapRoute(
-                    name: "areaRoute",
-                    template: "{area:exists}/{controller}/{action}");
+                //routes.MapRoute(
+                //    name: "areaRoute",
+                //    template: "{area:exists}/{controller}/{action}");
             });
         }
     }
