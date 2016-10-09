@@ -9,6 +9,7 @@ namespace Rinsen.IdentityProvider.Core.Sessions
         public string SessionId { get; set; }
         public Guid IdentityId { get; set; }
         public DateTimeOffset LastAccess { get; set; }
+        public DateTimeOffset Expires { get; set; }
         public byte[] SerializedTicket { get; set; }
 
     }

@@ -35,6 +35,11 @@ namespace Rinsen.IdentityProvider.Core
         {
             var session = await _sessionStorage.GetAsync(key);
 
+            if (session == default(Session))
+            {
+                return default(AuthenticationTicket);
+            }
+
             var ticket = _ticketSerializer.Deserialize(session.SerializedTicket);
 
             return ticket;
@@ -51,6 +56,7 @@ namespace Rinsen.IdentityProvider.Core
                 SessionId = correlationId,
                 IdentityId = ticket.Principal.GetClaimGuidValue(ClaimTypes.NameIdentifier),
                 LastAccess = DateTimeOffset.Now,
+                Expires = ticket.Properties.ExpiresUtc ?? DateTimeOffset.Now.AddDays(1),
                 SerializedTicket = _ticketSerializer.Serialize(ticket)
             };
 

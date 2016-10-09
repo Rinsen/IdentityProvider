@@ -46,6 +46,7 @@ namespace Rinsen.IdentityProvider.Installation
             sessionsTable.AddColumn(m => m.SessionId, 60).PrimaryKey();
             sessionsTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId");
             sessionsTable.AddColumn(m => m.LastAccess);
+            sessionsTable.AddColumn(m => m.Expires);
             sessionsTable.AddColumn(m => m.SerializedTicket);
 
             var externalApplicationTable = dbChangeList.AddNewTable<ExternalApplication>();

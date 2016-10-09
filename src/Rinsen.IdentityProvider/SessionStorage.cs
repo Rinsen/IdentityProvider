@@ -15,11 +15,13 @@ namespace Rinsen.IdentityProvider
                                                 SessionId,
                                                 IdentityId,
                                                 LastAccess,
+                                                Expires,
                                                 SerializedTicket) 
                                             VALUES (
                                                 @SessionId,
                                                 @IdentityId,
                                                 @LastAccess,
+                                                @Expires,
                                                 @SerializedTicket); 
                                             SELECT CAST(SCOPE_IDENTITY() as int)";
 
@@ -27,7 +29,8 @@ namespace Rinsen.IdentityProvider
                                             ClusteredId,
                                             SessionId,
                                             IdentityId,
-                                            LastAccess, 
+                                            LastAccess,
+                                            Expires,
                                             SerializedTicket
                                         FROM 
                                             UserSessions 
@@ -52,6 +55,7 @@ namespace Rinsen.IdentityProvider
                         command.Parameters.Add(new SqlParameter("@SessionId", session.SessionId));
                         command.Parameters.Add(new SqlParameter("@IdentityId", session.IdentityId));
                         command.Parameters.Add(new SqlParameter("@LastAccess", session.LastAccess));
+                        command.Parameters.Add(new SqlParameter("@Expires", session.Expires));
                         command.Parameters.Add(new SqlParameter("@SerializedTicket", session.SerializedTicket));
                         connection.Open();
 
@@ -79,7 +83,7 @@ namespace Rinsen.IdentityProvider
                 {
                     command.Parameters.Add(new SqlParameter("@SessionId", sessionId));
                     connection.Open();
-                    var count = (int)await command.ExecuteScalarAsync();
+                    await command.ExecuteScalarAsync();
                 }
             }
         }
@@ -140,6 +144,7 @@ namespace Rinsen.IdentityProvider
                 SessionId = (string)reader["SessionId"],
                 IdentityId = (Guid)reader["IdentityId"],
                 LastAccess = (DateTimeOffset)reader["LastAccess"],
+                Expires = (DateTimeOffset)reader["Expires"],
                 SerializedTicket = (byte[])reader["SerializedTicket"]
             };
         }
