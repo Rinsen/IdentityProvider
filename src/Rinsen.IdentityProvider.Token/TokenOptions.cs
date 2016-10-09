@@ -7,17 +7,25 @@ namespace Rinsen.IdentityProvider.Token
     {
         public TokenOptions()
         {
+            AutomaticAuthenticate = true;
+            AutomaticChallenge = true;
             AuthenticationScheme = TokenDefaults.AuthenticationScheme;
             CookieAuthenticationScheme = "RinsenCookie";
+            ReturnUrlParamterName = "ReturnUrl";
+            ApplicationKeyParameterName = "ApplicationKey";
+            HostParameterName = "Host";
+            TokenParameterName = "AuthToken";
         }
 
         public string ApplicationKey { get; set; }
-
-        public string ExternalIdentityProviderBaseAddress { get; set; }
-
+        public string ValidateTokenPath { get; set; }
+        public string LoginPath { get; set; }
         public string CookieAuthenticationScheme { get; set; }
-
         public TokenOptions Value { get { return this; } }
+        public string ReturnUrlParamterName { get; set; }
+        public string ApplicationKeyParameterName { get; set; }
+        public string TokenParameterName { get; set; }
+        public string HostParameterName { get; set; }
 
     }
 }

@@ -36,6 +36,7 @@ namespace Rinsen.IdentityProviderWeb.Models
         public string InviteCode { get; set; }
 
         public string ReturnUrl { get; set; }
+        public string Host { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

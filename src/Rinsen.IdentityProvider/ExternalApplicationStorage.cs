@@ -15,12 +15,12 @@ namespace Rinsen.IdentityProvider
                                                 Active,
                                                 ExternalApplicationId,
                                                 HostName, 
-                                                Password) 
+                                                ApplicationKey) 
                                             VALUES (
                                                 @Active,
                                                 @ExternalApplicationId,
                                                 @HostName,
-                                                @Password); 
+                                                @ApplicationKey); 
                                             SELECT CAST(SCOPE_IDENTITY() as int)";
 
         private const string _getFromHostNameSql = @"SELECT 
@@ -28,7 +28,7 @@ namespace Rinsen.IdentityProvider
                                             ClusteredId,
                                             ExternalApplicationId,
                                             HostName, 
-                                            Password
+                                            ApplicationKey
                                         FROM 
                                             ExternalApplications 
                                         WHERE 
@@ -50,7 +50,7 @@ namespace Rinsen.IdentityProvider
                                                 ClusteredId,
                                                 ExternalApplicationId,
                                                 HostName, 
-                                                Password
+                                                ApplicationKey
                                             FROM 
                                                 ExternalApplications";
 
@@ -71,7 +71,7 @@ namespace Rinsen.IdentityProvider
                         command.Parameters.Add(new SqlParameter("@ClusteredId", externalApplication.ClusteredId));
                         command.Parameters.Add(new SqlParameter("@ExternalApplicationId", externalApplication.ExternalApplicationId));
                         command.Parameters.Add(new SqlParameter("@HostName", externalApplication.HostName));
-                        command.Parameters.Add(new SqlParameter("@Password", externalApplication.ApplicationKey));
+                        command.Parameters.Add(new SqlParameter("@ApplicationKey", externalApplication.ApplicationKey));
                         connection.Open();
 
                         externalApplication.ClusteredId = (int)await command.ExecuteScalarAsync();

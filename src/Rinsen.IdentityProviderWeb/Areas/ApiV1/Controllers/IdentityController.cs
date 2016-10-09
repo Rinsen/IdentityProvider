@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Rinsen.IdentityProvider.Core;
 using Rinsen.IdentityProvider.Core.ExternalApplications;
-using Rinsen.IdentityProviderWeb.Areas.Api.Models;
+using Rinsen.IdentityProvider.Core.ExternalApplications.v1;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 
@@ -20,13 +20,13 @@ namespace Rinsen.IdentityProviderWeb.Areas.Api
         }
 
         [Route("[action]")]
-        public async Task<ExternalIdentityResult> Get(string token, string applicationKey)
+        public async Task<ExternalIdentityResult> Get(string authToken, string applicationKey)
         {
-            var identityResult = await _externalApplicationService.GetIdentityForTokenAndApplicationKeyAsync(token, applicationKey);
+            var identityResult = await _externalApplicationService.GetIdentityForTokenAndApplicationKeyAsync(authToken, applicationKey);
 
             if (identityResult.Failed)
             {
-                throw new AuthenticationException($"Authentication failed for token id {token} and application key {applicationKey}");
+                throw new AuthenticationException($"Authentication failed for token id {authToken} and application key {applicationKey}");
             }
 
             var identity = await _identityService.GetIdentityAsync(identityResult.IdentityId);

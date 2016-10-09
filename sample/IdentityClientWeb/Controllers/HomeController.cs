@@ -19,7 +19,7 @@ namespace IdentityClientWeb.Controllers
             return View();
         }
 
-        [Authorize(ActiveAuthenticationSchemes = "RinsenToken")]
+        [Authorize]
         // GET: /<controller>/
         public IActionResult Index2()
         {

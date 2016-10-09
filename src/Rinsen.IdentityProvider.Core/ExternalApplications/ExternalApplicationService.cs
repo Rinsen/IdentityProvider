@@ -64,14 +64,12 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
             return IdentityResult.Failure();
         }
 
-        public async Task<ValidationResult> GetTokenForValidHostAsync(string returnUrl, Guid identityId)
+        public async Task<ValidationResult> GetTokenForValidHostAsync(string host, Guid identityId)
         {
-            if (string.IsNullOrEmpty(returnUrl))
+            if (string.IsNullOrEmpty(host))
                 return ValidationResult.Failure();
 
-            var uri = new Uri(returnUrl);
-
-            var externalApplication = await _externalApplicationStorage.GetFromHostAsync(uri.Host);
+            var externalApplication = await _externalApplicationStorage.GetFromHostAsync(host);
 
             if (externalApplication == default(ExternalApplication))
             {

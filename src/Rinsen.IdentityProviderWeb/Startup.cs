@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +8,8 @@ using Rinsen.Logger;
 using Rinsen.DatabaseInstaller;
 using Rinsen.IdentityProvider.Installation;
 using Rinsen.IdentityProvider.Core;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Rinsen.IdentityProviderWeb
 {
@@ -53,7 +51,10 @@ namespace Rinsen.IdentityProviderWeb
             services.AddDatabaseInstaller(Configuration["Data:DefaultConnection:ConnectionString"]);
 
             // Add framework services.
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new RequireHttpsAttribute());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,14 +76,7 @@ namespace Rinsen.IdentityProviderWeb
             
             app.UseStaticFiles();
 
-            var options = new CookieAuthenticationOptions
-            {
-                AutomaticAuthenticate = true,
-                SessionStore = new SqlTicketStore(new SessionStorage(Configuration["Data:DefaultConnection:ConnectionString"])),
-                AuthenticationScheme = "RinsenCookie"
-            };
-
-            app.UseCookieAuthentication(options);
+            app.UseCookieAuthentication(new RinsenDefaultCookieAuthenticationOptions(Configuration["Data:DefaultConnection:ConnectionString"]));
 
             app.UseMvc(routes =>
             {

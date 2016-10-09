@@ -7,7 +7,7 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
 {
     public interface IExternalApplicationService
     {
-        Task<ValidationResult> GetTokenForValidHostAsync(string returnUrl, Guid identityId);
+        Task<ValidationResult> GetTokenForValidHostAsync(string host, Guid identityId);
         Task<IdentityResult> GetIdentityForTokenAndApplicationKeyAsync(string tokenId, string applicationKey);
     }
 }

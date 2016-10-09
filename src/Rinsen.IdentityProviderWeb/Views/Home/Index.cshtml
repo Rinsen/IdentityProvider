@@ -1,0 +1,8 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    @User.Identity.Name
+}
+else
+{
+    <div>Not logged in!</div>
+}

@@ -11,6 +11,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Rinsen.IdentityProvider.Token;
+using Rinsen.IdentityProvider.Core;
+using Rinsen.IdentityProvider;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityClientWeb
 {
@@ -27,12 +30,12 @@ namespace IdentityClientWeb
             var builder = new ConfigurationBuilder()
                 .AddEnvironmentVariables();
 
-            //if (env.IsDevelopment())
-            //{
-            //    // This reads the configuration keys from the secret store.
-            //    // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-            //    builder.AddUserSecrets("aspnet5-Rinsen.Web-20150804040342");
-            //}
+            if (env.IsDevelopment())
+            {
+                // This reads the configuration keys from the secret store.
+                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
+                builder.AddUserSecrets("aspnet5-Rinsen.Web-20150804040342");
+            }
 
             Configuration = builder.Build();
         }
@@ -51,6 +54,8 @@ namespace IdentityClientWeb
             // Add framework services.
             services.AddMvc(config =>
             {
+                config.Filters.Add(new RequireHttpsAttribute());
+
                 //var policy = new AuthorizationPolicyBuilder()
                 //                 .RequireAuthenticatedUser()
                 //                 .Build();
@@ -69,14 +74,14 @@ namespace IdentityClientWeb
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCookieAuthentication(new RinsenDefaultCookieAuthenticationOptions(Configuration["Data:DefaultConnection:ConnectionString"]));
+
             app.UseTokenAuthentication(new TokenOptions
             {
-                AutomaticAuthenticate = false,
-                ApplicationKey = "MyKey",
-                ExternalIdentityProviderBaseAddress = "http://localhost:58468",
+                ApplicationKey = "4fgDghfd453DSF534sdfgdgfh453",
+                LoginPath = "https://rinsenidentity.azurewebsites.net/Identity/Login",
+                ValidateTokenPath = "https://rinsenidentity.azurewebsites.net/api/v1/Identity/Get",
             });
-
-            app.UseCookieAuthentication();
 
             app.UseStaticFiles();
 

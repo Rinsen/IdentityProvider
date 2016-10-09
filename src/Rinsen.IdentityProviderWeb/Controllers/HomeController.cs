@@ -10,7 +10,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
     {
         public IActionResult Index()
         {
-            throw new NotImplementedException();
+            return View();
         }
 
     }

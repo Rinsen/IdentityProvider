@@ -34,6 +34,8 @@ namespace Rinsen.IdentityProvider
                                         WHERE 
                                             SessionId=@SessionId";
 
+        private const string _deleteSql = @"DELETE FROM UserSessions WHERE SessionId = @SessionId";
+
         public SessionStorage(string connectionString)
         {
             _connectionString = connectionString;
@@ -71,7 +73,15 @@ namespace Rinsen.IdentityProvider
 
         public async Task DeleteAsync(string sessionId)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand(_getSql, connection))
+                {
+                    command.Parameters.Add(new SqlParameter("@SessionId", sessionId));
+                    connection.Open();
+                    var count = (int)await command.ExecuteScalarAsync();
+                }
+            }
         }
 
         public async Task<Session> GetAsync(string sessionId)
