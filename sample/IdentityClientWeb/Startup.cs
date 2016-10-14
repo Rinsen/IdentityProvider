@@ -34,7 +34,7 @@ namespace IdentityClientWeb
             {
                 // This reads the configuration keys from the secret store.
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets("aspnet5-Rinsen.Web-20150804040342");
+                builder.AddUserSecrets("aspnet-IdentityClientWeb-20161014102321");
             }
 
             Configuration = builder.Build();
@@ -74,14 +74,13 @@ namespace IdentityClientWeb
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCookieAuthentication(new RinsenDefaultCookieAuthenticationOptions(Configuration["Data:DefaultConnection:ConnectionString"]));
-
-            app.UseTokenAuthentication(new TokenOptions
+            app.UseTokenAuthenticationWithCookieAuthentication(new TokenOptions
             {
-                ApplicationKey = "4fgDghfd453DSF534sdfgdgfh453",
-                LoginPath = "https://rinsenidentity.azurewebsites.net/Identity/Login",
-                ValidateTokenPath = "https://rinsenidentity.azurewebsites.net/api/v1/Identity/Get",
-            });
+                ApplicationKey = Configuration["IdentityProvider:ApplicationKey"],
+                LoginPath = Configuration["IdentityProvider:LoginPath"],
+                ValidateTokenPath = Configuration["IdentityProvider:ValidateTokenPath"],
+            },
+            new RinsenDefaultCookieAuthenticationOptions(Configuration["Data:DefaultConnection:ConnectionString"]));
 
             app.UseStaticFiles();
 

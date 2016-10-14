@@ -29,5 +29,27 @@ namespace Rinsen.IdentityProvider.Token
 
             return app.UseMiddleware<TokenMiddleware>(options);
         }
+
+        public static IApplicationBuilder UseTokenAuthenticationWithCookieAuthentication(this IApplicationBuilder app, TokenOptions options, CookieAuthenticationOptions cookieOptions)
+        {
+            if (app == null)
+            {
+                throw new ArgumentNullException(nameof(app));
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (cookieOptions == null)
+            {
+                throw new ArgumentNullException(nameof(cookieOptions));
+            }
+
+            app.UseCookieAuthentication(cookieOptions);
+
+            return app.UseMiddleware<TokenMiddleware>(options);
+        }
     }
 }

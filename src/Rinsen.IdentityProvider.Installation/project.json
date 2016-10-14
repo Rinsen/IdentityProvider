@@ -1,10 +1,10 @@
 {
-  "version": "1.0.0-*",
+  "version": "0.1.0",
 
   "dependencies": {
     "NETStandard.Library": "1.6.0",
     "Rinsen.DatabaseInstaller": "0.3.4-beta",
-    "Rinsen.IdentityProvider.Core": "1.0.0-*"
+    "Rinsen.IdentityProvider.Core": "0.1.0"
   },
 
   "frameworks": {

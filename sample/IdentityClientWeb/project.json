@@ -10,8 +10,7 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.StaticFiles": "1.0.0",
-    "Rinsen.IdentityProvider.Token": "1.0.0-*",
-    "Rinsen.IdentityProvider": "1.0.0-*",
+    "Rinsen.IdentityProvider.Token": "0.1.0",
     "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0"
   },
 
@@ -48,5 +47,6 @@
 
   "scripts": {
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
-  }
+  },
+  "userSecretsId": "aspnet-IdentityClientWeb-20161014102321"
 }

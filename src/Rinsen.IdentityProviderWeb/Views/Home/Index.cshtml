@@ -1,8 +1,12 @@
 ﻿@if (User.Identity.IsAuthenticated)
 {
+    if (User.HasClaim(m => m.Type == "http://rinsen.se/Administrator"))
+    {
+        @Html.ActionLink("Manage external applications", "Index", "ExternalApplications")
+    }
     @User.Identity.Name
 }
 else
 {
-    <div>Not logged in!</div>
+    <div>@Html.ActionLink("Login", "Login", "Identity")</div>
 }

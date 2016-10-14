@@ -12,6 +12,7 @@ namespace Rinsen.IdentityProvider
             SessionStore = new SqlTicketStore(new SessionStorage(connectionString));
             AuthenticationScheme = "RinsenCookie";
             CookieSecure = CookieSecurePolicy.Always;
+            
         }
     }
 }

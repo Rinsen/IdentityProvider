@@ -120,11 +120,12 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
                 if (result.Succeeded)
                 {
-
                     var uri = $"https://{host}{returnUrl}" + QueryString.Create("AuthToken", result.Token).ToUriComponent();
 
                     return Redirect(uri);
                 }
+                
+                throw new UnauthorizedAccessException($"External application is not found from Host {host}");
             }
 
             if (Url.IsLocalUrl(returnUrl))

@@ -11,7 +11,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:44349/Identity/Login?returnUrl=http%3A%2F%2Fwww.rinsen.se%2FData%2FTemp",
+      "launchUrl": "https://localhost:44349",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

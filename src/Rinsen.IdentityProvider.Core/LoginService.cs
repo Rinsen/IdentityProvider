@@ -36,7 +36,7 @@ namespace Rinsen.IdentityProvider.Core
 
             var identity = await _identityService.GetIdentityAsync((Guid)identityId);
 
-            var claims = GetClaimsForIdentity(identity);
+            var claims = await GetClaimsForIdentityAsync(identity);
 
             var authenticationProperties = new AuthenticationProperties()
             {
@@ -53,9 +53,9 @@ namespace Rinsen.IdentityProvider.Core
 
         }
 
-        private static Claim[] GetClaimsForIdentity(Identity identity)
+        private async Task<List<Claim>> GetClaimsForIdentityAsync(Identity identity)
         {
-            return new[]
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, identity.GivenName + " " + identity.Surname, ClaimValueTypes.String, "RinsenIdentityProvider"),
                 new Claim(ClaimTypes.NameIdentifier, identity.IdentityId.ToString(), ClaimValueTypes.String, "RinsenIdentityProvider"),
@@ -63,6 +63,15 @@ namespace Rinsen.IdentityProvider.Core
                 new Claim(ClaimTypes.GivenName, identity.GivenName, ClaimValueTypes.String, "RinsenIdentityProvider"),
                 new Claim(ClaimTypes.Surname, identity.Surname, ClaimValueTypes.String, "RinsenIdentityProvider")
             };
+
+            await AddApplicationSpecificClaimsAsync(claims);
+
+            return claims;
+        }
+
+        protected virtual Task AddApplicationSpecificClaimsAsync(List<Claim> claims)
+        {
+            return Task.CompletedTask;
         }
 
         public Task LogoutAsync()

@@ -31,7 +31,7 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
 
             var externalApplicationService = new ExternalApplicationService(externalApplicationStorageMock.Object, null, StubLogger.CreateLogger<ExternalApplicationService>());
 
-            var result = externalApplicationService.GetTokenForValidHostAsync("http://www.rinsen.se/Example", Guid.Empty).Result;
+            var result = externalApplicationService.GetTokenForValidHostAsync("www.rinsen.se", Guid.Empty).Result;
 
             Assert.True(result.Failed);
             Assert.False(result.Succeeded);
@@ -56,7 +56,7 @@ namespace Rinsen.IdentityProvider.Core.ExternalApplications
 
             var externalApplicationService = new ExternalApplicationService(externalApplicationStorageMock.Object, tokenStorageMock.Object, StubLogger.CreateLogger<ExternalApplicationService>());
 
-            var result = externalApplicationService.GetTokenForValidHostAsync("http://www.rinsen.se/Example", Guid.Empty).Result;
+            var result = externalApplicationService.GetTokenForValidHostAsync("www.rinsen.se", Guid.Empty).Result;
 
             tokenStorageMock.Verify(mock => mock.CreateAsync(It.Is<Token>(token => token.TokenId == result.Token && token.ExternalApplicationId == externalApplicationId && token.IdentityId == Guid.Empty)), Times.Once);
             Assert.True(result.Token.Length >= 40);

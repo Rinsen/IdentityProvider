@@ -9,7 +9,8 @@ using Rinsen.DatabaseInstaller;
 using Rinsen.IdentityProvider.Installation;
 using Rinsen.IdentityProvider.Core;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
+using Rinsen.IdentityProviderWeb.Installation;
+using Rinsen.IdentityProviderWeb.IdentityExtensions;
 
 namespace Rinsen.IdentityProviderWeb
 {
@@ -55,6 +56,15 @@ namespace Rinsen.IdentityProviderWeb
             {
                 options.Filters.Add(new RequireHttpsAttribute());
             });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminsOnly", policy => policy.RequireClaim("http://rinsen.se/Administrator"));
+            });
+
+            services.Remove(new ServiceDescriptor(typeof(ILoginService), typeof(LoginService), ServiceLifetime.Transient));
+            services.AddTransient<ILoginService, IdentityWebLoginService>();
+            services.AddTransient<AdministratorStorage, AdministratorStorage>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,13 +75,15 @@ namespace Rinsen.IdentityProviderWeb
                 { "Rinsen", LogLevel.Information }
             });
 
+            app.UseStatusCodePagesWithRedirects("~/errors/Code{0}");
+
             app.UseDeveloperExceptionPage();
 
             app.UseLogMiddleware();
 
             if (env.IsDevelopment())
             {
-                app.RunDatabaseInstaller(new[] { new FirstVersion() });
+                app.RunDatabaseInstaller(new DatabaseVersion[] { new FirstVersion(), new IdentityProviderWebFirstVersion() });
             }
             
             app.UseStaticFiles();
@@ -82,7 +94,7 @@ namespace Rinsen.IdentityProviderWeb
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Identity}/{action=Login}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
 
                 //routes.MapRoute(
                 //    name: "areaRoute",
