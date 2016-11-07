@@ -1,4 +1,4 @@
-﻿using Rinsen.IdentityProvider.Core;
+﻿using Rinsen.IdentityProvider;
 using System;
 using System.Data.SqlClient;
 using System.Threading.Tasks;

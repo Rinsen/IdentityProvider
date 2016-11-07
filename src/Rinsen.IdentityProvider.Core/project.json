@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
 
   "dependencies": {
     "Microsoft.AspNetCore.Authentication": "1.0.0",
@@ -9,11 +9,12 @@
     "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
     "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-    "NETStandard.Library": "1.6.0"
+    "NETStandard.Library": "1.6.0",
+    "System.Data.SqlClient": "4.1.0"
   },
 
   "frameworks": {
-    "netstandard1.3": {
+    "netstandard1.0": {
       "imports": "netcoreapp1.0"
     }
   }

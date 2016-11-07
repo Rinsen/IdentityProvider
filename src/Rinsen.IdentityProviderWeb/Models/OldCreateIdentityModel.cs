@@ -1,4 +1,4 @@
-﻿using Rinsen.IdentityProvider.Core;
+﻿using Rinsen.IdentityProvider;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

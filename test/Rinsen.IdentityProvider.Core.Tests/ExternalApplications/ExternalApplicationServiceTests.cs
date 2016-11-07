@@ -2,7 +2,7 @@
 using System;
 using Xunit;
 
-namespace Rinsen.IdentityProvider.Core.ExternalApplications
+namespace Rinsen.IdentityProvider.ExternalApplications
 {
     public class ExternalApplicationServiceTests
     {

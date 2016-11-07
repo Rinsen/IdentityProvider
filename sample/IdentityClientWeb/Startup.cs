@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Rinsen.IdentityProvider.Token;
 using Rinsen.IdentityProvider.Core;
-using Rinsen.IdentityProvider;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityClientWeb
@@ -79,8 +71,13 @@ namespace IdentityClientWeb
                 ApplicationKey = Configuration["IdentityProvider:ApplicationKey"],
                 LoginPath = Configuration["IdentityProvider:LoginPath"],
                 ValidateTokenPath = Configuration["IdentityProvider:ValidateTokenPath"],
+                Events = new TokenAuthenticationEvents
+                {
+                    OnAuthenticationSuccess = async context => { await new LocalIdentityForReferenceHandler("").CreateReferenceIdentityIfNotExists(context.ClaimsPrincipal); }
+                }
             },
-            new RinsenDefaultCookieAuthenticationOptions(Configuration["Data:DefaultConnection:ConnectionString"]));
+                new RinsenDefaultCookieAuthenticationOptions(Configuration["Data:DefaultConnection:ConnectionString"])
+            );
 
             app.UseStaticFiles();
 

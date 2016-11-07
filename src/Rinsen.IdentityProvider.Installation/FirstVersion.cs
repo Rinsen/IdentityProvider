@@ -1,9 +1,8 @@
 ﻿using Rinsen.DatabaseInstaller;
 using Rinsen.DatabaseInstaller.Sql.Generic;
 using Rinsen.IdentityProvider.Core;
-using Rinsen.IdentityProvider.Core.ExternalApplications;
-using Rinsen.IdentityProvider.Core.LocalAccounts;
-using Rinsen.IdentityProvider.Core.Sessions;
+using Rinsen.IdentityProvider.ExternalApplications;
+using Rinsen.IdentityProvider.LocalAccounts;
 using System.Collections.Generic;
 
 namespace Rinsen.IdentityProvider.Installation

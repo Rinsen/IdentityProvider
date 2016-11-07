@@ -1,5 +1,5 @@
-﻿using Rinsen.IdentityProvider.Core;
-using Rinsen.IdentityProvider.Core.ExternalApplications;
+﻿using Rinsen.IdentityProvider;
+using Rinsen.IdentityProvider.ExternalApplications;
 using System;
 using System.Data.SqlClient;
 using System.Threading.Tasks;

@@ -9,8 +9,8 @@ using Newtonsoft.Json;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.Extensions.Logging;
-using Rinsen.IdentityProvider.Core.ExternalApplications.v1;
 using Microsoft.AspNetCore.Http;
+using Rinsen.IdentityProvider.Contracts.v1;
 
 namespace Rinsen.IdentityProvider.Token
 {
@@ -44,7 +44,7 @@ namespace Rinsen.IdentityProvider.Token
             }
             try
             {
-                ExternalIdentityResult externalIdentity;
+                ExternalIdentity externalIdentity;
                 using (var httpClient = new HttpClient())
                 {
                     var validationUrl = Options.ValidateTokenPath + 
@@ -59,7 +59,7 @@ namespace Rinsen.IdentityProvider.Token
                     {
                         JsonSerializer serializer = new JsonSerializer();
 
-                        externalIdentity = serializer.Deserialize<ExternalIdentityResult>(reader);
+                        externalIdentity = serializer.Deserialize<ExternalIdentity>(reader);
                     }
 
                     var claims = new List<Claim>
@@ -74,11 +74,13 @@ namespace Rinsen.IdentityProvider.Token
 
                     var claimsIdentiy = new ClaimsIdentity(claims, Options.AuthenticationScheme);
 
-                    var claimsProvider = new ClaimsPrincipal(claimsIdentiy);
+                    var claimsPrincipal = new ClaimsPrincipal(claimsIdentiy);
 
-                    await Context.Authentication.SignInAsync(Options.CookieAuthenticationScheme, claimsProvider, new AuthenticationProperties());
+                    await Context.Authentication.SignInAsync(Options.CookieAuthenticationScheme, claimsPrincipal, new AuthenticationProperties());
 
-                    return AuthenticateResult.Success(new AuthenticationTicket(claimsProvider, new AuthenticationProperties(), Options.AuthenticationScheme));
+                    await Options.Events.AuthenticationSucceeded(new AuthenticationSucceededContext { ClaimsPrincipal = claimsPrincipal });
+
+                    return AuthenticateResult.Success(new AuthenticationTicket(claimsPrincipal, new AuthenticationProperties(), Options.AuthenticationScheme));
                 }
             }
             catch (Exception e)

@@ -1,36 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Linq;
 using System.Security.Claims;
-using Rinsen.IdentityProvider.Core.Sessions;
-using System.Net;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Rinsen.IdentityProvider.Core.LocalAccounts;
-using Rinsen.IdentityProvider.Core.ExternalApplications;
 
 namespace Rinsen.IdentityProvider.Core
 {
     public static class ExtensionMethods
     {
-        public static void AddRinsenIdentityCore(this IServiceCollection services, Action<IdentityOptions> identityOptionsAction)
-        {
-            var identityOptions = new IdentityOptions();
-
-            identityOptionsAction.Invoke(identityOptions);
-
-            services.AddSingleton(identityOptions);
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            services.AddTransient<IIdentityService, IdentityService>();
-            services.AddTransient<PasswordHashGenerator, PasswordHashGenerator>();
-            services.AddTransient<IIdentityAccessor, IdentityAccessService>();
-            services.AddTransient<ILocalAccountService, LocalAccountService>();
-            services.AddTransient<ILoginService, LoginService>();
-            services.AddTransient<IExternalApplicationService, ExternalApplicationService>();
-        }
-
         public static string GetClaimStringValue(this ClaimsPrincipal claimsPrincipal, string claimType)
         {
             return claimsPrincipal.GetClaimStringValue(m => m.Type == claimType);
@@ -48,7 +23,7 @@ namespace Rinsen.IdentityProvider.Core
                 {
                     throw new InvalidOperationException("The claims collection does not contain exactly one element.");
                 }
-                
+
             }
             else
             {
@@ -64,7 +39,7 @@ namespace Rinsen.IdentityProvider.Core
         public static int GetClaimIntValue(this ClaimsPrincipal claimsPrincipal, Predicate<Claim> match)
         {
             int result;
-            if(!int.TryParse(claimsPrincipal.GetClaimStringValue(match), out result))
+            if (!int.TryParse(claimsPrincipal.GetClaimStringValue(match), out result))
             {
                 throw new InvalidOperationException("Parse exception in claims value");
             }
@@ -86,85 +61,6 @@ namespace Rinsen.IdentityProvider.Core
             }
 
             return result;
-        }
-
-        public static string GetClientIPAddressString(this HttpContext context)
-        {
-            return context.GetClientIPAddress().ToString();
-        }
-
-        public static IPAddress GetClientIPAddress(this HttpContext context)
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException("context");
-            }
-
-            var remoteIp = GetRemoteIP(context);
-
-            IPAddress address;
-            if(IPAddress.TryParse(remoteIp, out address))
-            {
-                return address;
-            }
-
-            var httpConnectionFeature = context.Features.Get<IHttpConnectionFeature>();
-
-            if (httpConnectionFeature == null)
-            {
-                throw new NullReferenceException("HttpConnectionFeature is null and no forwarded remote address is found in headers");
-            }
-
-            return httpConnectionFeature.RemoteIpAddress;
-        }
-
-        static string GetRemoteIP(HttpContext context)
-        {
-            string[] remoteIpHeaders =
-                    {
-                "X-FORWARDED-FOR",
-                "REMOTE_ADDR",
-                "HTTP_X_FORWARDED_FOR",
-                "HTTP_CLIENT_IP",
-                "HTTP_X_FORWARDED",
-                "HTTP_X_CLUSTER_CLIENT_IP",
-                "HTTP_FORWARDED_FOR",
-                "HTTP_FORWARDED",
-                "X_FORWARDED_FOR",
-                "CLIENT_IP",
-                "X_FORWARDED",
-                "X_CLUSTER_CLIENT_IP",
-                "FORWARDED_FOR",
-                "FORWARDED"
-            };
-
-            string value;
-            foreach (string remoteIpHeader in remoteIpHeaders)
-            {
-                if (context.Request.Headers.ContainsKey(remoteIpHeader))
-                {
-                    value = context.Request.Headers[remoteIpHeader];
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        value = value.Split(',')[0].Split(';')[0];
-                        if (value.Contains("="))
-                        {
-                            value = value.Split('=')[1];
-                        }
-                        value = value.Trim('"');
-                        if (value.Contains(":"))
-                        {
-                            value = value.Substring(0, value.LastIndexOf(':'));
-                        }
-                        return value.TrimStart('[').TrimEnd(']');
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            return null;
         }
     }
 }

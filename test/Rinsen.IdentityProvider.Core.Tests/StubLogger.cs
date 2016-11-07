@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 
-namespace Rinsen.IdentityProvider.Core
+namespace Rinsen.IdentityProvider
 {
     public class StubLogger<T> : ILogger<T>
     {

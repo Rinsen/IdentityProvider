@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Rinsen.IdentityProvider.Core.ExternalApplications
+namespace Rinsen.IdentityProvider.ExternalApplications
 {
     public class ValidationResultTests
     {

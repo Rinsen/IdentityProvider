@@ -7,10 +7,10 @@ using Rinsen.IdentityProvider;
 using Rinsen.Logger;
 using Rinsen.DatabaseInstaller;
 using Rinsen.IdentityProvider.Installation;
-using Rinsen.IdentityProvider.Core;
 using Microsoft.AspNetCore.Mvc;
 using Rinsen.IdentityProviderWeb.Installation;
 using Rinsen.IdentityProviderWeb.IdentityExtensions;
+using Rinsen.IdentityProvider.Core;
 
 namespace Rinsen.IdentityProviderWeb
 {

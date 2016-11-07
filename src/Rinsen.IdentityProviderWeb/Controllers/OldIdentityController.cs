@@ -2,10 +2,10 @@
 //using Microsoft.AspNetCore.Http;
 //using Microsoft.AspNetCore.Mvc;
 //using Microsoft.Extensions.Logging;
-//using Rinsen.IdentityProvider.Core;
-//using Rinsen.IdentityProvider.Core.Host;
-//using Rinsen.IdentityProvider.Core.LocalAccounts;
-//using Rinsen.IdentityProvider.Core.Sessions;
+//using Rinsen.IdentityProvider;
+//using Rinsen.IdentityProvider.Host;
+//using Rinsen.IdentityProvider.LocalAccounts;
+//using Rinsen.IdentityProvider.Sessions;
 //using Rinsen.IdentityProviderWeb.Models;
 //using System;
 //using System.Net;

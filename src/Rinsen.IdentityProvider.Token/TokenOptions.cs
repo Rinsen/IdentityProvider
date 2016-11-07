@@ -26,6 +26,7 @@ namespace Rinsen.IdentityProvider.Token
         public string ApplicationKeyParameterName { get; set; }
         public string TokenParameterName { get; set; }
         public string HostParameterName { get; set; }
+        public ITokenAuthenticationEvents Events { get; set; } = new TokenAuthenticationEvents();
 
     }
 }

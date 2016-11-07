@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Rinsen.IdentityProvider.Core;
-using Rinsen.IdentityProvider.Core.ExternalApplications;
-using Rinsen.IdentityProvider.Core.ExternalApplications.v1;
+using Rinsen.IdentityProvider;
+using Rinsen.IdentityProvider.ExternalApplications;
+using Rinsen.IdentityProvider.Contracts.v1;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 
@@ -20,7 +20,7 @@ namespace Rinsen.IdentityProviderWeb.Areas.Api
         }
 
         [Route("[action]")]
-        public async Task<ExternalIdentityResult> Get(string authToken, string applicationKey)
+        public async Task<ExternalIdentity> Get(string authToken, string applicationKey)
         {
             var identityResult = await _externalApplicationService.GetIdentityForTokenAndApplicationKeyAsync(authToken, applicationKey);
 
@@ -31,7 +31,7 @@ namespace Rinsen.IdentityProviderWeb.Areas.Api
 
             var identity = await _identityService.GetIdentityAsync(identityResult.IdentityId);
 
-            return new ExternalIdentityResult
+            return new ExternalIdentity
             {
                 GivenName = identity.GivenName,
                 IdentityId = identity.IdentityId,

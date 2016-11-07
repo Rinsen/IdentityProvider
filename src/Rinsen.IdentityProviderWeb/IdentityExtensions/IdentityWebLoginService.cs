@@ -1,10 +1,10 @@
-﻿using Rinsen.IdentityProvider.Core;
+﻿using Rinsen.IdentityProvider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Rinsen.IdentityProvider.Core.LocalAccounts;
+using Rinsen.IdentityProvider.LocalAccounts;
 using System.Security.Claims;
 
 namespace Rinsen.IdentityProviderWeb.IdentityExtensions

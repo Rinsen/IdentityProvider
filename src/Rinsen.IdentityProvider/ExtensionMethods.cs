@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Rinsen.IdentityProvider.ExternalApplications;
+using Rinsen.IdentityProvider.LocalAccounts;
 using Rinsen.IdentityProvider.Core;
-using Rinsen.IdentityProvider.Core.ExternalApplications;
-using Rinsen.IdentityProvider.Core.LocalAccounts;
-using Rinsen.IdentityProvider.Core.Sessions;
 using System;
 
 namespace Rinsen.IdentityProvider
@@ -11,13 +12,25 @@ namespace Rinsen.IdentityProvider
     {
         public static void AddRinsenIdentity(this IServiceCollection services, Action<IdentityOptions> identityOptionsAction)
         {
-            services.AddRinsenIdentityCore(identityOptionsAction);
+            var identityOptions = new IdentityOptions();
 
-            services.AddTransient<ILocalAccountStorage, LocalAccountStorage>();
-            services.AddTransient<IIdentityStorage, IdentityStorage>();
-            services.AddTransient<ISessionStorage, SessionStorage>();
-            services.AddTransient<IExternalApplicationStorage, ExternalApplicationStorage>();
-            services.AddTransient<ITokenStorage, TokenStorage>();
+            identityOptionsAction.Invoke(identityOptions);
+
+            services.AddSingleton(identityOptions);
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<PasswordHashGenerator, PasswordHashGenerator>();
+            services.AddScoped<IIdentityAccessor, IdentityAccessService>();
+            services.AddScoped<ILocalAccountService, LocalAccountService>();
+            services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IExternalApplicationService, ExternalApplicationService>();
+
+            services.AddScoped<ILocalAccountStorage, LocalAccountStorage>();
+            services.AddScoped<IIdentityStorage, IdentityStorage>();
+            services.AddScoped<ISessionStorage, SessionStorage>();
+            services.AddScoped<IExternalApplicationStorage, ExternalApplicationStorage>();
+            services.AddScoped<ITokenStorage, TokenStorage>();
         }
     }
 }

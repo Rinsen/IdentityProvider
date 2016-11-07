@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Rinsen.IdentityProvider;
 using Rinsen.IdentityProvider.Core;
-using Rinsen.IdentityProvider.Core.ExternalApplications;
-using Rinsen.IdentityProvider.Core.LocalAccounts;
+using Rinsen.IdentityProvider.ExternalApplications;
+using Rinsen.IdentityProvider.LocalAccounts;
 using Rinsen.IdentityProviderWeb.Models;
 using System;
 using System.Collections.Generic;

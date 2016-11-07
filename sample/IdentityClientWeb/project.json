@@ -10,7 +10,7 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.StaticFiles": "1.0.0",
-    "Rinsen.IdentityProvider.Token": "0.1.0",
+    "Rinsen.IdentityProvider.Token": "0.1.1",
     "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0"
   },
 
