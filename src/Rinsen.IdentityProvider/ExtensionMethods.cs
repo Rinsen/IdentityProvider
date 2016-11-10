@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Rinsen.IdentityProvider.ExternalApplications;
 using Rinsen.IdentityProvider.LocalAccounts;
 using Rinsen.IdentityProvider.Core;
@@ -17,20 +15,19 @@ namespace Rinsen.IdentityProvider
             identityOptionsAction.Invoke(identityOptions);
 
             services.AddSingleton(identityOptions);
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<PasswordHashGenerator, PasswordHashGenerator>();
-            services.AddScoped<IIdentityAccessor, IdentityAccessService>();
             services.AddScoped<ILocalAccountService, LocalAccountService>();
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<IExternalApplicationService, ExternalApplicationService>();
-
             services.AddScoped<ILocalAccountStorage, LocalAccountStorage>();
             services.AddScoped<IIdentityStorage, IdentityStorage>();
             services.AddScoped<ISessionStorage, SessionStorage>();
             services.AddScoped<IExternalApplicationStorage, ExternalApplicationStorage>();
             services.AddScoped<ITokenStorage, TokenStorage>();
+
+            services.AddRinsenAuthentication();
         }
     }
 }

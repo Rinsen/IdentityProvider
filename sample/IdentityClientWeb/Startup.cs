@@ -36,6 +36,8 @@ namespace IdentityClientWeb
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddRinsenAuthentication();
+
             services.AddAuthorization(options =>
             {
                 
@@ -66,15 +68,11 @@ namespace IdentityClientWeb
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseTokenAuthenticationWithCookieAuthentication(new TokenOptions
+            app.UseTokenAuthenticationWithCookieAuthentication(new TokenOptions(Configuration["Data:DefaultConnection:ConnectionString"])
             {
                 ApplicationKey = Configuration["IdentityProvider:ApplicationKey"],
                 LoginPath = Configuration["IdentityProvider:LoginPath"],
-                ValidateTokenPath = Configuration["IdentityProvider:ValidateTokenPath"],
-                Events = new TokenAuthenticationEvents
-                {
-                    OnAuthenticationSuccess = async context => { await new LocalIdentityForReferenceHandler("").CreateReferenceIdentityIfNotExists(context.ClaimsPrincipal); }
-                }
+                ValidateTokenPath = Configuration["IdentityProvider:ValidateTokenPath"]
             },
                 new RinsenDefaultCookieAuthenticationOptions(Configuration["Data:DefaultConnection:ConnectionString"])
             );

@@ -9,9 +9,20 @@ namespace Rinsen.IdentityProvider.Core
     {
         private readonly string _connectionString;
 
-        private const string _getSql = @"";
+        private const string _getSql = @"SELECT 
+                                            IdentityId,
+                                            Created 
+                                        FROM 
+                                            ReferenceIdentities 
+                                        WHERE 
+                                            IdentityId = @IdentityId";
 
-        private const string _insertSql = @"";
+        private const string _insertSql = @"INSERT INTO ReferenceIdentities (
+                                                IdentityId,
+                                                Created) 
+                                            VALUES (
+                                                @IdentityId,
+                                                @Created)";
 
         public LocalIdentityForReferenceHandler(string connectionString)
         {
@@ -24,15 +35,16 @@ namespace Rinsen.IdentityProvider.Core
 
             using (var connection = new SqlConnection(_connectionString))
             {
+                connection.Open();
                 using (var command = new SqlCommand(_getSql, connection))
                 {
                     command.Parameters.Add(new SqlParameter("@IdentityId", identityId));
-                    connection.Open();
-                    var reader = await command.ExecuteReaderAsync();
-
-                    if (reader.HasRows)
-                    {
-                        return;
+                    using (var reader = await command.ExecuteReaderAsync())
+                    { 
+                        if (reader.HasRows)
+                        {
+                            return;
+                        }
                     }
                 }
 
@@ -40,7 +52,6 @@ namespace Rinsen.IdentityProvider.Core
                 {
                     command.Parameters.Add(new SqlParameter("@IdentityId", identityId));
                     command.Parameters.Add(new SqlParameter("@Created", DateTimeOffset.Now));
-                    connection.Open();
 
                     await command.ExecuteNonQueryAsync();
                 }

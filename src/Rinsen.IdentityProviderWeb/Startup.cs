@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Rinsen.IdentityProviderWeb.Installation;
 using Rinsen.IdentityProviderWeb.IdentityExtensions;
 using Rinsen.IdentityProvider.Core;
+using Rinsen.IdentityProvider.Installation.ReferenceIdentityInstallation;
 
 namespace Rinsen.IdentityProviderWeb
 {
@@ -83,7 +84,7 @@ namespace Rinsen.IdentityProviderWeb
 
             if (env.IsDevelopment())
             {
-                app.RunDatabaseInstaller(new DatabaseVersion[] { new FirstVersion(), new IdentityProviderWebFirstVersion() });
+                app.RunDatabaseInstaller(new DatabaseVersion[] { new FirstVersion(), new IdentityProviderWebFirstVersion(), new ReferenceIdentityFirstVersion() });
             }
             
             app.UseStaticFiles();

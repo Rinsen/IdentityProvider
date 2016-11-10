@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
 using System.Linq;
 using System.Security.Claims;
 
@@ -61,6 +64,12 @@ namespace Rinsen.IdentityProvider.Core
             }
 
             return result;
+        }
+
+        public static void AddRinsenAuthentication(this IServiceCollection services)
+        {
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IIdentityAccessor, IdentityAccessService>();
         }
     }
 }

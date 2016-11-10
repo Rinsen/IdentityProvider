@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 
-namespace Rinsen.IdentityProvider
+namespace Rinsen.IdentityProvider.Core
 {
     public interface IIdentityAccessor
     {
