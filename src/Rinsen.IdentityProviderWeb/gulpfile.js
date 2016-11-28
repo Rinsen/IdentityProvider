@@ -1,4 +1,4 @@
-﻿/// <binding Clean='clean' />
+﻿/// <binding AfterBuild='debug:ngApp' Clean='clean' />
 "use strict";
 
 var gulp = require("gulp"),
@@ -15,7 +15,10 @@ var paths = {
     css: webroot + "css/**/*.css",
     minCss: webroot + "css/**/*.min.css",
     concatJsDest: webroot + "js/site.min.js",
-    concatCssDest: webroot + "css/site.min.css"
+    concatCssDest: webroot + "css/site.min.css",
+    ngApp: "./ng-apps/**/*.js",
+    ngDebugApp: webroot + "js/debug/**/*.js",
+    minNgApp: webroot + "js/**/*.min.js"
 };
 
 gulp.task("clean:js", function (cb) {
@@ -42,4 +45,16 @@ gulp.task("min:css", function () {
         .pipe(gulp.dest("."));
 });
 
-gulp.task("min", ["min:js", "min:css"]);
+gulp.task("min:ngApp", function () {
+    return gulp.src([paths.ngApp, "!" + paths.minNgApp], { base: "." })
+        .pipe(concat(paths.concatJsDest))
+        .pipe(uglify())
+        .pipe(gulp.dest("."));
+});
+
+gulp.task("debug:ngApp", function () {
+    return gulp.src("./ng-apps/**/*.js")
+            .pipe(gulp.dest("./wwwroot/js/debug/"));
+});
+
+gulp.task("min", ["min:js", "min:css", "min:ngApp"]);

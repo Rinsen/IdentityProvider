@@ -10,7 +10,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
         public int ClusteredId { get; set; }
         public Guid ExternalApplicationId { get; set; }
         public string ApplicationKey { get; set; }
-        public string HostName { get; set; }
+        public string Hostname { get; set; }
         public bool Active { get; set; }
 
     }

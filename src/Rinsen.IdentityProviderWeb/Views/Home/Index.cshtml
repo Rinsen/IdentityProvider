@@ -1,6 +1,7 @@
-﻿@if (User.Identity.IsAuthenticated)
+﻿@using Rinsen.IdentityProvider.Contracts
+@if (User.Identity.IsAuthenticated)
 {
-    if (User.HasClaim(m => m.Type == "http://rinsen.se/Administrator"))
+    if (User.HasClaim(m => m.Type == RinsenClaimTypes.Administrator))
     {
         @Html.ActionLink("Manage external applications", "Index", "ExternalApplications")
     }

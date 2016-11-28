@@ -1,1 +1,34 @@
-﻿
+﻿@{ 
+    ViewBag.NgAppName = "Administration";
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_Angular");}
+}
+<div data-ng-controller="ExternalApplicationsController as vm">
+
+    <h1>External applications</h1>
+
+    <table class="table table-striped ng-cloak">
+        <thead>
+            <tr>
+                <th>Hostname</th>
+                <th>Application Key</th>
+                <th>Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-ng-repeat="externalApplication in vm.externalApplications">
+                <td>{{externalApplication.hostname}}</td>
+                <td>{{externalApplication.applicationKey}}</td>
+                <td>{{externalApplication.active}}</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+</div>
+
+

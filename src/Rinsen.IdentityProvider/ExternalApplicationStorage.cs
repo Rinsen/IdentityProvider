@@ -70,7 +70,7 @@ namespace Rinsen.IdentityProvider
                         command.Parameters.Add(new SqlParameter("@Active", externalApplication.Active));
                         command.Parameters.Add(new SqlParameter("@ClusteredId", externalApplication.ClusteredId));
                         command.Parameters.Add(new SqlParameter("@ExternalApplicationId", externalApplication.ExternalApplicationId));
-                        command.Parameters.Add(new SqlParameter("@HostName", externalApplication.HostName));
+                        command.Parameters.Add(new SqlParameter("@HostName", externalApplication.Hostname));
                         command.Parameters.Add(new SqlParameter("@ApplicationKey", externalApplication.ApplicationKey));
                         connection.Open();
 
@@ -81,7 +81,7 @@ namespace Rinsen.IdentityProvider
                 {
                     if (ex.Number == 2601 || ex.Number == 2627)
                     {
-                        throw new ExternalApplicationAlreadyExistException($"External application {externalApplication.HostName} already exist", ex);
+                        throw new ExternalApplicationAlreadyExistException($"External application {externalApplication.Hostname} already exist", ex);
                     }
                     throw;
                 }
@@ -106,7 +106,7 @@ namespace Rinsen.IdentityProvider
 
                     if (reader.HasRows)
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             result.Add(MapExternalApplication(reader));
                         }
@@ -130,7 +130,7 @@ namespace Rinsen.IdentityProvider
 
                     if (reader.HasRows)
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             return MapExternalApplication(reader);
                         }
@@ -153,7 +153,7 @@ namespace Rinsen.IdentityProvider
 
                     if (reader.HasRows)
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             return MapExternalApplication(reader);
                         }
@@ -171,7 +171,7 @@ namespace Rinsen.IdentityProvider
                 Active = (bool)reader["Active"],
                 ClusteredId = (int)reader["ClusteredId"],
                 ExternalApplicationId = (Guid)reader["ExternalApplicationId"],
-                HostName = (string)reader["HostName"],
+                Hostname = (string)reader["HostName"],
                 ApplicationKey = (string)reader["ApplicationKey"]
             };
         }

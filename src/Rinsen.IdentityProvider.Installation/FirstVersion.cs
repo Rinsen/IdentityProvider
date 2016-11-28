@@ -51,7 +51,7 @@ namespace Rinsen.IdentityProvider.Installation
             var externalApplicationTable = dbChangeList.AddNewTable<ExternalApplication>();
             externalApplicationTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
             externalApplicationTable.AddColumn(m => m.ExternalApplicationId).PrimaryKey();
-            externalApplicationTable.AddColumn(m => m.HostName, 512).Unique();
+            externalApplicationTable.AddColumn(m => m.Hostname, 512).Unique();
             externalApplicationTable.AddColumn(m => m.Active);
             externalApplicationTable.AddColumn(m => m.ApplicationKey, 256);
 
