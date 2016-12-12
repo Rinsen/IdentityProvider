@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Rinsen.IdentityProvider.Token</id>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
     <title>Rinsen Identity Provider Token</title>
     <authors>Fredrik Rinsén</authors>
     <owners>Fredrik Rinsén</owners>
@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Identity provider for single sign on with Tokens from IdentityProviderWeb</description>
     <releaseNotes>
-      0.1.3 Local reference identity
+      0.1.4 Extensions for more customizable identitys
     </releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>aspnetcore identity</tags>

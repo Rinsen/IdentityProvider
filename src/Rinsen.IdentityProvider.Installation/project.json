@@ -4,7 +4,7 @@
   "dependencies": {
     "NETStandard.Library": "1.6.0",
     "Rinsen.DatabaseInstaller": "0.3.4-beta",
-    "Rinsen.IdentityProvider": "0.1.3"
+    "Rinsen.IdentityProvider": "0.1.4"
   },
 
   "frameworks": {

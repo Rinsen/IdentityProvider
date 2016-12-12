@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Rinsen.IdentityProvider.Contracts.v1;
+using System.Linq;
+using Rinsen.IdentityProvider.Contracts;
 
 namespace Rinsen.IdentityProvider.Token
 {
@@ -71,6 +73,11 @@ namespace Rinsen.IdentityProvider.Token
                                 new Claim(ClaimTypes.GivenName, externalIdentity.GivenName, externalIdentity.Issuer),
                                 new Claim(ClaimTypes.Surname, externalIdentity.Surname, externalIdentity.Issuer)
                             };
+
+                    if (externalIdentity.Extensions.Any(c => c.Type == RinsenIdentityConstants.Role && c.Value == RinsenIdentityConstants.Administrator))
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, RinsenIdentityConstants.Administrator, externalIdentity.Issuer));
+                    }
 
                     var claimsIdentiy = new ClaimsIdentity(claims, Options.AuthenticationScheme);
 

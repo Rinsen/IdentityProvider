@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Rinsen.IdentityProvider.Contracts.v1
 {
@@ -10,5 +11,6 @@ namespace Rinsen.IdentityProvider.Contracts.v1
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string Issuer { get; set; }
+        public IEnumerable<Extension> Extensions { get; set; }
     }
 }
