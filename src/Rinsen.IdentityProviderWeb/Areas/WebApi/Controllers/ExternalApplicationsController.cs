@@ -35,7 +35,7 @@ namespace Rinsen.IdentityProviderWeb.Areas.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ExternalApplicationsResult> Create(ExternalApplicationToCreate externalApplicationToCreate)
+        public async Task<ExternalApplicationsResult> Create([FromBody]ExternalApplicationToCreate externalApplicationToCreate)
         {
             var bytes = new byte[60];
             CryptoRandom.GetBytes(bytes);
@@ -44,6 +44,7 @@ namespace Rinsen.IdentityProviderWeb.Areas.WebApi.Controllers
             var newExternalApplication = new ExternalApplication
             {
                 Active = externalApplicationToCreate.Active,
+                ActiveUntil = externalApplicationToCreate.ActiveUntil,
                 ApplicationKey = applicationKey,
                 ExternalApplicationId = Guid.NewGuid(),
                 Hostname = externalApplicationToCreate.HostName
@@ -52,6 +53,20 @@ namespace Rinsen.IdentityProviderWeb.Areas.WebApi.Controllers
             await _externalApplicationStorage.CreateAsync(newExternalApplication);
 
             return new ExternalApplicationsResult { ExternalApplications = new[] { newExternalApplication } };
+        }
+
+        [HttpPost]
+        public async Task<ExternalApplicationsResult> Update([FromBody]ExternalApplicationToUpdate externalApplicationToUpdate)
+        {
+            var externalApplication = await _externalApplicationStorage.GetFromExternalApplicationIdAsync(externalApplicationToUpdate.ExternalApplicationId);
+
+            externalApplication.Active = externalApplicationToUpdate.Active;
+            externalApplication.ActiveUntil = externalApplicationToUpdate.ActiveUntil;
+            externalApplication.Hostname = externalApplicationToUpdate.Hostname;
+
+            await _externalApplicationStorage.UpdateAsync(externalApplication);
+
+            return new ExternalApplicationsResult { ExternalApplications = Enumerable.Empty<ExternalApplication>() };
         }
     }
 }

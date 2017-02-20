@@ -9,13 +9,25 @@
 
     function ExternalApplicationsService($http) {
         var service = {
-            getExternalApplications: getExternalApplications
+            getAll: getAll,
+            create: create,
+            update: update
         };
 
         return service;
 
-        function getExternalApplications() {
+        function getAll() {
             return $http.get('/webapi/ExternalApplications/GetAll');
         }
+
+        function create(data) {
+            return $http.post('/webapi/ExternalApplications/Create', data);
+        }
+
+        function update(data) {
+            return $http.post('/webapi/ExternalApplications/Update', data);
+        }
+
+        
     }
 })();

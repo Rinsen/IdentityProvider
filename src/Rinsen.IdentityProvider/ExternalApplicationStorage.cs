@@ -13,11 +13,13 @@ namespace Rinsen.IdentityProvider
 
         private const string _createSql = @"INSERT INTO ExternalApplications (
                                                 Active,
+                                                ActiveUntil,
                                                 ExternalApplicationId,
                                                 HostName, 
                                                 ApplicationKey) 
                                             VALUES (
                                                 @Active,
+                                                @ActiveUntil,
                                                 @ExternalApplicationId,
                                                 @HostName,
                                                 @ApplicationKey); 
@@ -25,6 +27,7 @@ namespace Rinsen.IdentityProvider
 
         private const string _getFromHostNameSql = @"SELECT 
                                             Active,
+                                            ActiveUntil,
                                             ClusteredId,
                                             ExternalApplicationId,
                                             HostName, 
@@ -36,6 +39,7 @@ namespace Rinsen.IdentityProvider
 
         private const string _getFromApplicationKeySql = @"SELECT 
                                             Active,
+                                            ActiveUntil,
                                             ClusteredId,
                                             ExternalApplicationId,
                                             HostName, 
@@ -45,14 +49,37 @@ namespace Rinsen.IdentityProvider
                                         WHERE 
                                             ApplicationKey=@ApplicationKey";
 
+        private const string _getFromExternalApplicationIdSql = @"SELECT 
+                                            Active,
+                                            ActiveUntil,
+                                            ClusteredId,
+                                            ExternalApplicationId,
+                                            HostName, 
+                                            ApplicationKey
+                                        FROM 
+                                            ExternalApplications 
+                                        WHERE 
+                                            ExternalApplicationId=@ExternalApplicationId";
+
         private const string _getAllSql = @"SELECT 
                                                 Active,
+                                                ActiveUntil,
                                                 ClusteredId,
                                                 ExternalApplicationId,
                                                 HostName, 
                                                 ApplicationKey
                                             FROM 
                                                 ExternalApplications";
+
+        private const string _updateSql = @"UPDATE 
+                                                ExternalApplications
+                                            SET
+                                                Active = @Active,
+                                                ActiveUntil = @ActiveUntil,
+                                                ApplicationKey=@ApplicationKey,
+                                                HostName = @HostName
+                                            WHERE 
+                                                ExternalApplicationId = @ExternalApplicationId";
 
         public ExternalApplicationStorage(IdentityOptions identityOptions)
         {
@@ -68,7 +95,7 @@ namespace Rinsen.IdentityProvider
                     using (var command = new SqlCommand(_createSql, connection))
                     {
                         command.Parameters.Add(new SqlParameter("@Active", externalApplication.Active));
-                        command.Parameters.Add(new SqlParameter("@ClusteredId", externalApplication.ClusteredId));
+                        command.Parameters.Add(new SqlParameter("@ActiveUntil", externalApplication.ActiveUntil));
                         command.Parameters.Add(new SqlParameter("@ExternalApplicationId", externalApplication.ExternalApplicationId));
                         command.Parameters.Add(new SqlParameter("@HostName", externalApplication.Hostname));
                         command.Parameters.Add(new SqlParameter("@ApplicationKey", externalApplication.ApplicationKey));
@@ -98,18 +125,16 @@ namespace Rinsen.IdentityProvider
             var result = new List<ExternalApplication>();
 
             using (var connection = new SqlConnection(_identityOptions.ConnectionString))
+            using (var command = new SqlCommand(_getAllSql, connection))
             {
-                using (var command = new SqlCommand(_getAllSql, connection))
-                {
-                    connection.Open();
-                    var reader = await command.ExecuteReaderAsync();
+                connection.Open();
+                var reader = await command.ExecuteReaderAsync();
 
-                    if (reader.HasRows)
+                if (reader.HasRows)
+                {
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
-                        {
-                            result.Add(MapExternalApplication(reader));
-                        }
+                        result.Add(MapExternalApplication(reader));
                     }
                 }
             }
@@ -121,19 +146,17 @@ namespace Rinsen.IdentityProvider
         public async Task<ExternalApplication> GetFromHostAsync(string host)
         {
             using (var connection = new SqlConnection(_identityOptions.ConnectionString))
+            using (var command = new SqlCommand(_getFromHostNameSql, connection))
             {
-                using (var command = new SqlCommand(_getFromHostNameSql, connection))
-                {
-                    command.Parameters.Add(new SqlParameter("@HostName", host));
-                    connection.Open();
-                    var reader = await command.ExecuteReaderAsync();
+                command.Parameters.Add(new SqlParameter("@HostName", host));
+                connection.Open();
+                var reader = await command.ExecuteReaderAsync();
 
-                    if (reader.HasRows)
+                if (reader.HasRows)
+                {
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
-                        {
-                            return MapExternalApplication(reader);
-                        }
+                        return MapExternalApplication(reader);
                     }
                 }
             }
@@ -144,19 +167,39 @@ namespace Rinsen.IdentityProvider
         public async Task<ExternalApplication> GetFromApplicationKeyAsync(string applicationKey)
         {
             using (var connection = new SqlConnection(_identityOptions.ConnectionString))
+            using (var command = new SqlCommand(_getFromApplicationKeySql, connection))
             {
-                using (var command = new SqlCommand(_getFromApplicationKeySql, connection))
-                {
-                    command.Parameters.Add(new SqlParameter("@ApplicationKey", applicationKey));
-                    connection.Open();
-                    var reader = await command.ExecuteReaderAsync();
+                command.Parameters.Add(new SqlParameter("@ApplicationKey", applicationKey));
+                connection.Open();
+                var reader = await command.ExecuteReaderAsync();
 
-                    if (reader.HasRows)
+                if (reader.HasRows)
+                {
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
-                        {
-                            return MapExternalApplication(reader);
-                        }
+                        return MapExternalApplication(reader);
+                    }
+                }
+            }
+
+            return default(ExternalApplication);
+        }
+
+        public async Task<ExternalApplication> GetFromExternalApplicationIdAsync(Guid externalApplicationId)
+        {
+            using (var connection = new SqlConnection(_identityOptions.ConnectionString))
+            using (var command = new SqlCommand(_getFromExternalApplicationIdSql, connection))
+            {
+                command.Parameters.Add(new SqlParameter("@ExternalApplicationId", externalApplicationId));
+                connection.Open();
+
+                var reader = await command.ExecuteReaderAsync();
+
+                if (reader.HasRows)
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        return MapExternalApplication(reader);
                     }
                 }
             }
@@ -169,6 +212,7 @@ namespace Rinsen.IdentityProvider
             return new ExternalApplication
             {
                 Active = (bool)reader["Active"],
+                ActiveUntil = (DateTimeOffset)reader["ActiveUntil"],
                 ClusteredId = (int)reader["ClusteredId"],
                 ExternalApplicationId = (Guid)reader["ExternalApplicationId"],
                 Hostname = (string)reader["HostName"],
@@ -178,9 +222,18 @@ namespace Rinsen.IdentityProvider
 
         public async Task UpdateAsync(ExternalApplication externalApplication)
         {
-            throw new NotImplementedException();
-        }
+            using (var connection = new SqlConnection(_identityOptions.ConnectionString))
+            using (var command = new SqlCommand(_updateSql, connection))
+            {
+                command.Parameters.Add(new SqlParameter("@Active", externalApplication.Active));
+                command.Parameters.Add(new SqlParameter("@ActiveUntil", externalApplication.ActiveUntil));
+                command.Parameters.Add(new SqlParameter("@ExternalApplicationId", externalApplication.ExternalApplicationId));
+                command.Parameters.Add(new SqlParameter("@HostName", externalApplication.Hostname));
+                command.Parameters.Add(new SqlParameter("@ApplicationKey", externalApplication.ApplicationKey));
+                connection.Open();
 
-        
+                await command.ExecuteNonQueryAsync();
+            }
+        }
     }
 }

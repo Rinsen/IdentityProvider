@@ -12,6 +12,8 @@ namespace Rinsen.IdentityProvider.ExternalApplications
         public string ApplicationKey { get; set; }
         public string Hostname { get; set; }
         public bool Active { get; set; }
+        public DateTimeOffset ActiveUntil { get; set; }
+
 
     }
 }

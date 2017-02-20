@@ -1,5 +1,4 @@
 ﻿using Rinsen.DatabaseInstaller;
-using Rinsen.DatabaseInstaller.Sql.Generic;
 using Rinsen.IdentityProviderWeb.IdentityExtensions;
 using System.Collections.Generic;
 

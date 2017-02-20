@@ -1,5 +1,4 @@
 ﻿using Rinsen.DatabaseInstaller;
-using Rinsen.DatabaseInstaller.Sql.Generic;
 using Rinsen.IdentityProvider.Core;
 using Rinsen.IdentityProvider.ExternalApplications;
 using Rinsen.IdentityProvider.LocalAccounts;
@@ -53,6 +52,7 @@ namespace Rinsen.IdentityProvider.Installation
             externalApplicationTable.AddColumn(m => m.ExternalApplicationId).PrimaryKey();
             externalApplicationTable.AddColumn(m => m.Hostname, 512).Unique();
             externalApplicationTable.AddColumn(m => m.Active);
+            externalApplicationTable.AddColumn(m => m.ActiveUntil);
             externalApplicationTable.AddColumn(m => m.ApplicationKey, 256);
 
             var tokenTable = dbChangeList.AddNewTable<Token>();

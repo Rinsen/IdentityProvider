@@ -26,7 +26,7 @@ namespace IdentityClientWeb
             {
                 // This reads the configuration keys from the secret store.
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets("aspnet-IdentityClientWeb-20161014102321");
+                builder.AddUserSecrets();
             }
 
             Configuration = builder.Build();

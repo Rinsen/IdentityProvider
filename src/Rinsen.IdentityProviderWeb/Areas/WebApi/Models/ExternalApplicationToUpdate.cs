@@ -2,13 +2,11 @@
 
 namespace Rinsen.IdentityProviderWeb.Areas.WebApi.Models
 {
-    public class ExternalApplicationToCreate
+    public class ExternalApplicationToUpdate
     {
-        public string HostName { get; set; }
-
+        public Guid ExternalApplicationId { get; set; }
+        public string Hostname { get; set; }
         public bool Active { get; set; }
-
         public DateTimeOffset ActiveUntil { get; set; }
-
     }
 }
