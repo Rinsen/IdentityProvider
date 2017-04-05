@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Rinsen.IdentityProvider.Token</id>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
     <title>Rinsen Identity Provider Token</title>
     <authors>Fredrik Rinsén</authors>
     <owners>Fredrik Rinsén</owners>
@@ -11,18 +11,19 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Identity provider for single sign on with Tokens from IdentityProviderWeb</description>
     <releaseNotes>
+      0.1.5 asp net core 1.1
       0.1.4 Extensions for more customizable identitys
     </releaseNotes>
-    <copyright>Copyright 2016</copyright>
+    <copyright>Copyright 2017</copyright>
     <tags>aspnetcore identity</tags>
   </metadata>
   <files>
-    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.0\Rinsen.IdentityProvider.Token.dll" target="lib\netstandard1.0" />
-    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.0\Rinsen.IdentityProvider.Token.pdb" target="lib\netstandard1.0" />
-    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.0\Rinsen.IdentityProvider.Token.deps.json" target="lib\netstandard1.0" />
-    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.0\Rinsen.IdentityProvider.Core.dll" target="lib\netstandard1.0" />
-    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.0\Rinsen.IdentityProvider.Core.pdb" target="lib\netstandard1.0" />
-    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.0\Rinsen.IdentityProvider.Contracts.dll" target="lib\netstandard1.0" />
-    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.0\Rinsen.IdentityProvider.Contracts.pdb" target="lib\netstandard1.0" />
+    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.3\Rinsen.IdentityProvider.Token.dll" target="lib\netstandard1.3" />
+    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.3\Rinsen.IdentityProvider.Token.pdb" target="lib\netstandard1.3" />
+    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.3\Rinsen.IdentityProvider.Token.deps.json" target="lib\netstandard1.3" />
+    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.3\Rinsen.IdentityProvider.Core.dll" target="lib\netstandard1.3" />
+    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.3\Rinsen.IdentityProvider.Core.pdb" target="lib\netstandard1.3" />
+    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.3\Rinsen.IdentityProvider.Contracts.dll" target="lib\netstandard1.3" />
+    <file src="\src\Rinsen.IdentityProvider.Token\bin\Release\netstandard1.3\Rinsen.IdentityProvider.Contracts.pdb" target="lib\netstandard1.3" />
   </files>
 </package>

@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.NgAppName = "Administration";
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_Angular");}
+}
+
+
+<div class="row" ng-controller="AdministrationController as avm">
+    <ul class="nav nav-tabs">
+        <li role="presentation" data-ng-class="{true: 'active'}[avm.activeTab === 'externalapplications']"><a href="Administration/ExternalApplications">Applications</a></li>
+        <li role="presentation" data-ng-class="{true: 'active'}[avm.activeTab == 'users']"><a href="Administration/Users">Users</a></li>
+    </ul>
+</div>
+<div ng-view></div>

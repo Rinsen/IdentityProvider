@@ -1,0 +1,26 @@
+﻿@{ 
+    ViewBag.NgAppName = "Administration";
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_Angular");}
+}
+
+<style>
+    .sortorder:after {
+        content: '\25b2';
+    }
+
+    .sortorder.reverse:after {
+        content: '\25bc';
+    }
+
+    .table-menu {
+        margin-top: 2em;
+    }
+</style>
+@*<div data-ng-controller="ExternalApplicationsController as vm">*@
+    <h1>Users</h1>
+    
+@*</div>*@
+

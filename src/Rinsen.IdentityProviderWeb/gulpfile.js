@@ -15,6 +15,7 @@ var paths = {
     css: webroot + "css/**/*.css",
     minCss: webroot + "css/**/*.min.css",
     concatJsDest: webroot + "js/site.min.js",
+    concatNgAppJsDest: webroot + "js/site.min.js",
     concatCssDest: webroot + "css/site.min.css",
     ngApp: "./ng-apps/**/*.js",
     ngDebugApp: webroot + "js/debug/**/*.js",
@@ -47,7 +48,7 @@ gulp.task("min:css", function () {
 
 gulp.task("min:ngApp", function () {
     return gulp.src([paths.ngApp, "!" + paths.minNgApp], { base: "." })
-        .pipe(concat(paths.concatJsDest))
+        .pipe(concat(paths.concatNgAppJsDest))
         .pipe(uglify())
         .pipe(gulp.dest("."));
 });
