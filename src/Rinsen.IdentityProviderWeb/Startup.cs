@@ -30,7 +30,7 @@ namespace Rinsen.IdentityProviderWeb
             {
                 // This reads the configuration keys from the secret store.
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets();
+                builder.AddUserSecrets<Startup>();
             }
 
             Configuration = builder.Build();
@@ -45,9 +45,10 @@ namespace Rinsen.IdentityProviderWeb
 
             services.AddLogger(options =>
             {
-                options.ConnectionString = Configuration["Data:DefaultConnection:ConnectionString"];
                 options.EnvironmentName = _env.EnvironmentName;
                 options.MinLevel = LogLevel.Trace;
+                options.ApplicationLogKey = Configuration["Logging:LogApplicationKey"];
+                options.LogServiceUri = Configuration["Logging:Uri"];
             });
 
             services.AddDatabaseInstaller(Configuration["Data:DefaultConnection:ConnectionString"]);
