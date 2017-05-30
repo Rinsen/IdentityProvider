@@ -115,7 +115,7 @@ namespace Rinsen.IdentityProvider
             }
         }
 
-        public async Task DeleteAsync(ExternalApplication externalApplication)
+        public Task DeleteAsync(ExternalApplication externalApplication)
         {
             throw new NotImplementedException();
         }

@@ -113,7 +113,7 @@ namespace Rinsen.IdentityProvider
             }
         }
 
-        public async Task DeleteAsync(LocalAccount localAccount)
+        public Task DeleteAsync(LocalAccount localAccount)
         {
             throw new NotImplementedException();
         }
