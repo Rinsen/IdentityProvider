@@ -1,23 +1,22 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 using Rinsen.IdentityProvider.Core;
 
 namespace Rinsen.IdentityProvider.Token
 {
-    public class TokenOptions : AuthenticationOptions, IOptions<TokenOptions>
+    public class TokenOptions : AuthenticationSchemeOptions, IOptions<TokenOptions>
     {
         private readonly LocalIdentityForReferenceHandler _localIdentityForReferenceHandler;
 
         public TokenOptions()
         {
-            AutomaticAuthenticate = true;
-            AutomaticChallenge = true;
-            AuthenticationScheme = TokenDefaults.AuthenticationScheme;
             CookieAuthenticationScheme = "RinsenCookie";
             ReturnUrlParamterName = "ReturnUrl";
             ApplicationKeyParameterName = "ApplicationKey";
             HostParameterName = "Host";
             TokenParameterName = "AuthToken";
+            Events = new TokenAuthenticationEvents();
         }
 
         /// <summary>
@@ -44,7 +43,6 @@ namespace Rinsen.IdentityProvider.Token
         public string ApplicationKeyParameterName { get; set; }
         public string TokenParameterName { get; set; }
         public string HostParameterName { get; set; }
-        public ITokenAuthenticationEvents Events { get; set; } = new TokenAuthenticationEvents();
 
     }
 }

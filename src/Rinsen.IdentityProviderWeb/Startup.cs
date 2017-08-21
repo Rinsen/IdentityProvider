@@ -12,44 +12,37 @@ using Rinsen.IdentityProviderWeb.Installation;
 using Rinsen.IdentityProviderWeb.IdentityExtensions;
 using Rinsen.IdentityProvider.Core;
 using Rinsen.IdentityProvider.Installation.ReferenceIdentityInstallation;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Rinsen.IdentityProviderWeb
 {
     public class Startup
     {
-        private readonly IHostingEnvironment _env;
-
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            _env = env;
-
-            var builder = new ConfigurationBuilder()
-                .AddEnvironmentVariables();
-
-            if (env.IsDevelopment())
-            {
-                // This reads the configuration keys from the secret store.
-                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets<Startup>();
-            }
-
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRinsenIdentity(options => options.ConnectionString = Configuration["Data:DefaultConnection:ConnectionString"]);
 
-            services.AddLogger(options =>
-            {
-                options.EnvironmentName = _env.EnvironmentName;
-                options.MinLevel = LogLevel.Trace;
-                options.ApplicationLogKey = Configuration["Logging:LogApplicationKey"];
-                options.LogServiceUri = Configuration["Logging:Uri"];
-            });
+            //services.AddLogger(options =>
+            //{
+            //    options.EnvironmentName = env.EnvironmentName;
+            //    options.MinLevel = LogLevel.Trace;
+            //    options.ApplicationLogKey = Configuration["Logging:LogApplicationKey"];
+            //    options.LogServiceUri = Configuration["Logging:Uri"];
+            //});
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.SessionStore = new SqlTicketStore(new SessionStorage(Configuration["Data:DefaultConnection:ConnectionString"]));
+                });
 
             services.AddDatabaseInstaller(Configuration["Data:DefaultConnection:ConnectionString"]);
 
@@ -70,18 +63,31 @@ namespace Rinsen.IdentityProviderWeb
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IRinsenLoggerInitializer logInitializer)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env/*, ILoggerFactory loggerFactory, IRinsenLoggerInitializer logInitializer*/)
         {
-            logInitializer.Run(new FilterLoggerSettings {
-                { "Microsoft", LogLevel.Warning },
-                { "Rinsen", LogLevel.Information }
-            });
+            //logInitializer.Run(new FilterLoggerSettings {
+            //    { "Microsoft", LogLevel.Warning },
+            //    { "Rinsen", LogLevel.Information }
+            //});
 
-            app.UseStatusCodePagesWithRedirects("~/errors/Code{0}");
+            app.UseAuthentication();
 
-            app.UseDeveloperExceptionPage();
 
-            app.UseLogMiddleware();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                //app.UseBrowserLink();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+
+            //app.UseStatusCodePagesWithRedirects("~/errors/Code{0}");
+
+            //app.UseDeveloperExceptionPage();
+
+            //app.UseLogMiddleware();
 
             if (env.IsDevelopment())
             {
@@ -89,8 +95,6 @@ namespace Rinsen.IdentityProviderWeb
             }
             
             app.UseStaticFiles();
-
-            app.UseCookieAuthentication(new RinsenDefaultCookieAuthenticationOptions(Configuration["Data:DefaultConnection:ConnectionString"]));
 
             app.UseMvc(routes =>
             {

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 
 namespace Rinsen.IdentityProvider.Core
@@ -7,11 +7,8 @@ namespace Rinsen.IdentityProvider.Core
     {
         public RinsenDefaultCookieAuthenticationOptions(string connectionString)
         {
-            AutomaticAuthenticate = true;
             SessionStore = new SqlTicketStore(new SessionStorage(connectionString));
-            AuthenticationScheme = "RinsenCookie";
-            CookieSecure = CookieSecurePolicy.Always;
-            
+            Cookie.SecurePolicy = CookieSecurePolicy.Always;
         }
     }
 }

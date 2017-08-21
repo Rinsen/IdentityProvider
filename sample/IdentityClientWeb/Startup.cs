@@ -11,32 +11,23 @@ namespace IdentityClientWeb
 {
     public class Startup
     {
-        private readonly IHostingEnvironment _env;
 
-        public IConfigurationRoot Configuration { get; }
-
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            _env = env;
-
-            var builder = new ConfigurationBuilder()
-                .AddEnvironmentVariables();
-
-            if (env.IsDevelopment())
-            {
-                // This reads the configuration keys from the secret store.
-                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets<Startup>();
-            }
-
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
+
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRinsenAuthentication();
+            services.AddAuthentication()
+                .AddCookie(options =>
+                {
+                    options.SessionStore = new SqlTicketStore(new SessionStorage(""));
+                });
 
             services.AddAuthorization(options =>
             {
@@ -67,16 +58,7 @@ namespace IdentityClientWeb
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseTokenAuthenticationWithCookieAuthentication(new TokenOptions(Configuration["Data:DefaultConnection:ConnectionString"])
-            {
-                ApplicationKey = Configuration["IdentityProvider:ApplicationKey"],
-                LoginPath = Configuration["IdentityProvider:LoginPath"],
-                ValidateTokenPath = Configuration["IdentityProvider:ValidateTokenPath"]
-            },
-                new RinsenDefaultCookieAuthenticationOptions(Configuration["Data:DefaultConnection:ConnectionString"])
-            );
-
+            
             app.UseStaticFiles();
 
             app.UseMvc(routes =>

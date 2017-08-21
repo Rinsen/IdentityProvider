@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Rinsen.IdentityProvider.LocalAccounts;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,7 @@ namespace Rinsen.IdentityProvider
                 RedirectUri = "?"
             };
 
-            await _httpContextAccessor.HttpContext.Authentication.SignInAsync("RinsenCookie", new ClaimsPrincipal(new ClaimsIdentity(claims, "RinsenPassword")), authenticationProperties);
+            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(new ClaimsIdentity(claims, "RinsenPassword")), authenticationProperties);
 
             return LoginResult.Success(identity);
 

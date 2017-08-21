@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Http;
 using Rinsen.IdentityProvider.Contracts.v1;
 using System.Linq;
 using Rinsen.IdentityProvider.Contracts;
+using Microsoft.Extensions.Options;
+using System.Text.Encodings.Web;
 
 namespace Rinsen.IdentityProvider.Token
 {
@@ -20,9 +22,12 @@ namespace Rinsen.IdentityProvider.Token
     {
         private readonly ILogger<TokenHandler> _log;
 
-        public TokenHandler(ILogger<TokenHandler> log)
+        protected override object Events { get => base.Events; set => base.Events = value; }
+
+        protected override string ClaimsIssuer => base.ClaimsIssuer;
+
+        protected TokenHandler(IOptionsMonitor<TokenOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
         {
-            _log = log;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -30,7 +35,7 @@ namespace Rinsen.IdentityProvider.Token
             // Only run this if user is not authenticated
             if (Context.User.Identity.IsAuthenticated)
             {
-                return AuthenticateResult.Skip();
+                return AuthenticateResult.NoResult();
             }
 
             string authorizationToken = Request.Query["AuthToken"];
@@ -79,15 +84,15 @@ namespace Rinsen.IdentityProvider.Token
                         claims.Add(new Claim(ClaimTypes.Role, RinsenIdentityConstants.Administrator, externalIdentity.Issuer));
                     }
 
-                    var claimsIdentiy = new ClaimsIdentity(claims, Options.AuthenticationScheme);
+                    var claimsIdentiy = new ClaimsIdentity(claims, "Kalle Anka");
 
                     var claimsPrincipal = new ClaimsPrincipal(claimsIdentiy);
 
-                    await Context.Authentication.SignInAsync(Options.CookieAuthenticationScheme, claimsPrincipal, new AuthenticationProperties());
+                    await Context.SignInAsync(Options.CookieAuthenticationScheme, claimsPrincipal);
 
-                    await Options.Events.AuthenticationSucceeded(new AuthenticationSucceededContext { ClaimsPrincipal = claimsPrincipal });
+                    //await Options.Events.AuthenticationSucceeded(new AuthenticationSucceededContext { ClaimsPrincipal = claimsPrincipal });
 
-                    return AuthenticateResult.Success(new AuthenticationTicket(claimsPrincipal, new AuthenticationProperties(), Options.AuthenticationScheme));
+                    return AuthenticateResult.Success(new AuthenticationTicket(claimsPrincipal, "Kalle Anka"));
                 }
             }
             catch (Exception e)
@@ -97,43 +102,33 @@ namespace Rinsen.IdentityProvider.Token
             }
         }
 
-        protected override Task HandleSignOutAsync(SignOutContext context)
-        {
-            throw new NotSupportedException();
-        }
+        //protected override Task<bool> HandleUnauthorizedAsync(ChallengeContext context)
+        //{
+        //    if (Request.Query.ContainsKey("AuthToken"))
+        //    {
+        //        throw new InvalidOperationException("Possible auth loop detected");
+        //    }
 
-        protected override Task HandleSignInAsync(SignInContext context)
-        {
-            throw new NotSupportedException();
-        }
+        //    var redirectUrl = OriginalPathBase + Request.Path + Request.QueryString;
 
-        protected override Task<bool> HandleUnauthorizedAsync(ChallengeContext context)
-        {
-            if (Request.Query.ContainsKey("AuthToken"))
-            {
-                throw new InvalidOperationException("Possible auth loop detected");
-            }
+        //    var loginUri = Options.LoginPath + QueryString.Create(new[]
+        //                {
+        //                    new KeyValuePair<string, string>(Options.ReturnUrlParamterName, redirectUrl),
+        //                    new KeyValuePair<string, string>(Options.HostParameterName, Request.Host.Value)
+        //                }).ToUriComponent();
 
-            var redirectUrl = OriginalPathBase + Request.Path + Request.QueryString;
+        //    if (IsAjaxRequest(Request))
+        //    {
+        //        Response.Headers["Location"] = loginUri;
+        //        Response.StatusCode = 401;
+        //    }
+        //    else
+        //    {
+        //        Response.Redirect(loginUri);
+        //    }
 
-            var loginUri = Options.LoginPath + QueryString.Create(new[]
-                        {
-                            new KeyValuePair<string, string>(Options.ReturnUrlParamterName, redirectUrl),
-                            new KeyValuePair<string, string>(Options.HostParameterName, Request.Host.Value)
-                        }).ToUriComponent();
-
-            if (IsAjaxRequest(Request))
-            {
-                Response.Headers["Location"] = loginUri;
-                Response.StatusCode = 401;
-            }
-            else
-            {
-                Response.Redirect(loginUri);
-            }
-
-            return Task.FromResult(true);
-        }
+        //    return Task.FromResult(true);
+        //}
 
         private static bool IsAjaxRequest(HttpRequest request)
         {
