@@ -6,9 +6,7 @@
     <AssemblyName>IdentityClientWeb</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>IdentityClientWeb</PackageId>
-    <UserSecretsId>aspnet-IdentityClientWeb-20161014102321</UserSecretsId>
-    <!--<RuntimeFrameworkVersion>1.1.2</RuntimeFrameworkVersion>-->
-    <!--<PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>-->
+    <UserSecretsId>RinsenIdentityProvider</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

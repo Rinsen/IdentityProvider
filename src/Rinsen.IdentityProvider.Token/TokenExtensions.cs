@@ -1,31 +1,29 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Text;
-//using Microsoft.AspNetCore.Authentication;
+﻿using System;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 
-//namespace Rinsen.IdentityProvider.Token
-//{
-//    public class TokenExtensions
-//    {
+namespace Rinsen.IdentityProvider.Token
+{
+    public static class TokenExtensions
+    {
 
-//        public virtual AuthenticationBuilder AddScheme<TOptions, THandler>(string authenticationScheme, string displayName, Action<TOptions> configureOptions)
-//           where TOptions : AuthenticationSchemeOptions, new()
-//           where THandler : AuthenticationHandler<TOptions>
-//        {
-//            Services.Configure<AuthenticationOptions>(o =>
-//            {
-//                o.AddScheme(authenticationScheme, scheme => {
-//                    scheme.HandlerType = typeof(THandler);
-//                    scheme.DisplayName = displayName;
-//                });
-//            });
-//            if (configureOptions != null)
-//            {
-//                Services.Configure(authenticationScheme, configureOptions);
-//            }
-//            Services.AddTransient<THandler>();
-//            return this;
-//        }
-//    }
-//}
+        public static AuthenticationBuilder AddToken(this AuthenticationBuilder authenticationBuilder, Action<TokenOptions> configureOptions)
+        {
+            authenticationBuilder.Services.Configure<AuthenticationOptions>(o =>
+            {
+                o.AddScheme(TokenDefaults.AuthenticationScheme, scheme =>
+                {
+                    scheme.HandlerType = typeof(TokenHandler);
+                    scheme.DisplayName = TokenDefaults.AuthenticationScheme;
+                });
+            });
+            if (configureOptions != null)
+            {
+                authenticationBuilder.Services.Configure(TokenDefaults.AuthenticationScheme, configureOptions);
+            }
+            authenticationBuilder.Services.AddTransient<TokenHandler>();
+            return authenticationBuilder;
+        }
+    }
+}
 

@@ -18,12 +18,14 @@ namespace Rinsen.IdentityProviderWeb
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            Env = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment Env { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -42,9 +44,13 @@ namespace Rinsen.IdentityProviderWeb
                 .AddCookie(options =>
                 {
                     options.SessionStore = new SqlTicketStore(new SessionStorage(Configuration["Data:DefaultConnection:ConnectionString"]));
+                    options.LoginPath = "/Identity/Login";
                 });
 
-            services.AddDatabaseInstaller(Configuration["Data:DefaultConnection:ConnectionString"]);
+            if (Env.IsDevelopment())
+            {
+                services.AddDatabaseInstaller(Configuration["Data:DefaultConnection:ConnectionString"]);
+            }
 
             // Add framework services.
             services.AddMvc(options =>
@@ -63,7 +69,7 @@ namespace Rinsen.IdentityProviderWeb
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env/*, ILoggerFactory loggerFactory, IRinsenLoggerInitializer logInitializer*/)
+        public void Configure(IApplicationBuilder app/*, IHostingEnvironment env, ILoggerFactory loggerFactory, IRinsenLoggerInitializer logInitializer*/)
         {
             //logInitializer.Run(new FilterLoggerSettings {
             //    { "Microsoft", LogLevel.Warning },
@@ -72,8 +78,7 @@ namespace Rinsen.IdentityProviderWeb
 
             app.UseAuthentication();
 
-
-            if (env.IsDevelopment())
+            if (Env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 //app.UseBrowserLink();
@@ -89,7 +94,7 @@ namespace Rinsen.IdentityProviderWeb
 
             //app.UseLogMiddleware();
 
-            if (env.IsDevelopment())
+            if (Env.IsDevelopment())
             {
                 app.RunDatabaseInstaller(new DatabaseVersion[] { new FirstVersion(), new IdentityProviderWebFirstVersion(), new ReferenceIdentityFirstVersion() });
             }

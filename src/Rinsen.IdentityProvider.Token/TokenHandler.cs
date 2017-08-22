@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http.Features.Authentication;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +6,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Rinsen.IdentityProvider.Contracts.v1;
@@ -20,14 +18,15 @@ namespace Rinsen.IdentityProvider.Token
 {
     public class TokenHandler : AuthenticationHandler<TokenOptions>
     {
-        private readonly ILogger<TokenHandler> _log;
-
-        protected override object Events { get => base.Events; set => base.Events = value; }
-
-        protected override string ClaimsIssuer => base.ClaimsIssuer;
-
-        protected TokenHandler(IOptionsMonitor<TokenOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+        public TokenHandler(IOptionsMonitor<TokenOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
+            : base(options, logger, encoder, clock)
         {
+        }
+
+        protected override Task HandleChallengeAsync(AuthenticationProperties properties)
+        {
+            // Redirect to login service?
+            return base.HandleChallengeAsync(properties);
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -76,7 +75,7 @@ namespace Rinsen.IdentityProvider.Token
                                 new Claim(ClaimTypes.Email, externalIdentity.Email, externalIdentity.Issuer),
                                 new Claim(ClaimTypes.MobilePhone, externalIdentity.PhoneNumber, externalIdentity.Issuer),
                                 new Claim(ClaimTypes.GivenName, externalIdentity.GivenName, externalIdentity.Issuer),
-                                new Claim(ClaimTypes.Surname, externalIdentity.Surname, externalIdentity.Issuer)
+                                new Claim(ClaimTypes.Surname, externalIdentity.Surname, externalIdentity.Issuer)   
                             };
 
                     if (externalIdentity.Extensions.Any(c => c.Type == RinsenIdentityConstants.Role && c.Value == RinsenIdentityConstants.Administrator))
@@ -84,20 +83,20 @@ namespace Rinsen.IdentityProvider.Token
                         claims.Add(new Claim(ClaimTypes.Role, RinsenIdentityConstants.Administrator, externalIdentity.Issuer));
                     }
 
-                    var claimsIdentiy = new ClaimsIdentity(claims, "Kalle Anka");
+                    var claimsIdentiy = new ClaimsIdentity(claims, Options.ClaimsIssuer);
 
                     var claimsPrincipal = new ClaimsPrincipal(claimsIdentiy);
 
-                    await Context.SignInAsync(Options.CookieAuthenticationScheme, claimsPrincipal);
+                    await Context.SignInAsync(Options.AuthenticationScheme, claimsPrincipal);
 
-                    //await Options.Events.AuthenticationSucceeded(new AuthenticationSucceededContext { ClaimsPrincipal = claimsPrincipal });
+                    await Options.Events.AuthenticationSucceeded(new AuthenticationSucceededContext { ClaimsPrincipal = claimsPrincipal });
 
-                    return AuthenticateResult.Success(new AuthenticationTicket(claimsPrincipal, "Kalle Anka"));
+                    return AuthenticateResult.Success(new AuthenticationTicket(claimsPrincipal, TokenDefaults.AuthenticationScheme));
                 }
             }
             catch (Exception e)
             {
-                _log.LogError(1, e, $"Validate token {authorizationToken} failed");
+                Logger.LogError(1, e, $"Validate token {authorizationToken} failed");
                 return AuthenticateResult.Fail(e);
             }
         }

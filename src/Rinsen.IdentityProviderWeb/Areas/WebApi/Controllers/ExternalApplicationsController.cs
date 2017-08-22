@@ -7,10 +7,12 @@ using Rinsen.IdentityProviderWeb.Areas.WebApi.Models;
 using Rinsen.IdentityProvider.ExternalApplications;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Rinsen.IdentityProviderWeb.Areas.WebApi.Controllers
 {
     [Area("webapi")]
+    [Authorize("AdminsOnly")]
     public class ExternalApplicationsController : Controller
     {
         private readonly IExternalApplicationStorage _externalApplicationStorage;

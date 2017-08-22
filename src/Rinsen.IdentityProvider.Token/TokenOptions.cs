@@ -11,11 +11,6 @@ namespace Rinsen.IdentityProvider.Token
 
         public TokenOptions()
         {
-            CookieAuthenticationScheme = "RinsenCookie";
-            ReturnUrlParamterName = "ReturnUrl";
-            ApplicationKeyParameterName = "ApplicationKey";
-            HostParameterName = "Host";
-            TokenParameterName = "AuthToken";
             Events = new TokenAuthenticationEvents();
         }
 
@@ -34,15 +29,23 @@ namespace Rinsen.IdentityProvider.Token
             };
         }
 
+        public new ITokenAuthenticationEvents Events
+        {
+            get { return (ITokenAuthenticationEvents)base.Events; }
+            set { base.Events = value; }
+        }
+
         public string ApplicationKey { get; set; }
         public string ValidateTokenPath { get; set; }
         public string LoginPath { get; set; }
-        public string CookieAuthenticationScheme { get; set; }
+
         public TokenOptions Value { get { return this; } }
-        public string ReturnUrlParamterName { get; set; }
-        public string ApplicationKeyParameterName { get; set; }
-        public string TokenParameterName { get; set; }
-        public string HostParameterName { get; set; }
+
+        public string AuthenticationScheme { get; set; } = "Cookies";
+        public string ReturnUrlParamterName { get; set; } = "ReturnUrl";
+        public string ApplicationKeyParameterName { get; set; } = "ApplicationKey";
+        public string TokenParameterName { get; set; } = "AuthToken";
+        public string HostParameterName { get; set; } = "Host";
 
     }
 }

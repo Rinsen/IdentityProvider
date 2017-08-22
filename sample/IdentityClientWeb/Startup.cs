@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Rinsen.IdentityProvider.Token;
 using Rinsen.IdentityProvider.Core;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace IdentityClientWeb
 {
@@ -23,17 +24,23 @@ namespace IdentityClientWeb
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication()
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = TokenDefaults.AuthenticationScheme;
+                })
+                .AddToken(options =>
+                {
+                })
                 .AddCookie(options =>
                 {
-                    options.SessionStore = new SqlTicketStore(new SessionStorage(""));
+                    options.SessionStore = new SqlTicketStore(new SessionStorage(Configuration["Data:DefaultConnection:ConnectionString"]));
+                    
                 });
 
             services.AddAuthorization(options =>
             {
-                
                 //options.AddPolicy("AlwaysFail", policy => policy.Requirements.Add(new AlwaysFailRequirement()));
-
             });
 
             // Add framework services.
