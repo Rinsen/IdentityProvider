@@ -1,43 +1,33 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 using Rinsen.IdentityProvider.Core;
+using System;
 
 namespace Rinsen.IdentityProvider.Token
 {
-    public class TokenOptions : AuthenticationSchemeOptions, IOptions<TokenOptions>
+    public class TokenOptions : RemoteAuthenticationOptions, IOptions<TokenOptions>
     {
-        private readonly LocalIdentityForReferenceHandler _localIdentityForReferenceHandler;
-
         public TokenOptions()
         {
-            Events = new TokenAuthenticationEvents();
-        }
-
-        /// <summary>
-        /// Create a LocalIdentityForReferenceHandler for trying to create identity in database when logging in if identity does not exist
-        /// </summary>
-        /// <param name="connectionString">Database where identity is created</param>
-        public TokenOptions(string connectionString)
-            :this()
-        {
-            _localIdentityForReferenceHandler = new LocalIdentityForReferenceHandler(connectionString);
-
-            Events = new TokenAuthenticationEvents
+            Events = new RemoteAuthenticationEvents
             {
-                OnAuthenticationSuccess = async context => { await _localIdentityForReferenceHandler.CreateReferenceIdentityIfNotExists(context.ClaimsPrincipal); }
+                OnTicketReceived = async context => 
+                {
+                    if (string.IsNullOrEmpty(ConnectionString))
+                    {
+                        throw new ArgumentException($"No {nameof(ConnectionString)} provided in {nameof(TokenOptions)}");
+                    }
+
+                    var localIdentityForReferenceHandler = new LocalIdentityForReferenceHandler(ConnectionString);
+                    await localIdentityForReferenceHandler.CreateReferenceIdentityIfNotExists(context.Principal);
+                }
             };
         }
-
-        public new ITokenAuthenticationEvents Events
-        {
-            get { return (ITokenAuthenticationEvents)base.Events; }
-            set { base.Events = value; }
-        }
-
+        
         public string ApplicationKey { get; set; }
         public string ValidateTokenPath { get; set; }
         public string LoginPath { get; set; }
+        public string ConnectionString { get; set; }
 
         public TokenOptions Value { get { return this; } }
 

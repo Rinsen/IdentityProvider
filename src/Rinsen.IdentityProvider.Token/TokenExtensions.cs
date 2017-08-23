@@ -1,28 +1,23 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace Rinsen.IdentityProvider.Token
 {
     public static class TokenExtensions
     {
 
-        public static AuthenticationBuilder AddToken(this AuthenticationBuilder authenticationBuilder, Action<TokenOptions> configureOptions)
+        
+        public static AuthenticationBuilder AddToken(this AuthenticationBuilder builder, string authenticationScheme, Action<TokenOptions> configureOptions)
+            => builder.AddToken(authenticationScheme, authenticationScheme, configureOptions);
+
+
+        public static AuthenticationBuilder AddToken(this AuthenticationBuilder builder, string authenticationScheme, string displayName, Action<TokenOptions> configureOptions)
         {
-            authenticationBuilder.Services.Configure<AuthenticationOptions>(o =>
-            {
-                o.AddScheme(TokenDefaults.AuthenticationScheme, scheme =>
-                {
-                    scheme.HandlerType = typeof(TokenHandler);
-                    scheme.DisplayName = TokenDefaults.AuthenticationScheme;
-                });
-            });
-            if (configureOptions != null)
-            {
-                authenticationBuilder.Services.Configure(TokenDefaults.AuthenticationScheme, configureOptions);
-            }
-            authenticationBuilder.Services.AddTransient<TokenHandler>();
-            return authenticationBuilder;
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<TokenOptions>, TokenPostConfigureOptions>());
+            return builder.AddRemoteScheme<TokenOptions, RemoteTokenHandler>(authenticationScheme, displayName, configureOptions);
         }
     }
 }
