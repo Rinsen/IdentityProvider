@@ -8,7 +8,6 @@ using Rinsen.IdentityProvider.Contracts.v1;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
-using System.IO;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Linq;
@@ -44,61 +43,50 @@ namespace Rinsen.IdentityProvider.Token
             }
             try
             {
-                ExternalIdentity externalIdentity;
-                using (var httpClient = new HttpClient())
-                {
-                    var validationUrl = Options.ValidateTokenPath +
+                var validationUrl = Options.ValidateTokenPath +
                         QueryString.Create(new[]
                         {
                             new KeyValuePair<string, string>(Options.TokenParameterName, authorizationToken),
                             new KeyValuePair<string, string>(Options.ApplicationKeyParameterName, Options.ApplicationKey)
                         }).ToUriComponent();
 
-                    using (var stream = await httpClient.GetStreamAsync(validationUrl))
-                    using (StreamReader streamReader = new StreamReader(stream))
-                    using (JsonReader reader = new JsonTextReader(streamReader))
-                    {
-                        JsonSerializer serializer = new JsonSerializer();
+                var request = new HttpRequestMessage(HttpMethod.Get, validationUrl);
 
-                        externalIdentity = serializer.Deserialize<ExternalIdentity>(reader);
-                    }
-
-                    var claims = new List<Claim>
-                            {
-                                new Claim(ClaimTypes.NameIdentifier, externalIdentity.IdentityId.ToString(), nameof(Guid), externalIdentity.Issuer),
-                                new Claim(ClaimTypes.Name, $"{externalIdentity.GivenName} {externalIdentity.Surname}", externalIdentity.Issuer),
-                                new Claim(ClaimTypes.Email, externalIdentity.Email, externalIdentity.Issuer),
-                                new Claim(ClaimTypes.MobilePhone, externalIdentity.PhoneNumber, externalIdentity.Issuer),
-                                new Claim(ClaimTypes.GivenName, externalIdentity.GivenName, externalIdentity.Issuer),
-                                new Claim(ClaimTypes.Surname, externalIdentity.Surname, externalIdentity.Issuer)
-                            };
-
-                    if (externalIdentity.Extensions.Any(c => c.Type == RinsenIdentityConstants.Role && c.Value == RinsenIdentityConstants.Administrator))
-                    {
-                        claims.Add(new Claim(ClaimTypes.Role, RinsenIdentityConstants.Administrator, externalIdentity.Issuer));
-                    }
-
-                    var claimsIdentiy = new ClaimsIdentity(claims, Options.ClaimsIssuer);
-
-                    var claimsPrincipal = new ClaimsPrincipal(claimsIdentiy);
-
-                    //await Context.SignInAsync(Options.AuthenticationScheme, claimsPrincipal);
-
-                    //await Options.Events.AuthenticationSucceeded(new AuthenticationSucceededContext { ClaimsPrincipal = claimsPrincipal });
-
-                    return HandleRequestResult.Success(new AuthenticationTicket(claimsPrincipal, TokenDefaults.AuthenticationScheme));
+                var response = await Options.Backchannel.SendAsync(request, Context.RequestAborted);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException($"An error occurred when retrieving user information ({response.StatusCode}). Please check if the authentication information is correct and the corresponding RinsenIdentity API is enabled.");
                 }
+
+                var externalIdentity = JsonConvert.DeserializeObject<ExternalIdentity>(await response.Content.ReadAsStringAsync());
+
+                var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.NameIdentifier, externalIdentity.IdentityId.ToString(), nameof(Guid), externalIdentity.Issuer),
+                            new Claim(ClaimTypes.Name, $"{externalIdentity.GivenName} {externalIdentity.Surname}", externalIdentity.Issuer),
+                            new Claim(ClaimTypes.Email, externalIdentity.Email, externalIdentity.Issuer),
+                            new Claim(ClaimTypes.MobilePhone, externalIdentity.PhoneNumber, externalIdentity.Issuer),
+                            new Claim(ClaimTypes.GivenName, externalIdentity.GivenName, externalIdentity.Issuer),
+                            new Claim(ClaimTypes.Surname, externalIdentity.Surname, externalIdentity.Issuer)
+                        };
+
+                if (externalIdentity.Extensions.Any(c => c.Type == RinsenIdentityConstants.Role && c.Value == RinsenIdentityConstants.Administrator))
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, RinsenIdentityConstants.Administrator, externalIdentity.Issuer));
+                }
+
+                var claimsIdentiy = new ClaimsIdentity(claims, Options.ClaimsIssuer);
+
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentiy);
+
+                return HandleRequestResult.Success(new AuthenticationTicket(claimsPrincipal, TokenDefaults.AuthenticationScheme));
+                
             }
             catch (Exception e)
             {
                 Logger.LogError(1, e, $"Validate token {authorizationToken} failed");
                 return HandleRequestResult.Fail(e);
             }
-        }
-
-        public override Task<bool> ShouldHandleRequestAsync()
-        {
-            return base.ShouldHandleRequestAsync();
         }
 
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)
@@ -108,7 +96,7 @@ namespace Rinsen.IdentityProvider.Token
                 throw new InvalidOperationException("Possible auth loop detected");
             }
 
-            var redirectUrl = "/token";// OriginalPathBase + Request.Path + Request.QueryString;
+            var redirectUrl = Options.CallbackPath;// OriginalPathBase + Request.Path + Request.QueryString; What to do with this?!
 
             var loginUri = Options.LoginPath + QueryString.Create(new[]
                         {
