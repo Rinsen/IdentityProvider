@@ -24,7 +24,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
         {
             var validationResult = ValidationResult.Failure();
 
-            Assert.Equal(null, validationResult.Token);
+            Assert.Null(validationResult.Token);
             Assert.False(validationResult.Succeeded);
             Assert.True(validationResult.Failed);
         }
