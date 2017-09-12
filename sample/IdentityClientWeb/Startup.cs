@@ -8,6 +8,7 @@ using Rinsen.IdentityProvider.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Rinsen.IdentityProvider.Contracts;
 
 namespace IdentityClientWeb
 {
@@ -28,12 +29,12 @@ namespace IdentityClientWeb
             services.AddAuthentication(options =>
                 {
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = TokenDefaults.AuthenticationScheme;
                 })
                 .AddToken(TokenDefaults.AuthenticationScheme, options =>
                 {
                     
                     options.CallbackPath = new PathString("/token");
+                    options.ClaimsIssuer = RinsenIdentityConstants.RinsenIdentityProvider;
                     options.ConnectionString = Configuration["Data:DefaultConnection:ConnectionString"];
                     options.ApplicationKey = Configuration["IdentityProvider:ApplicationKey"];
                     options.LoginPath = Configuration["IdentityProvider:LoginPath"];
@@ -42,7 +43,6 @@ namespace IdentityClientWeb
                 .AddCookie(options =>
                 {
                     options.SessionStore = new SqlTicketStore(new SessionStorage(Configuration["Data:DefaultConnection:ConnectionString"]));
-                    
                 });
 
             services.AddAuthorization(options =>
@@ -64,10 +64,8 @@ namespace IdentityClientWeb
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env/*, ILoggerFactory loggerFactory*/)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //loggerFactory.AddConsole();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

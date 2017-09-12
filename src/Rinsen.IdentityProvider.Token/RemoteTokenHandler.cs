@@ -75,11 +75,17 @@ namespace Rinsen.IdentityProvider.Token
                     claims.Add(new Claim(ClaimTypes.Role, RinsenIdentityConstants.Administrator, externalIdentity.Issuer));
                 }
 
+                var isPersistant = true; // Change this to false when it´s possible to get a is persistant answer from the api
+                if (externalIdentity.Extensions.Any(c => c.Type == RinsenIdentityConstants.IsPersistant && c.Value == RinsenIdentityConstants.True))
+                {
+                    isPersistant = true;
+                }
+
                 var claimsIdentiy = new ClaimsIdentity(claims, Options.ClaimsIssuer);
 
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentiy);
-
-                return HandleRequestResult.Success(new AuthenticationTicket(claimsPrincipal, TokenDefaults.AuthenticationScheme));
+                var authTicket = new AuthenticationTicket(claimsPrincipal, new AuthenticationProperties { IsPersistent = isPersistant }, TokenDefaults.AuthenticationScheme);
+                return HandleRequestResult.Success(authTicket);
                 
             }
             catch (Exception e)

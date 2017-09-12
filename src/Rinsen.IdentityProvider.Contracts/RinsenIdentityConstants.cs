@@ -11,6 +11,10 @@ namespace Rinsen.IdentityProvider.Contracts
 
         public const string Role = "Role";
 
+        public const string IsPersistant = "IsPersistant";
+
+        public const string True = "True";
+
         public const string RinsenIdentityProvider = "RinsenIdentityProvider";
 
     }
