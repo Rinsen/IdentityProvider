@@ -10,5 +10,6 @@ namespace Rinsen.IdentityProvider.Core
         Task DeleteAsync(string sessionId);
         Task<IEnumerable<Session>> GetAsync(Guid identityId);
         Task<Session> GetAsync(string sessionId);
+        Task UpdateAsync(Session session);
     }
 }

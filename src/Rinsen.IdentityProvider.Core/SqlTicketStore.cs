@@ -23,11 +23,17 @@ namespace Rinsen.IdentityProvider.Core
             await _sessionStorage.DeleteAsync(key);
         }
 
-        public Task RenewAsync(string key, AuthenticationTicket ticket)
+        public async Task RenewAsync(string key, AuthenticationTicket ticket)
         {
+            var session = await _sessionStorage.GetAsync(key);
+
             var serializedTicket = _ticketSerializer.Serialize(ticket);
 
-            throw new NotImplementedException();
+            session.SerializedTicket = serializedTicket;
+            session.LastAccess = DateTimeOffset.Now;
+            session.Expires = ticket.Properties.ExpiresUtc ?? DateTimeOffset.Now.AddDays(1);
+
+            await _sessionStorage.UpdateAsync(session);
         }
 
         public async Task<AuthenticationTicket> RetrieveAsync(string key)

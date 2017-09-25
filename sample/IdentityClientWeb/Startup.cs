@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Rinsen.IdentityProvider.Contracts;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 
 namespace IdentityClientWeb
 {
@@ -26,24 +28,7 @@ namespace IdentityClientWeb
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                })
-                .AddToken(TokenDefaults.AuthenticationScheme, options =>
-                {
-                    
-                    options.CallbackPath = new PathString("/token");
-                    options.ClaimsIssuer = RinsenIdentityConstants.RinsenIdentityProvider;
-                    options.ConnectionString = Configuration["Data:DefaultConnection:ConnectionString"];
-                    options.ApplicationKey = Configuration["IdentityProvider:ApplicationKey"];
-                    options.LoginPath = Configuration["IdentityProvider:LoginPath"];
-                    options.ValidateTokenPath = Configuration["IdentityProvider:ValidateTokenPath"];
-                })
-                .AddCookie(options =>
-                {
-                    options.SessionStore = new SqlTicketStore(new SessionStorage(Configuration["Data:DefaultConnection:ConnectionString"]));
-                });
+            services.AddTokenAuthentication(Configuration);
 
             services.AddAuthorization(options =>
             {

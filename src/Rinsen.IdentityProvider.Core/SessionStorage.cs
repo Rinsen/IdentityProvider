@@ -38,6 +38,13 @@ namespace Rinsen.IdentityProvider.Core
 
         private const string _deleteSql = @"DELETE FROM UserSessions WHERE SessionId = @SessionId";
 
+        private const string _updateSql = @"UPDATE UserSessions SET
+                                                LastAccess = @LastAccess,
+                                                Expires = @Expires,
+                                                SerializedTicket = @SerializedTicket
+                                            WHERE
+                                                SessionId=@SessionId";
+
         public SessionStorage(string connectionString)
         {
             _connectionString = connectionString;
@@ -82,7 +89,7 @@ namespace Rinsen.IdentityProvider.Core
                 {
                     command.Parameters.Add(new SqlParameter("@SessionId", sessionId));
                     connection.Open();
-                    await command.ExecuteScalarAsync();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
         }
@@ -146,6 +153,24 @@ namespace Rinsen.IdentityProvider.Core
                 Expires = (DateTimeOffset)reader["Expires"],
                 SerializedTicket = (byte[])reader["SerializedTicket"]
             };
+        }
+
+        public async Task UpdateAsync(Session session)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                using (var command = new SqlCommand(_updateSql, connection))
+                {
+                    command.Parameters.Add(new SqlParameter("@SessionId", session.SessionId));
+                    command.Parameters.Add(new SqlParameter("@IdentityId", session.IdentityId));
+                    command.Parameters.Add(new SqlParameter("@LastAccess", session.LastAccess));
+                    command.Parameters.Add(new SqlParameter("@Expires", session.Expires));
+                    command.Parameters.Add(new SqlParameter("@SerializedTicket", session.SerializedTicket));
+                    connection.Open();
+
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
         }
     }
 }
