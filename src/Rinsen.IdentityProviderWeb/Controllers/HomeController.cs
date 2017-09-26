@@ -13,5 +13,14 @@ namespace Rinsen.IdentityProviderWeb.Controllers
             return View();
         }
 
+        public IActionResult ThrowError()
+        {
+            throw new Exception();
+        }
+
+        public IActionResult Error()
+        {
+            return View();
+        }
     }
 }

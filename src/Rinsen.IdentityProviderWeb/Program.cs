@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Builder;
 using Rinsen.Logger;
 
 namespace Rinsen.IdentityProviderWeb
@@ -12,25 +11,17 @@ namespace Rinsen.IdentityProviderWeb
     {
         public static void Main(string[] args)
         {
-            var webHost = new WebHostBuilder()
+            var webHost = WebHost.CreateDefaultBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    var env = hostingContext.HostingEnvironment;
-                    config.AddEnvironmentVariables();
-                    if (env.IsDevelopment())
-                    {
-                        config.AddUserSecrets<Startup>();
-                    }
-                })
                 .ConfigureLogging((hostingContext, loggingBuilder) =>
                 {
                     loggingBuilder
                         .AddFilter("Microsoft", LogLevel.Warning)
                         .AddFilter("System", LogLevel.Warning)
                         .AddFilter("LoggerSample", LogLevel.Debug)
-                        .AddRinsenLogger(options => {
+                        .AddRinsenLogger(options =>
+                        {
                             options.MinLevel = LogLevel.Debug;
                             options.ApplicationLogKey = hostingContext.Configuration["Logging:LogApplicationKey"];
                             options.LogServiceUri = hostingContext.Configuration["Logging:Uri"];

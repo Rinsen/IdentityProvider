@@ -31,15 +31,7 @@ namespace Rinsen.IdentityProviderWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRinsenIdentity(options => options.ConnectionString = Configuration["Data:DefaultConnection:ConnectionString"]);
-
-            //services.AddLogger(options =>
-            //{
-            //    options.EnvironmentName = env.EnvironmentName;
-            //    options.MinLevel = LogLevel.Trace;
-            //    options.ApplicationLogKey = Configuration["Logging:LogApplicationKey"];
-            //    options.LogServiceUri = Configuration["Logging:Uri"];
-            //});
-
+            
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -69,30 +61,19 @@ namespace Rinsen.IdentityProviderWeb
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app/*, IHostingEnvironment env, ILoggerFactory loggerFactory, IRinsenLoggerInitializer logInitializer*/)
+        public void Configure(IApplicationBuilder app)
         {
-            //logInitializer.Run(new FilterLoggerSettings {
-            //    { "Microsoft", LogLevel.Warning },
-            //    { "Rinsen", LogLevel.Information }
-            //});
-
             app.UseAuthentication();
 
             if (Env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseBrowserLink();
             }
             else
             {
+                //app.UseStatusCodePagesWithRedirects("~/errors/Code{0}");
                 app.UseExceptionHandler("/Home/Error");
             }
-
-            //app.UseStatusCodePagesWithRedirects("~/errors/Code{0}");
-
-            //app.UseDeveloperExceptionPage();
-
-            //app.UseLogMiddleware();
 
             if (Env.IsDevelopment())
             {

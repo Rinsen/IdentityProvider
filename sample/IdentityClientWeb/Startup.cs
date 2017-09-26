@@ -28,11 +28,12 @@ namespace IdentityClientWeb
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTokenAuthentication(Configuration);
+            services.AddDefaultTokenAuthentication(Configuration);
 
             services.AddAuthorization(options =>
             {
                 //options.AddPolicy("AlwaysFail", policy => policy.Requirements.Add(new AlwaysFailRequirement()));
+                //options.AddPolicy("AdminsOnly", policy => policy.RequireClaim("http://rinsen.se/Administrator"));
             });
 
             // Add framework services.

@@ -26,16 +26,5 @@
     <PackageReference Include="Rinsen.Logger" Version="0.2.8-beta" />
     <PackageReference Include="Rinsen.DatabaseInstaller" Version="0.4.0-beta" />
   </ItemGroup>
-
-  <!--<Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
-    <Exec Command="npm install" />
-    <Exec Command="bower install" />
-    <Exec Command="gulp clean" />
-    <Exec Command="gulp min" />
-  </Target>-->
-
-  <!--<ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0-msbuild3-final" />
-  </ItemGroup>-->
-
+  
 </Project>
