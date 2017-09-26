@@ -14,6 +14,16 @@ namespace Rinsen.IdentityProvider.Token
 {
     public static class TokenExtensions
     {
+        /// <summary>
+        /// Add default configuration of Rinsen.IdentityProvider.Token with cookie support and SqlTicketStore for session storage
+        /// <para>Connection string for storing session data and local user for reference Data:DefaultConnection:ConnectionString</para>
+        /// <para>IdentityProvider:ApplicationKey</para>
+        /// <para>IdentityProvider:LoginPath</para>
+        /// <para>IdentityProvider:ValidateTokenPath</para>
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
         public static AuthenticationBuilder AddTokenAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             return services.AddAuthentication(options =>
