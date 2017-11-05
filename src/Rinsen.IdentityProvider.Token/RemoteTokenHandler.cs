@@ -43,7 +43,7 @@ namespace Rinsen.IdentityProvider.Token
             }
             try
             {
-                var validationUrl = Options.ValidateTokenPath +
+                var validationUrl = Options.IdentityServiceUrl + "/api/v1/Identity/Get" +
                         QueryString.Create(new[]
                         {
                             new KeyValuePair<string, string>(Options.TokenParameterName, authorizationToken),
@@ -104,7 +104,7 @@ namespace Rinsen.IdentityProvider.Token
 
             var redirectUrl = Options.CallbackPath;// OriginalPathBase + Request.Path + Request.QueryString; What to do with this?!
 
-            var loginUri = Options.LoginPath + QueryString.Create(new[]
+            var loginUri = Options.IdentityServiceUrl + "/Identity/Login" + QueryString.Create(new[]
                         {
                                     new KeyValuePair<string, string>(Options.ReturnUrlParamterName, redirectUrl),
                                     new KeyValuePair<string, string>(Options.HostParameterName, Request.Host.Value)

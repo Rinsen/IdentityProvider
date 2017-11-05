@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Rinsen.Logger;
 
@@ -19,14 +18,7 @@ namespace Rinsen.IdentityProviderWeb
                     loggingBuilder
                         .AddFilter("Microsoft", LogLevel.Warning)
                         .AddFilter("System", LogLevel.Warning)
-                        .AddFilter("LoggerSample", LogLevel.Debug)
-                        .AddRinsenLogger(options =>
-                        {
-                            options.MinLevel = LogLevel.Debug;
-                            options.ApplicationLogKey = hostingContext.Configuration["Logging:LogApplicationKey"];
-                            options.LogServiceUri = hostingContext.Configuration["Logging:Uri"];
-                            options.EnvironmentName = hostingContext.HostingEnvironment.EnvironmentName;
-                        });
+                        .AddRinsenLogger(hostingContext.Configuration, hostingContext.HostingEnvironment.EnvironmentName);
                 })
                 .UseStartup<Startup>()
                 .Build();

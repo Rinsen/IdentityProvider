@@ -16,21 +16,21 @@ namespace Rinsen.IdentityProvider.Token
     {
         /// <summary>
         /// Add default configuration of Rinsen.IdentityProvider.Token with cookie support and SqlTicketStore for session storage
-        /// <para/>Connection string for storing session data and local user for reference Data:DefaultConnection:ConnectionString
+        /// <para/>Connection string for storing session data and local user for reference ConnectionString
         /// <para/>IdentityProvider:ApplicationKey
-        /// <para/>IdentityProvider:LoginPath
-        /// <para/>IdentityProvider:ValidateTokenPath
+        /// <para/>IdentityProvider:IdentityServiceUrl
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
         public static AuthenticationBuilder AddDefaultTokenAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            //if (string.IsNullOrEmpty(configuration["Data:DefaultConnection:ConnectionString"]))
-            //{
-            //    throw new ArgumentException($"No Data:DefaultConnection:ConnectionString ConnectionString provided in {nameof(configuration)}");
-            //}
-            var localIdentityForReferenceHandler = new LocalIdentityForReferenceHandler(configuration["Data:DefaultConnection:ConnectionString"]);
+            if (string.IsNullOrEmpty(configuration["ConnectionString"]))
+            {
+                throw new ArgumentException($"No ConnectionString provided in {nameof(configuration)}");
+            }
+
+            var localIdentityForReferenceHandler = new LocalIdentityForReferenceHandler(configuration["ConnectionString"]);
 
             return services.AddAuthentication(options =>
                  {
@@ -42,8 +42,7 @@ namespace Rinsen.IdentityProvider.Token
                         options.CallbackPath = new PathString("/token");
                         options.ClaimsIssuer = RinsenIdentityConstants.RinsenIdentityProvider;
                         options.ApplicationKey = configuration["IdentityProvider:ApplicationKey"];
-                        options.LoginPath = configuration["IdentityProvider:LoginPath"];
-                        options.ValidateTokenPath = configuration["IdentityProvider:ValidateTokenPath"];
+                        options.IdentityServiceUrl = configuration["IdentityProvider:IdentityServiceUrl"];
                         options.Events = new RemoteAuthenticationEvents
                         {
                             OnTicketReceived = async context =>
@@ -54,7 +53,7 @@ namespace Rinsen.IdentityProvider.Token
                     })
                     .AddCookie(options =>
                     {
-                        options.SessionStore = new SqlTicketStore(new SessionStorage(configuration["Data:DefaultConnection:ConnectionString"]));
+                        options.SessionStore = new SqlTicketStore(new SessionStorage(configuration["ConnectionString"]));
                         options.Events.OnRedirectToLogin = ctx => {
                             ctx.HttpContext.ChallengeAsync(TokenDefaults.AuthenticationScheme);
 

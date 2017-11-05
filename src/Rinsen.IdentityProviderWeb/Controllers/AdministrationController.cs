@@ -26,5 +26,9 @@ namespace Rinsen.IdentityProviderWeb.Controllers
             //return View();
         }
 
+        public IActionResult Exception()
+        {
+            throw new System.Exception("Test exception");
+        }
     }
 }
