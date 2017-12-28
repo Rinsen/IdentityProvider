@@ -28,7 +28,7 @@ namespace Rinsen.IdentityProvider
         private const string _getFromHostNameSql = @"SELECT 
                                             Active,
                                             ActiveUntil,
-                                            ClusteredId,
+                                            Id,
                                             ExternalApplicationId,
                                             HostName, 
                                             ApplicationKey
@@ -40,7 +40,7 @@ namespace Rinsen.IdentityProvider
         private const string _getFromApplicationKeySql = @"SELECT 
                                             Active,
                                             ActiveUntil,
-                                            ClusteredId,
+                                            Id,
                                             ExternalApplicationId,
                                             HostName, 
                                             ApplicationKey
@@ -52,7 +52,7 @@ namespace Rinsen.IdentityProvider
         private const string _getFromExternalApplicationIdSql = @"SELECT 
                                             Active,
                                             ActiveUntil,
-                                            ClusteredId,
+                                            Id,
                                             ExternalApplicationId,
                                             HostName, 
                                             ApplicationKey
@@ -64,7 +64,7 @@ namespace Rinsen.IdentityProvider
         private const string _getAllSql = @"SELECT 
                                                 Active,
                                                 ActiveUntil,
-                                                ClusteredId,
+                                                Id,
                                                 ExternalApplicationId,
                                                 HostName, 
                                                 ApplicationKey
@@ -101,7 +101,7 @@ namespace Rinsen.IdentityProvider
                         command.Parameters.Add(new SqlParameter("@ApplicationKey", externalApplication.ApplicationKey));
                         connection.Open();
 
-                        externalApplication.ClusteredId = (int)await command.ExecuteScalarAsync();
+                        externalApplication.Id = (int)await command.ExecuteScalarAsync();
                     }
                 }
                 catch (SqlException ex)
@@ -213,7 +213,7 @@ namespace Rinsen.IdentityProvider
             {
                 Active = (bool)reader["Active"],
                 ActiveUntil = (DateTimeOffset)reader["ActiveUntil"],
-                ClusteredId = (int)reader["ClusteredId"],
+                Id = (int)reader["Id"],
                 ExternalApplicationId = (Guid)reader["ExternalApplicationId"],
                 Hostname = (string)reader["HostName"],
                 ApplicationKey = (string)reader["ApplicationKey"]

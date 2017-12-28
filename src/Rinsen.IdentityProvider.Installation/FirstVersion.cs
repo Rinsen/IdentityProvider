@@ -48,7 +48,7 @@ namespace Rinsen.IdentityProvider.Installation
             sessionsTable.AddColumn(m => m.SerializedTicket);
 
             var externalApplicationTable = dbChangeList.AddNewTable<ExternalApplication>();
-            externalApplicationTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
+            externalApplicationTable.AddAutoIncrementColumn(m => m.Id, primaryKey: false);
             externalApplicationTable.AddColumn(m => m.ExternalApplicationId).PrimaryKey();
             externalApplicationTable.AddColumn(m => m.Hostname, 512).Unique();
             externalApplicationTable.AddColumn(m => m.Active);
