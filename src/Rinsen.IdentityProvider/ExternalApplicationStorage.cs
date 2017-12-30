@@ -15,34 +15,35 @@ namespace Rinsen.IdentityProvider
                                                 Active,
                                                 ActiveUntil,
                                                 ExternalApplicationId,
-                                                HostName, 
+                                                Name, 
                                                 ApplicationKey) 
                                             VALUES (
                                                 @Active,
                                                 @ActiveUntil,
                                                 @ExternalApplicationId,
-                                                @HostName,
+                                                @Name,
                                                 @ApplicationKey); 
                                             SELECT CAST(SCOPE_IDENTITY() as int)";
 
         private const string _getFromHostNameSql = @"SELECT 
-                                            Active,
-                                            ActiveUntil,
-                                            Id,
-                                            ExternalApplicationId,
-                                            HostName, 
-                                            ApplicationKey
+                                            extapp.Active,
+                                            extapp.ActiveUntil,
+                                            extapp.Id,
+                                            extapp.ExternalApplicationId,
+                                            extapp.Name, 
+                                            extapp.ApplicationKey
                                         FROM 
-                                            ExternalApplications 
+                                            ExternalApplications extapp
+                                        JOIN ExternalApplicationHostName hostname ON hostname.ExternalApplicationId = extapp.ExternalApplicationId
                                         WHERE 
-                                            HostName=@HostName";
+                                            extapp.Name=@Name AND hostname.HostName = @HostName";
 
         private const string _getFromApplicationKeySql = @"SELECT 
                                             Active,
                                             ActiveUntil,
                                             Id,
                                             ExternalApplicationId,
-                                            HostName, 
+                                            Name, 
                                             ApplicationKey
                                         FROM 
                                             ExternalApplications 
@@ -54,7 +55,7 @@ namespace Rinsen.IdentityProvider
                                             ActiveUntil,
                                             Id,
                                             ExternalApplicationId,
-                                            HostName, 
+                                            Name, 
                                             ApplicationKey
                                         FROM 
                                             ExternalApplications 
@@ -66,7 +67,7 @@ namespace Rinsen.IdentityProvider
                                                 ActiveUntil,
                                                 Id,
                                                 ExternalApplicationId,
-                                                HostName, 
+                                                Name, 
                                                 ApplicationKey
                                             FROM 
                                                 ExternalApplications";
@@ -77,7 +78,7 @@ namespace Rinsen.IdentityProvider
                                                 Active = @Active,
                                                 ActiveUntil = @ActiveUntil,
                                                 ApplicationKey=@ApplicationKey,
-                                                HostName = @HostName
+                                                Name = @Name
                                             WHERE 
                                                 ExternalApplicationId = @ExternalApplicationId";
 
@@ -97,7 +98,7 @@ namespace Rinsen.IdentityProvider
                         command.Parameters.Add(new SqlParameter("@Active", externalApplication.Active));
                         command.Parameters.Add(new SqlParameter("@ActiveUntil", externalApplication.ActiveUntil));
                         command.Parameters.Add(new SqlParameter("@ExternalApplicationId", externalApplication.ExternalApplicationId));
-                        command.Parameters.Add(new SqlParameter("@HostName", externalApplication.Hostname));
+                        command.Parameters.Add(new SqlParameter("@Name", externalApplication.Name));
                         command.Parameters.Add(new SqlParameter("@ApplicationKey", externalApplication.ApplicationKey));
                         connection.Open();
 
@@ -108,7 +109,7 @@ namespace Rinsen.IdentityProvider
                 {
                     if (ex.Number == 2601 || ex.Number == 2627)
                     {
-                        throw new ExternalApplicationAlreadyExistException($"External application {externalApplication.Hostname} already exist", ex);
+                        throw new ExternalApplicationAlreadyExistException($"External application {externalApplication.Name} already exist", ex);
                     }
                     throw;
                 }
@@ -143,11 +144,12 @@ namespace Rinsen.IdentityProvider
         }
         
 
-        public async Task<ExternalApplication> GetFromHostAsync(string host)
+        public async Task<ExternalApplication> GetFromApplicationNameAndHostAsync(string applicationName, string host)
         {
             using (var connection = new SqlConnection(_identityOptions.ConnectionString))
             using (var command = new SqlCommand(_getFromHostNameSql, connection))
             {
+                command.Parameters.Add(new SqlParameter("@Name", applicationName));
                 command.Parameters.Add(new SqlParameter("@HostName", host));
                 connection.Open();
                 var reader = await command.ExecuteReaderAsync();
@@ -215,7 +217,7 @@ namespace Rinsen.IdentityProvider
                 ActiveUntil = (DateTimeOffset)reader["ActiveUntil"],
                 Id = (int)reader["Id"],
                 ExternalApplicationId = (Guid)reader["ExternalApplicationId"],
-                Hostname = (string)reader["HostName"],
+                Name = (string)reader["Name"],
                 ApplicationKey = (string)reader["ApplicationKey"]
             };
         }
@@ -228,7 +230,7 @@ namespace Rinsen.IdentityProvider
                 command.Parameters.Add(new SqlParameter("@Active", externalApplication.Active));
                 command.Parameters.Add(new SqlParameter("@ActiveUntil", externalApplication.ActiveUntil));
                 command.Parameters.Add(new SqlParameter("@ExternalApplicationId", externalApplication.ExternalApplicationId));
-                command.Parameters.Add(new SqlParameter("@HostName", externalApplication.Hostname));
+                command.Parameters.Add(new SqlParameter("@Name", externalApplication.Name));
                 command.Parameters.Add(new SqlParameter("@ApplicationKey", externalApplication.ApplicationKey));
                 connection.Open();
 

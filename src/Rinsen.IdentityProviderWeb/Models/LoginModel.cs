@@ -14,6 +14,7 @@ namespace Rinsen.IdentityProviderWeb.Models
         [Required]
         public string Password { get; set; }
         public bool RememberMe { get; set; }
+        public string ApplicationName { get; set; }
         public string Host { get; set; }
         public string ReturnUrl { get; set; }
         public bool InvalidEmailOrPassword { get; set; }

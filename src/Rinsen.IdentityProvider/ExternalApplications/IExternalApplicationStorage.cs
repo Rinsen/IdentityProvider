@@ -7,7 +7,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
     public interface IExternalApplicationStorage
     {
         Task CreateAsync(ExternalApplication externalApplication);
-        Task<ExternalApplication> GetFromHostAsync(string host);
+        Task<ExternalApplication> GetFromApplicationNameAndHostAsync(string applicationName, string host);
         Task<ExternalApplication> GetFromApplicationKeyAsync(string applicationKey);
         Task<ExternalApplication> GetFromExternalApplicationIdAsync(Guid externalApplicationId);
         Task<IEnumerable<ExternalApplication>> GetAllAsync();

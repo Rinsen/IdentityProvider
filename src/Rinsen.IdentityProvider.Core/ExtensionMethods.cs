@@ -66,6 +66,30 @@ namespace Rinsen.IdentityProvider.Core
             return result;
         }
 
+        public static bool GetClaimBoolValue(this ClaimsPrincipal claimsPrincipal, string claimType)
+        {
+            return claimsPrincipal.GetClaimBoolValue(m => m.Type == claimType);
+        }
+
+        public static bool GetClaimBoolValue(this ClaimsPrincipal claimsPrincipal, Predicate<Claim> match)
+        {
+            if (claimsPrincipal.HasClaim(match))
+            {
+                try
+                {
+                    return claimsPrincipal.Claims.Where(new Func<Claim, bool>(match)).Single().Value.Equals("True", StringComparison.InvariantCultureIgnoreCase);
+                }
+                catch (InvalidOperationException)
+                {
+                    throw new InvalidOperationException("The claims collection does not contain exactly one element.");
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("The claims collection does not contain a element that match.");
+            }
+        }
+
         public static void AddRinsenAuthentication(this IServiceCollection services)
         {
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();

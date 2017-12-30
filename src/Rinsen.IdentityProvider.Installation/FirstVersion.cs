@@ -27,6 +27,15 @@ namespace Rinsen.IdentityProvider.Installation
             identitiesTable.AddColumn(m => m.PhoneNumberConfirmed);
             identitiesTable.AddColumn(m => m.Updated);
 
+            var identityAttributesTable = dbChangeList.AddNewTable<IdentityAttribute>();
+            identityAttributesTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
+            identityAttributesTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId").Unique().NotNull();
+            identityAttributesTable.AddColumn(m => m.Attribute);
+
+            var identityAttributesTableUniqueIndex = dbChangeList.AddNewUniqueIndex<IdentityAttribute>("IdentityAndAttribute");
+            identityAttributesTableUniqueIndex.AddColumn(m => m.IdentityId);
+            identityAttributesTableUniqueIndex.AddColumn(m => m.Attribute);
+
             var localAccountsTable = dbChangeList.AddNewTable<LocalAccount>();
             localAccountsTable.AddAutoIncrementColumn(m => m.ClusteredId);
             localAccountsTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId").Unique().NotNull();
@@ -39,10 +48,11 @@ namespace Rinsen.IdentityProvider.Installation
             localAccountsTable.AddColumn(m => m.PasswordSalt, 16);
             localAccountsTable.AddColumn(m => m.Updated);
 
-            var sessionsTable = dbChangeList.AddNewTable<Session>("UserSessions");
+            var sessionsTable = dbChangeList.AddNewTable<Session>();
             sessionsTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
             sessionsTable.AddColumn(m => m.SessionId, 60).PrimaryKey();
             sessionsTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId");
+            sessionsTable.AddColumn(m => m.CorrelationId);
             sessionsTable.AddColumn(m => m.LastAccess);
             sessionsTable.AddColumn(m => m.Expires);
             sessionsTable.AddColumn(m => m.SerializedTicket);
@@ -50,17 +60,34 @@ namespace Rinsen.IdentityProvider.Installation
             var externalApplicationTable = dbChangeList.AddNewTable<ExternalApplication>();
             externalApplicationTable.AddAutoIncrementColumn(m => m.Id, primaryKey: false);
             externalApplicationTable.AddColumn(m => m.ExternalApplicationId).PrimaryKey();
-            externalApplicationTable.AddColumn(m => m.Hostname, 512).Unique();
             externalApplicationTable.AddColumn(m => m.Active);
             externalApplicationTable.AddColumn(m => m.ActiveUntil);
             externalApplicationTable.AddColumn(m => m.ApplicationKey, 256);
+            externalApplicationTable.AddColumn(m => m.Created);
+            externalApplicationTable.AddColumn(m => m.Name, 256).Unique();
+
+            var externalApplicationHostNameTable = dbChangeList.AddNewTable<ExternalApplicationHostName>();
+            externalApplicationHostNameTable.AddColumn(m => m.ExternalApplicationId).ForeignKey<ExternalApplication>(m => m.ExternalApplicationId);
+            externalApplicationHostNameTable.AddColumn(m => m.Hostname, 512).PrimaryKey();
+            externalApplicationHostNameTable.AddColumn(m => m.Active);
+            externalApplicationHostNameTable.AddColumn(m => m.ActiveUntil);
+            externalApplicationHostNameTable.AddColumn(m => m.Created);
 
             var tokenTable = dbChangeList.AddNewTable<Token>();
             tokenTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
             tokenTable.AddColumn(m => m.ExternalApplicationId).ForeignKey<ExternalApplication>(m => m.ExternalApplicationId);
             tokenTable.AddColumn(m => m.Created);
+            tokenTable.AddColumn(m => m.CorrelationId);
+            tokenTable.AddColumn(m => m.Expiration);
             tokenTable.AddColumn(m => m.IdentityId);
             tokenTable.AddColumn(m => m.TokenId, 50).PrimaryKey();
+
+            var externalSessionsTable = dbChangeList.AddNewTable<ExternalSession>();
+            externalSessionsTable.AddAutoIncrementColumn(m => m.Id);
+            externalSessionsTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId");
+            externalSessionsTable.AddColumn(m => m.Created);
+            externalSessionsTable.AddColumn(m => m.CorrelationId);
+            externalSessionsTable.AddColumn(m => m.ExternalApplicationId).ForeignKey<ExternalApplication>(m => m.ExternalApplicationId);
         }
     }
 }

@@ -11,22 +11,22 @@ namespace Rinsen.IdentityProviderWeb.IdentityExtensions
 {
     public class IdentityWebLoginService : LoginService
     {
-        private readonly AdministratorStorage _administratorStorage;
+        private readonly IIdentityAttributeStorage _identityAttributeStorage;
         public IdentityWebLoginService(ILocalAccountService localAccountService,
             IIdentityService identityService,
             IHttpContextAccessor httpContextAccessor,
-            AdministratorStorage administratorStorage)
+            IIdentityAttributeStorage identityAttributeStorage)
             : base(localAccountService, identityService, httpContextAccessor)
         {
-            _administratorStorage = administratorStorage;
+            _identityAttributeStorage = identityAttributeStorage;
 
         }
 
         protected override async Task AddApplicationSpecificClaimsAsync(List<Claim> claims)
         {
-            var administrator = await _administratorStorage.GetAsync(Guid.Parse(claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value));
+            var identityAttributes = await _identityAttributeStorage.GetIdentityAttributesAsync(Guid.Parse(claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value));
 
-            if (administrator != default(Administrator))
+            if (identityAttributes.Any(m => m.Attribute == "Administrator"))
             {
                 claims.Add(new Claim("http://rinsen.se/Administrator", "True"));
             }

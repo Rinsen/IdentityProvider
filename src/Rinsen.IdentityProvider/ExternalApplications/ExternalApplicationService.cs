@@ -23,7 +23,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
             _log = log;
         }
 
-        public async Task<IdentityResult> GetIdentityForTokenAndApplicationKeyAsync(string tokenId, string applicationKey)
+        public async Task<IdentityResult> GetTokenAsync(string tokenId, string applicationKey)
         {
             if (string.IsNullOrEmpty(tokenId))
             {
@@ -55,18 +55,18 @@ namespace Rinsen.IdentityProvider.ExternalApplications
                 && externalApplication.ExternalApplicationId == token.ExternalApplicationId 
                 && token.Created.AddSeconds(15) >= DateTimeOffset.Now)
             {
-                return IdentityResult.Success(token.IdentityId);
+                return IdentityResult.Success(token);
             }
 
             return IdentityResult.Failure();
         }
 
-        public async Task<ValidationResult> GetTokenForValidHostAsync(string host, Guid identityId)
+        public async Task<ValidationResult> GetTokenForValidHostAsync(string applicationName, string host, Guid identityId, Guid correlationId, bool rememberMe)
         {
             if (string.IsNullOrEmpty(host))
                 return ValidationResult.Failure();
 
-            var externalApplication = await _externalApplicationStorage.GetFromHostAsync(host);
+            var externalApplication = await _externalApplicationStorage.GetFromApplicationNameAndHostAsync(applicationName, host);
 
             if (externalApplication == default(ExternalApplication))
             {
@@ -82,7 +82,9 @@ namespace Rinsen.IdentityProvider.ExternalApplications
                 TokenId = tokenId,
                 Created = DateTimeOffset.Now,
                 ExternalApplicationId = externalApplication.ExternalApplicationId,
-                IdentityId = identityId
+                IdentityId = identityId,
+                Expiration = rememberMe,
+                CorrelationId = correlationId
             };
 
             await _tokenStorage.CreateAsync(token);

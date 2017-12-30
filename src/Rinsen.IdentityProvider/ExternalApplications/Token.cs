@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider.ExternalApplications
 {
@@ -12,6 +9,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
         public Guid ExternalApplicationId { get; set; }
         public DateTimeOffset Created { get; set; }
         public Guid IdentityId { get; set; }
-
+        public bool Expiration { get; set; }
+        public Guid CorrelationId { get; set; }
     }
 }

@@ -67,7 +67,9 @@ namespace Rinsen.IdentityProvider.Token
                             new Claim(ClaimTypes.Email, externalIdentity.Email, externalIdentity.Issuer),
                             new Claim(ClaimTypes.MobilePhone, externalIdentity.PhoneNumber, externalIdentity.Issuer),
                             new Claim(ClaimTypes.GivenName, externalIdentity.GivenName, externalIdentity.Issuer),
-                            new Claim(ClaimTypes.Surname, externalIdentity.Surname, externalIdentity.Issuer)
+                            new Claim(ClaimTypes.Surname, externalIdentity.Surname, externalIdentity.Issuer),
+                            new Claim(ClaimTypes.Expiration, externalIdentity.Expiration.ToString(), externalIdentity.Issuer),
+                            new Claim(ClaimTypes.SerialNumber, externalIdentity.CorrelationId.ToString(), externalIdentity.Issuer)
                         };
 
                 if (externalIdentity.Extensions.Any(c => c.Type == RinsenIdentityConstants.Role && c.Value == RinsenIdentityConstants.Administrator))
@@ -75,16 +77,10 @@ namespace Rinsen.IdentityProvider.Token
                     claims.Add(new Claim(ClaimTypes.Role, RinsenIdentityConstants.Administrator, externalIdentity.Issuer));
                 }
 
-                var isPersistant = true; // Change this to false when it´s possible to get a is persistant answer from the api
-                if (externalIdentity.Extensions.Any(c => c.Type == RinsenIdentityConstants.IsPersistant && c.Value == RinsenIdentityConstants.True))
-                {
-                    isPersistant = true;
-                }
-
                 var claimsIdentiy = new ClaimsIdentity(claims, Options.ClaimsIssuer);
 
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentiy);
-                var authTicket = new AuthenticationTicket(claimsPrincipal, new AuthenticationProperties { IsPersistent = isPersistant }, TokenDefaults.AuthenticationScheme);
+                var authTicket = new AuthenticationTicket(claimsPrincipal, new AuthenticationProperties { IsPersistent = externalIdentity.Expiration }, TokenDefaults.AuthenticationScheme);
                 return HandleRequestResult.Success(authTicket);
                 
             }

@@ -2,13 +2,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Rinsen.IdentityProvider;
-using Rinsen.Logger;
 using Rinsen.DatabaseInstaller;
 using Rinsen.IdentityProvider.Installation;
 using Microsoft.AspNetCore.Mvc;
-using Rinsen.IdentityProviderWeb.Installation;
 using Rinsen.IdentityProviderWeb.IdentityExtensions;
 using Rinsen.IdentityProvider.Core;
 using Rinsen.IdentityProvider.Installation.ReferenceIdentityInstallation;
@@ -57,7 +54,6 @@ namespace Rinsen.IdentityProviderWeb
 
             services.Remove(new ServiceDescriptor(typeof(ILoginService), typeof(LoginService), ServiceLifetime.Transient));
             services.AddTransient<ILoginService, IdentityWebLoginService>();
-            services.AddTransient<AdministratorStorage, AdministratorStorage>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,7 +73,7 @@ namespace Rinsen.IdentityProviderWeb
 
             if (Env.IsDevelopment())
             {
-                app.RunDatabaseInstaller(new DatabaseVersion[] { new FirstVersion(), new IdentityProviderWebFirstVersion(), new ReferenceIdentityFirstVersion() });
+                app.RunDatabaseInstaller(new DatabaseVersion[] { new FirstVersion(), new ReferenceIdentityFirstVersion() });
             }
             
             app.UseStaticFiles();

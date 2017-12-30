@@ -54,12 +54,13 @@ namespace Rinsen.IdentityProvider.Core
         {
             var bytes = new byte[32];
             CryptoRandom.GetBytes(bytes);
-            var correlationId = Base64UrlTextEncoder.Encode(bytes);
+            var sessionId = Base64UrlTextEncoder.Encode(bytes);
 
             var session = new Session
             {
-                SessionId = correlationId,
+                SessionId = sessionId,
                 IdentityId = ticket.Principal.GetClaimGuidValue(ClaimTypes.NameIdentifier),
+                CorrelationId = ticket.Principal.GetClaimGuidValue(ClaimTypes.SerialNumber),
                 LastAccess = DateTimeOffset.Now,
                 Expires = ticket.Properties.ExpiresUtc ?? DateTimeOffset.Now.AddDays(1),
                 SerializedTicket = _ticketSerializer.Serialize(ticket)

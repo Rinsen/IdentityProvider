@@ -2,21 +2,12 @@
 
 namespace Rinsen.IdentityProvider.ExternalApplications
 {
-    public class ExternalApplication
+    public class ExternalSession
     {
         public int Id { get; set; }
-
+        public Guid CorrelationId { get; set; }
+        public Guid IdentityId { get; set; }
         public Guid ExternalApplicationId { get; set; }
-
-        public string ApplicationKey { get; set; }
-
-        public string Name { get; set; }
-
-        public bool Active { get; set; }
-
         public DateTimeOffset Created { get; set; }
-
-        public DateTimeOffset ActiveUntil { get; set; }
-
     }
 }

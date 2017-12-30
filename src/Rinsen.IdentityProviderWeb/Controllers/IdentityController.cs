@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Rinsen.IdentityProvider;
 using Rinsen.IdentityProvider.Core;
 using Rinsen.IdentityProvider.ExternalApplications;
 using Rinsen.IdentityProvider.LocalAccounts;
 using Rinsen.IdentityProviderWeb.Models;
 using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -34,16 +32,14 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(string returnUrl, string host)
+        public async Task<IActionResult> Login(string returnUrl, string host, string applicationName)
         {
             if (User.Identity.IsAuthenticated)
             {
-                var identityId = User.GetClaimGuidValue(ClaimTypes.NameIdentifier);
-
-                return await RedirectToLocalOrTrustedHostOnlyAsync(returnUrl, host, identityId);
+                return await RedirectToLocalOrTrustedHostOnlyAsync(applicationName, returnUrl, host);
             }
 
-            return View(new LoginModel { ReturnUrl = returnUrl, Host = host } );
+            return View(new LoginModel { ReturnUrl = returnUrl, Host = host, ApplicationName = applicationName } );
         }
 
         [HttpPost]
@@ -56,7 +52,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
                 if (result.Succeeded)
                 {
-                    return await RedirectToLocalOrTrustedHostOnlyAsync(model.ReturnUrl, model.Host, result.Identity.IdentityId);
+                    return await RedirectToLocalOrTrustedHostOnlyAsync(model.ApplicationName, model.ReturnUrl, model.Host);
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -93,7 +89,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
                         if (loginResult.Succeeded)
                         {
-                            return await RedirectToLocalOrTrustedHostOnlyAsync(model.ReturnUrl, model.Host, createIdentityResult.Identity.IdentityId);
+                            return await RedirectToLocalOrTrustedHostOnlyAsync(model.ApplicationName, model.ReturnUrl, model.Host);
                         }
                     }
                 }
@@ -113,14 +109,19 @@ namespace Rinsen.IdentityProviderWeb.Controllers
             return View();
         }
 
-        private async Task<IActionResult> RedirectToLocalOrTrustedHostOnlyAsync(string returnUrl, string host, Guid identityId)
+        private async Task<IActionResult> RedirectToLocalOrTrustedHostOnlyAsync(string applicationName, string returnUrl, string host)
         {
             if (!string.IsNullOrEmpty(host))
             {
-                var result = await _externalApplicationService.GetTokenForValidHostAsync(host, identityId);
+                var identityId = User.GetClaimGuidValue(ClaimTypes.NameIdentifier);
+                var correlationId = User.GetClaimGuidValue(ClaimTypes.SerialNumber);
+                var rememberMe = User.GetClaimBoolValue(ClaimTypes.Expiration);
+
+                var result = await _externalApplicationService.GetTokenForValidHostAsync(applicationName, host, identityId, correlationId, rememberMe);
 
                 if (result.Succeeded)
                 {
+                    // Always enforce https, no options on this
                     var uri = $"https://{host}{returnUrl}" + QueryString.Create("AuthToken", result.Token).ToUriComponent();
 
                     return Redirect(uri);

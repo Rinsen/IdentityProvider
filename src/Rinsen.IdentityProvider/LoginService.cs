@@ -35,7 +35,7 @@ namespace Rinsen.IdentityProvider
 
             var identity = await _identityService.GetIdentityAsync((Guid)identityId);
 
-            var claims = await GetClaimsForIdentityAsync(identity);
+            var claims = await GetClaimsForIdentityAsync(identity, rememberMe);
 
             var authenticationProperties = new AuthenticationProperties()
             {
@@ -49,10 +49,9 @@ namespace Rinsen.IdentityProvider
             await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(new ClaimsIdentity(claims, "RinsenPassword")), authenticationProperties);
 
             return LoginResult.Success(identity);
-
         }
 
-        private async Task<List<Claim>> GetClaimsForIdentityAsync(Identity identity)
+        private async Task<List<Claim>> GetClaimsForIdentityAsync(Identity identity, bool rememberMe)
         {
             var claims = new List<Claim>
             {
@@ -60,7 +59,9 @@ namespace Rinsen.IdentityProvider
                 new Claim(ClaimTypes.NameIdentifier, identity.IdentityId.ToString(), ClaimValueTypes.String, "RinsenIdentityProvider"),
                 new Claim(ClaimTypes.Email, identity.Email, ClaimValueTypes.String, "RinsenIdentityProvider"),
                 new Claim(ClaimTypes.GivenName, identity.GivenName, ClaimValueTypes.String, "RinsenIdentityProvider"),
-                new Claim(ClaimTypes.Surname, identity.Surname, ClaimValueTypes.String, "RinsenIdentityProvider")
+                new Claim(ClaimTypes.Surname, identity.Surname, ClaimValueTypes.String, "RinsenIdentityProvider"),
+                new Claim(ClaimTypes.Expiration, rememberMe.ToString(), ClaimValueTypes.String, "RinsenIdentityProvider"),
+                new Claim(ClaimTypes.SerialNumber, Guid.NewGuid().ToString(), ClaimValueTypes.String, "RinsenIdentityProvider"),
             };
 
             await AddApplicationSpecificClaimsAsync(claims);

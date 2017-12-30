@@ -35,6 +35,7 @@ namespace Rinsen.IdentityProviderWeb.Models
         [Required(ErrorMessage = "Invite code is required")]
         public string InviteCode { get; set; }
 
+        public string ApplicationName { get; set; }
         public string ReturnUrl { get; set; }
         public string Host { get; set; }
 
