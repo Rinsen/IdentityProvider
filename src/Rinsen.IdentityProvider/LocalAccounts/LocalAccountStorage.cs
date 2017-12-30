@@ -4,7 +4,7 @@ using System;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
-namespace Rinsen.IdentityProvider
+namespace Rinsen.IdentityProvider.LocalAccounts
 {
 
     public class LocalAccountStorage : ILocalAccountStorage
@@ -33,7 +33,7 @@ namespace Rinsen.IdentityProvider
                                         @Updated); 
                                     SELECT CAST(SCOPE_IDENTITY() as int)";
 
-        const string _selectWithIdentityId = @"SELECT ClusteredId,
+        const string _selectWithIdentityId = @"SELECT Id,
                                         Created,
                                         FailedLoginCount,
                                         IdentityId,
@@ -48,7 +48,7 @@ namespace Rinsen.IdentityProvider
                                     WHERE 
                                         IdentityId=@IdentityId";
 
-        const string _selectWithLoginId = @"SELECT ClusteredId,
+        const string _selectWithLoginId = @"SELECT Id,
                                         Created,
                                         FailedLoginCount,
                                         IdentityId,
@@ -97,7 +97,7 @@ namespace Rinsen.IdentityProvider
 
                         connection.Open();
 
-                        localAccount.ClusteredId = (int)await command.ExecuteScalarAsync();
+                        localAccount.Id = (int)await command.ExecuteScalarAsync();
                     }
                 }
                 catch (SqlException ex)
@@ -173,7 +173,7 @@ namespace Rinsen.IdentityProvider
                 IdentityId = (Guid)reader["IdentityId"],
                 IsDisabled = (bool)reader["IsDisabled"],
                 IterationCount = (int)reader["IterationCount"],
-                ClusteredId = (int)reader["ClusteredId"],
+                Id = (int)reader["Id"],
                 LoginId = (string)reader["LoginId"],
                 PasswordHash = (byte[])reader["PasswordHash"],
                 PasswordSalt = (byte[])reader["PasswordSalt"],

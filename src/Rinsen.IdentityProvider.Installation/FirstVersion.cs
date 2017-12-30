@@ -37,7 +37,7 @@ namespace Rinsen.IdentityProvider.Installation
             identityAttributesTableUniqueIndex.AddColumn(m => m.Attribute);
 
             var localAccountsTable = dbChangeList.AddNewTable<LocalAccount>();
-            localAccountsTable.AddAutoIncrementColumn(m => m.ClusteredId);
+            localAccountsTable.AddAutoIncrementColumn(m => m.Id);
             localAccountsTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId").Unique().NotNull();
             localAccountsTable.AddColumn(m => m.Created);
             localAccountsTable.AddColumn(m => m.FailedLoginCount);
