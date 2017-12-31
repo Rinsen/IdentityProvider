@@ -49,7 +49,7 @@ namespace Rinsen.IdentityProviderWeb.Areas.WebApi.Controllers
                 ActiveUntil = externalApplicationToCreate.ActiveUntil,
                 ApplicationKey = applicationKey,
                 ExternalApplicationId = Guid.NewGuid(),
-                Name = externalApplicationToCreate.HostName
+                Name = externalApplicationToCreate.Name
             };
 
             await _externalApplicationStorage.CreateAsync(newExternalApplication);
@@ -64,7 +64,7 @@ namespace Rinsen.IdentityProviderWeb.Areas.WebApi.Controllers
 
             externalApplication.Active = externalApplicationToUpdate.Active;
             externalApplication.ActiveUntil = externalApplicationToUpdate.ActiveUntil;
-            externalApplication.Name = externalApplicationToUpdate.Hostname;
+            externalApplication.Name = externalApplicationToUpdate.Name;
 
             await _externalApplicationStorage.UpdateAsync(externalApplication);
 

@@ -25,8 +25,10 @@ namespace Rinsen.IdentityProvider
             services.AddScoped<IIdentityStorage, IdentityStorage>();
             services.AddScoped<ISessionStorage, SessionStorage>();
             services.AddScoped<IExternalApplicationStorage, ExternalApplicationStorage>();
+            services.AddScoped<IExternalSessionStorage, ExternalSessionStorage>();
             services.AddScoped<ITokenStorage, TokenStorage>();
             services.AddScoped<IIdentityAccessor, IdentityAccessService>();
+            services.AddScoped<IIdentityAttributeStorage, IdentityAttributeStorage>();
 
             services.AddRinsenAuthentication();
         }

@@ -15,12 +15,14 @@ namespace Rinsen.IdentityProvider.ExternalApplications
         private const string _createSql = @"INSERT INTO ExternalApplications (
                                                 Active,
                                                 ActiveUntil,
+                                                Created,
                                                 ExternalApplicationId,
                                                 Name, 
                                                 ApplicationKey) 
                                             VALUES (
                                                 @Active,
                                                 @ActiveUntil,
+                                                @Created,
                                                 @ExternalApplicationId,
                                                 @Name,
                                                 @ApplicationKey); 
@@ -29,6 +31,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
         private const string _getFromHostNameSql = @"SELECT 
                                             extapp.Active,
                                             extapp.ActiveUntil,
+                                            extapp.Created,
                                             extapp.Id,
                                             extapp.ExternalApplicationId,
                                             extapp.Name, 
@@ -42,6 +45,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
         private const string _getFromApplicationKeySql = @"SELECT 
                                             Active,
                                             ActiveUntil,
+                                            Created,
                                             Id,
                                             ExternalApplicationId,
                                             Name, 
@@ -54,6 +58,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
         private const string _getFromExternalApplicationIdSql = @"SELECT 
                                             Active,
                                             ActiveUntil,
+                                            Created,
                                             Id,
                                             ExternalApplicationId,
                                             Name, 
@@ -66,6 +71,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
         private const string _getAllSql = @"SELECT 
                                                 Active,
                                                 ActiveUntil,
+                                                Created,
                                                 Id,
                                                 ExternalApplicationId,
                                                 Name, 
@@ -98,6 +104,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
                     {
                         command.Parameters.Add(new SqlParameter("@Active", externalApplication.Active));
                         command.Parameters.Add(new SqlParameter("@ActiveUntil", externalApplication.ActiveUntil));
+                        command.Parameters.Add(new SqlParameter("@Created", externalApplication.Created));
                         command.Parameters.Add(new SqlParameter("@ExternalApplicationId", externalApplication.ExternalApplicationId));
                         command.Parameters.Add(new SqlParameter("@Name", externalApplication.Name));
                         command.Parameters.Add(new SqlParameter("@ApplicationKey", externalApplication.ApplicationKey));
@@ -216,6 +223,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
             {
                 Active = (bool)reader["Active"],
                 ActiveUntil = (DateTimeOffset)reader["ActiveUntil"],
+                Created = (DateTimeOffset)reader["Created"],
                 Id = (int)reader["Id"],
                 ExternalApplicationId = (Guid)reader["ExternalApplicationId"],
                 Name = (string)reader["Name"],

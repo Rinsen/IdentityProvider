@@ -10,15 +10,17 @@ namespace Rinsen.IdentityProvider.Core
     {
         private string _connectionString;
 
-        private const string _insertSql = @"INSERT INTO UserSessions (
+        private const string _insertSql = @"INSERT INTO Sessions (
                                                 SessionId,
                                                 IdentityId,
+                                                CorrelationId,
                                                 LastAccess,
                                                 Expires,
                                                 SerializedTicket) 
                                             VALUES (
                                                 @SessionId,
                                                 @IdentityId,
+                                                @CorrelationId,
                                                 @LastAccess,
                                                 @Expires,
                                                 @SerializedTicket); 
@@ -28,22 +30,23 @@ namespace Rinsen.IdentityProvider.Core
                                             ClusteredId,
                                             SessionId,
                                             IdentityId,
+                                            CorrelationId,
                                             LastAccess,
                                             Expires,
                                             SerializedTicket
                                         FROM 
-                                            UserSessions 
+                                            Sessions 
                                         WHERE 
                                             SessionId=@SessionId";
 
-        private const string _deleteSql = @"DELETE FROM UserSessions WHERE SessionId = @SessionId";
+        private const string _deleteSql = @"DELETE FROM Sessions WHERE SessionId = @SessionId";
 
-        private const string _updateSql = @"UPDATE UserSessions SET
+        private const string _updateSql = @"UPDATE Sessions SET
                                                 LastAccess = @LastAccess,
                                                 Expires = @Expires,
                                                 SerializedTicket = @SerializedTicket
                                             WHERE
-                                                SessionId=@SessionId";
+                                                SessionId=@SessionId AND IdentityId = @IdentityId";
 
         public SessionStorage(string connectionString)
         {
@@ -60,6 +63,7 @@ namespace Rinsen.IdentityProvider.Core
                     {
                         command.Parameters.Add(new SqlParameter("@SessionId", session.SessionId));
                         command.Parameters.Add(new SqlParameter("@IdentityId", session.IdentityId));
+                        command.Parameters.Add(new SqlParameter("@CorrelationId", session.CorrelationId));
                         command.Parameters.Add(new SqlParameter("@LastAccess", session.LastAccess));
                         command.Parameters.Add(new SqlParameter("@Expires", session.Expires));
                         command.Parameters.Add(new SqlParameter("@SerializedTicket", session.SerializedTicket));
@@ -149,6 +153,7 @@ namespace Rinsen.IdentityProvider.Core
                 ClusteredId = (int)reader["ClusteredId"],
                 SessionId = (string)reader["SessionId"],
                 IdentityId = (Guid)reader["IdentityId"],
+                CorrelationId = (Guid)reader["CorrelationId"],
                 LastAccess = (DateTimeOffset)reader["LastAccess"],
                 Expires = (DateTimeOffset)reader["Expires"],
                 SerializedTicket = (byte[])reader["SerializedTicket"]

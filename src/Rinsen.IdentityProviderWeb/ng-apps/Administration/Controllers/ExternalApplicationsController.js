@@ -13,11 +13,11 @@
         vm.loading = true;
         vm.stateChange = false;
         vm.externalApplications = [];
-        vm.hostname = '';
+        vm.name = '';
         vm.active = false;
         vm.activeUntil = new Date();
         vm.createFailed = false;
-        vm.predicate = 'hostname';
+        vm.predicate = 'name';
         vm.reverse = false;
 
         vm.mode = {
@@ -57,7 +57,7 @@
             vm.createFailed = false;
             vm.loading = true;
             var externalApplicationToCreate = {
-                hostname: vm.hostname,
+                name: vm.name,
                 active: vm.active,
                 activeUntil: vm.activeUntil
             }
@@ -71,7 +71,7 @@
                     vm.mode.activateRead();
                     vm.createFailed = false;
                     vm.loading = false;
-                    vm.hostname = '';
+                    vm.name = '';
                     vm.active = false;
                     vm.activeUntil = new Date();
                 },

@@ -15,7 +15,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
         public void WhenNoHostIsProvided_GetFailedValidationResultAndNullToken(string data)
         {
 
-            var externalApplicationService = new ExternalApplicationService(null, null, StubLogger.CreateLogger<ExternalApplicationService>());
+            var externalApplicationService = new ExternalApplicationService(null, null, null, StubLogger.CreateLogger<ExternalApplicationService>());
 
             var result = externalApplicationService.GetTokenForValidHostAsync("", data, Guid.Empty, Guid.Empty, false).Result;
 
@@ -29,7 +29,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
         {
             var externalApplicationStorageMock = new Mock<IExternalApplicationStorage>();
 
-            var externalApplicationService = new ExternalApplicationService(externalApplicationStorageMock.Object, null, StubLogger.CreateLogger<ExternalApplicationService>());
+            var externalApplicationService = new ExternalApplicationService(externalApplicationStorageMock.Object, null, null, StubLogger.CreateLogger<ExternalApplicationService>());
 
             var result = externalApplicationService.GetTokenForValidHostAsync("AppName", "www.rinsen.se", Guid.Empty, Guid.Empty, false).Result;
 
@@ -54,7 +54,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
 
             var tokenStorageMock = new Mock<ITokenStorage>();
 
-            var externalApplicationService = new ExternalApplicationService(externalApplicationStorageMock.Object, tokenStorageMock.Object, StubLogger.CreateLogger<ExternalApplicationService>());
+            var externalApplicationService = new ExternalApplicationService(externalApplicationStorageMock.Object, null, tokenStorageMock.Object, StubLogger.CreateLogger<ExternalApplicationService>());
 
             var result = externalApplicationService.GetTokenForValidHostAsync("AppName", "www.rinsen.se", Guid.Empty, Guid.Empty, false).Result;
 

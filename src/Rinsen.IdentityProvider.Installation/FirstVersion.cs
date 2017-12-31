@@ -30,7 +30,7 @@ namespace Rinsen.IdentityProvider.Installation
             var identityAttributesTable = dbChangeList.AddNewTable<IdentityAttribute>();
             identityAttributesTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
             identityAttributesTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId").Unique().NotNull();
-            identityAttributesTable.AddColumn(m => m.Attribute);
+            identityAttributesTable.AddColumn(m => m.Attribute, 256);
 
             var identityAttributesTableUniqueIndex = dbChangeList.AddNewUniqueIndex<IdentityAttribute>("IdentityAndAttribute");
             identityAttributesTableUniqueIndex.AddColumn(m => m.IdentityId);

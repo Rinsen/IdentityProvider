@@ -45,7 +45,7 @@
                 <thead>
                     <tr>
                         <th><a ng-click="vm.order('active')">Active</a><span class="sortorder" ng-show="vm.predicate === 'active'" ng-class="{reverse:vm.reverse}"></span></th>
-                        <th><a ng-click="vm.order('hostname')">Hostname</a><span class="sortorder" ng-show="vm.predicate === 'hostname'" ng-class="{reverse:vm.reverse}"></span></th>
+                        <th><a ng-click="vm.order('name')">Name</a><span class="sortorder" ng-show="vm.predicate === 'name'" ng-class="{reverse:vm.reverse}"></span></th>
                         <th>Application Key</th>
                         @*<th><a ng-click="vm.order('activeUntil')">Active until</a><span class="sortorder" ng-show="vm.predicate === 'activeUntil'" ng-class="{reverse:vm.reverse}"></span></th>*@
                     </tr>
@@ -58,7 +58,7 @@
                                 <button type="button" class="btn" data-ng-class="{'btn-default': !vm.active, 'btn-success': vm.active}" data-ng-click="vm.active = true">Yes</button>
                             </div>
                         </td>
-                        <td><label for="hostname" class="sr-only">Hostname</label><input id="hostname" type="text" data-ng-model="vm.hostname" class="form-control" /></td>
+                        <td><label for="name" class="sr-only">Name</label><input id="name" type="text" data-ng-model="vm.name" class="form-control" /></td>
                         <td><label for="applicationkey" class="sr-only">Generated application key</label><input id="applicationkey" type="text" class="form-control" value="Server generated" disabled /></td>
                         @*<td><label for="activeuntil" class="sr-only">Active until</label><input id="activeuntil" type="date" data-ng-model="vm.activeUntil" class="form-control" /></td>*@
                     </tr>
@@ -69,7 +69,7 @@
                                 <button type="button" class="btn" data-ng-class="{'btn-default': !externalApplication.active, 'btn-success': externalApplication.active}" data-ng-click="vm.activate(externalApplication.externalApplicationId)" data-ng-disabled="vm.stateChange">Yes</button>
                             </div>
                         </td>
-                        <td>{{externalApplication.hostname}}</td>
+                        <td>{{externalApplication.name}}</td>
                         <td><span class="text-nowrap">{{externalApplication.applicationKey}}</span></td>
                         @*<td>{{externalApplication.activeUntil | date:'yyyy-MM-dd'}}</td>*@
                     </tr>
