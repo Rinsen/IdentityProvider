@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
+using Rinsen.IdentityProvider.Contracts.v1;
 using System;
+using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
@@ -9,21 +11,24 @@ namespace Rinsen.IdentityProvider.ExternalApplications
     public class ExternalApplicationService : IExternalApplicationService
     {
         private readonly IExternalApplicationStorage _externalApplicationStorage;
+        private readonly IExternalSessionStorage _externalSessionStorage;
         private readonly ITokenStorage _tokenStorage;
         private readonly ILogger<ExternalApplicationService> _log;
 
         private static readonly RandomNumberGenerator CryptoRandom = RandomNumberGenerator.Create();
 
         public ExternalApplicationService(IExternalApplicationStorage externalApplicationStorage,
+            IExternalSessionStorage externalSessionStorage,
             ITokenStorage tokenStorage,
             ILogger<ExternalApplicationService> log)
         {
             _externalApplicationStorage = externalApplicationStorage;
+            _externalSessionStorage = externalSessionStorage;
             _tokenStorage = tokenStorage;
             _log = log;
         }
 
-        public async Task<IdentityResult> GetTokenAsync(string tokenId, string applicationKey)
+        public async Task<Token> GetTokenAsync(string tokenId, string applicationKey)
         {
             if (string.IsNullOrEmpty(tokenId))
             {
@@ -36,29 +41,18 @@ namespace Rinsen.IdentityProvider.ExternalApplications
             }
 
             var token = await _tokenStorage.GetAndDeleteAsync(tokenId);
-
-            if (token == default(Token))
-            {
-                _log.LogWarning($"Invalid token id {tokenId}");
-                return IdentityResult.Failure();
-            }
-
             var externalApplication = await _externalApplicationStorage.GetFromApplicationKeyAsync(applicationKey);
-
-            if (externalApplication == default(ExternalApplication))
-            {
-                _log.LogWarning($"Invalid application key {applicationKey}");
-                return IdentityResult.Failure();
-            }
 
             if (externalApplication.Active 
                 && externalApplication.ExternalApplicationId == token.ExternalApplicationId 
                 && token.Created.AddSeconds(15) >= DateTimeOffset.Now)
             {
-                return IdentityResult.Success(token);
+
+
+                return token;
             }
 
-            return IdentityResult.Failure();
+            throw new AuthenticationException($"Authentication failed for token id {tokenId} and application key {applicationKey}");
         }
 
         public async Task<ValidationResult> GetTokenForValidHostAsync(string applicationName, string host, Guid identityId, Guid correlationId, bool rememberMe)
@@ -90,6 +84,19 @@ namespace Rinsen.IdentityProvider.ExternalApplications
             await _tokenStorage.CreateAsync(token);
 
             return ValidationResult.Success(token.TokenId);
+        }
+
+        public Task LogExportedExternalIdentity(ExternalIdentity externalIdentity, Guid externalApplicationId)
+        {
+            var externalSession = new ExternalSession
+            {
+                CorrelationId = externalIdentity.CorrelationId,
+                Created = DateTimeOffset.Now,
+                ExternalApplicationId = externalApplicationId,
+                IdentityId = externalIdentity.IdentityId
+            };
+
+            return _externalSessionStorage.Create(externalSession);
         }
     }
 }

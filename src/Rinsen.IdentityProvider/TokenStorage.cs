@@ -2,6 +2,7 @@
 using Rinsen.IdentityProvider.ExternalApplications;
 using System;
 using System.Data.SqlClient;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider
@@ -88,7 +89,7 @@ namespace Rinsen.IdentityProvider
                 }
             }
 
-            return default(Token);
+            throw new AuthenticationException($"Invalid token id {tokenId}");
         }
     }
 }

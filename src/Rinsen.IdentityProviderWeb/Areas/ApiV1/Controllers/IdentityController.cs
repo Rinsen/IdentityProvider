@@ -2,7 +2,6 @@
 using Rinsen.IdentityProvider;
 using Rinsen.IdentityProvider.ExternalApplications;
 using Rinsen.IdentityProvider.Contracts.v1;
-using System.Security.Authentication;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Rinsen.IdentityProvider.Contracts;
@@ -29,15 +28,30 @@ namespace Rinsen.IdentityProviderWeb.Areas.Api
         [Route("[action]")]
         public async Task<ExternalIdentity> Get(string authToken, string applicationKey)
         {
-            var identityResult = await _externalApplicationService.GetTokenAsync(authToken, applicationKey);
+            var token = await _externalApplicationService.GetTokenAsync(authToken, applicationKey);
+            var identity = await _identityService.GetIdentityAsync(token.IdentityId);
+            var extensions = await GetIdentityAttributesAsExternsions(identity);
 
-            if (identityResult.Failed)
+            var externalIdentity = new ExternalIdentity
             {
-                throw new AuthenticationException($"Authentication failed for token id {authToken} and application key {applicationKey}");
-            }
+                GivenName = identity.GivenName,
+                IdentityId = identity.IdentityId,
+                Surname = identity.Surname,
+                Email = identity.Email,
+                PhoneNumber = identity.PhoneNumber,
+                Issuer = RinsenIdentityConstants.RinsenIdentityProvider,
+                Expiration = token.Expiration,
+                CorrelationId = token.CorrelationId,
+                Extensions = extensions
+            };
 
-            var identity = await _identityService.GetIdentityAsync(identityResult.Token.IdentityId);
+            await _externalApplicationService.LogExportedExternalIdentity(externalIdentity, token.ExternalApplicationId);
 
+            return externalIdentity;
+        }
+
+        private async Task<List<Extension>> GetIdentityAttributesAsExternsions(Identity identity)
+        {
             var identityAttributes = await _identityAttributeStorage.GetIdentityAttributesAsync(identity.IdentityId);
 
             var extensions = new List<Extension>();
@@ -47,18 +61,7 @@ namespace Rinsen.IdentityProviderWeb.Areas.Api
                 extensions.Add(new Extension { Type = RinsenIdentityConstants.Role, Value = RinsenIdentityConstants.Administrator });
             }
 
-            return new ExternalIdentity
-            {
-                GivenName = identity.GivenName,
-                IdentityId = identity.IdentityId,
-                Surname = identity.Surname,
-                Email = identity.Email,
-                PhoneNumber = identity.PhoneNumber,
-                Issuer = RinsenIdentityConstants.RinsenIdentityProvider,
-                Expiration = identityResult.Token.Expiration,
-                CorrelationId = identityResult.Token.CorrelationId,
-                Extensions = extensions
-            };
+            return extensions;
         }
     }
 }
