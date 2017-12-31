@@ -29,7 +29,7 @@ namespace Rinsen.IdentityProvider.Core
             _connectionString = connectionString;
         }
 
-        public async Task CreateReferenceIdentityIfNotExists(ClaimsPrincipal claimsPrincipal)
+        public async Task CreateReferenceIdentityIfNotExisting(ClaimsPrincipal claimsPrincipal)
         {
             var identityId = claimsPrincipal.GetClaimGuidValue(ClaimTypes.NameIdentifier);
 

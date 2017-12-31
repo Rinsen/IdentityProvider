@@ -8,7 +8,8 @@ namespace Rinsen.IdentityProvider.Token
     public class TokenOptions : RemoteAuthenticationOptions, IOptions<TokenOptions>
     {
         public string ApplicationKey { get; set; }
-        public string IdentityServiceUrl { get { return IdentityServiceUrl; } set { IdentityServiceUrl = value.TrimEnd('/'); } }
+        public string IdentityServiceUrl { get { return _identityServiceUrl; } set { _identityServiceUrl = value.TrimEnd('/'); } }
+        private string _identityServiceUrl;
 
         public TokenOptions Value { get { return this; } }
 

@@ -6,7 +6,7 @@
     <AssemblyName>IdentityClientWeb</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>IdentityClientWeb</PackageId>
-    <UserSecretsId>RinsenIdentityProvider</UserSecretsId>
+    <UserSecretsId>RinsenIdentityClientWeb</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

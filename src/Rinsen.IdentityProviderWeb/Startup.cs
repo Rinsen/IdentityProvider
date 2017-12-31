@@ -27,18 +27,18 @@ namespace Rinsen.IdentityProviderWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRinsenIdentity(options => options.ConnectionString = Configuration["ConnectionString"]);
+            services.AddRinsenIdentity(options => options.ConnectionString = Configuration["Rinsen:ConnectionString"]);
             
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.SessionStore = new SqlTicketStore(new SessionStorage(Configuration["ConnectionString"]));
+                    options.SessionStore = new SqlTicketStore(new SessionStorage(Configuration["Rinsen:ConnectionString"]));
                     options.LoginPath = "/Identity/Login";
                 });
 
             if (Env.IsDevelopment())
             {
-                services.AddDatabaseInstaller(Configuration["ConnectionString"]);
+                services.AddDatabaseInstaller(Configuration["Rinsen:ConnectionString"]);
             }
 
             // Add framework services.
