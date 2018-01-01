@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Rinsen.IdentityProvider
 {
     public class LoginResult
     {
-        public Identity Identity { get; private set; }
+        public ClaimsPrincipal Principal { get; private set; }
         public bool Succeeded { get; private set; }
         public bool Failed { get { return !Succeeded; } }
 
@@ -16,9 +17,9 @@ namespace Rinsen.IdentityProvider
             return new LoginResult() { Succeeded = false };
         }
 
-        public static LoginResult Success(Identity identity)
+        public static LoginResult Success(ClaimsPrincipal principal)
         {
-            return new LoginResult() { Succeeded = true, Identity = identity };
+            return new LoginResult() { Succeeded = true, Principal = principal };
         }
     }
 }

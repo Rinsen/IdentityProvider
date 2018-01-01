@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Rinsen.IdentityProviderWeb.Models
 {
@@ -18,5 +19,6 @@ namespace Rinsen.IdentityProviderWeb.Models
         public string Host { get; set; }
         public string ReturnUrl { get; set; }
         public bool InvalidEmailOrPassword { get; set; }
+        public string RedirectUrl { get;set; }
     }
 }

@@ -3,6 +3,18 @@
 <div class="row">
     <h1>Login</h1>
     <hr />
+    @if (User.Identity.IsAuthenticated)
+    {
+        @*if (!string.IsNullOrEmpty(Model.RedirectUrl))
+        {
+            <script>
+                window.location.href = "@Model.RedirectUrl";
+            </script>
+        }*@
+        <div>Hej</div>
+    }
+    else
+    {
     <div class="row">
         <div class="col-md-12">
             @using (Html.BeginForm("Login", "Identity"))
@@ -26,9 +38,9 @@
                     @if (Model.InvalidEmailOrPassword)
                     {
                         <div class="col-md-3"></div>
-                            <div class="col-md-9">
-                                <span class="help-block">Email or password is incorrect</span>
-                            </div>
+                        <div class="col-md-9">
+                            <span class="help-block">Email or password is incorrect</span>
+                        </div>
                     }
                     <div class="col-md-3"></div>
                     <div class="col-md-2">
@@ -46,8 +58,12 @@
 
                     @Html.HiddenFor(m => m.ReturnUrl)
                     @Html.HiddenFor(m => m.Host)
+                    @Html.HiddenFor(m => m.ApplicationName)
                 </div>
             }
         </div>
     </div>
+
+
+    }
 </div>

@@ -38,6 +38,7 @@ namespace Rinsen.IdentityProviderWeb.Models
         public string ApplicationName { get; set; }
         public string ReturnUrl { get; set; }
         public string Host { get; set; }
+        public string RedirectUrl { get; internal set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

@@ -11,12 +11,16 @@ namespace Rinsen.IdentityProvider
     {
         private const string _createSql = @"INSERT INTO Tokens (
                                                 Created,
+                                                CorrelationId,
                                                 ExternalApplicationId,
+                                                Expiration,
                                                 IdentityId,
                                                 TokenId) 
                                             VALUES (
                                                 @Created,
+                                                @CorrelationId,
                                                 @ExternalApplicationId,
+                                                @Expiration,
                                                 @IdentityId,
                                                 @TokenId); 
                                             SELECT CAST(SCOPE_IDENTITY() as int)";
@@ -42,7 +46,9 @@ namespace Rinsen.IdentityProvider
                     using (var command = new SqlCommand(_createSql, connection))
                     {
                         command.Parameters.Add(new SqlParameter("@Created", token.Created));
+                        command.Parameters.Add(new SqlParameter("@CorrelationId", token.CorrelationId));
                         command.Parameters.Add(new SqlParameter("@ExternalApplicationId", token.ExternalApplicationId));
+                        command.Parameters.Add(new SqlParameter("@Expiration", token.Expiration));
                         command.Parameters.Add(new SqlParameter("@IdentityId", token.IdentityId));
                         command.Parameters.Add(new SqlParameter("@TokenId", token.TokenId));
 
@@ -80,7 +86,9 @@ namespace Rinsen.IdentityProvider
                             {
                                 ClusteredId = (int)reader["ClusteredId"],
                                 Created = (DateTimeOffset)reader["Created"],
+                                CorrelationId = (Guid)reader["CorrelationId"],
                                 ExternalApplicationId = (Guid)reader["ExternalApplicationId"],
+                                Expiration = (bool)reader["Expiration"],
                                 IdentityId = (Guid)reader["IdentityId"],
                                 TokenId = (string)reader["TokenId"]
                             };

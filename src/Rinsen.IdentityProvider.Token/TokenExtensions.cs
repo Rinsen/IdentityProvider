@@ -38,6 +38,7 @@ namespace Rinsen.IdentityProvider.Token
 
                         options.CallbackPath = new PathString("/token");
                         options.ClaimsIssuer = RinsenIdentityConstants.RinsenIdentityProvider;
+                        options.ApplicationName = configuration["Rinsen:ApplicationName"];
                         options.ApplicationKey = configuration["Rinsen:ApplicationKey"];
                         options.IdentityServiceUrl = configuration["Rinsen:IdentityProvider:BaseUrl"];
                         options.Events = new RemoteAuthenticationEvents

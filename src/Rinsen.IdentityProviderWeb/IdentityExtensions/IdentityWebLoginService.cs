@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Rinsen.IdentityProvider.LocalAccounts;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace Rinsen.IdentityProviderWeb.IdentityExtensions
 {
@@ -15,8 +16,9 @@ namespace Rinsen.IdentityProviderWeb.IdentityExtensions
         public IdentityWebLoginService(ILocalAccountService localAccountService,
             IIdentityService identityService,
             IHttpContextAccessor httpContextAccessor,
-            IIdentityAttributeStorage identityAttributeStorage)
-            : base(localAccountService, identityService, httpContextAccessor)
+            IIdentityAttributeStorage identityAttributeStorage,
+            ILogger<LoginService> logger)
+            : base(localAccountService, identityService, httpContextAccessor, logger)
         {
             _identityAttributeStorage = identityAttributeStorage;
 

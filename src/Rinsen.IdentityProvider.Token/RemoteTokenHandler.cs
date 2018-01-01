@@ -103,7 +103,8 @@ namespace Rinsen.IdentityProvider.Token
             var loginUri = Options.IdentityServiceUrl + "/Identity/Login" + QueryString.Create(new[]
                         {
                                     new KeyValuePair<string, string>(Options.ReturnUrlParamterName, redirectUrl),
-                                    new KeyValuePair<string, string>(Options.HostParameterName, Request.Host.Value)
+                                    new KeyValuePair<string, string>(Options.HostParameterName, Request.Host.Value),
+                                    new KeyValuePair<string, string>(Options.ApplicationNameParameterName, Options.ApplicationName)
                                 }).ToUriComponent();
 
             if (IsAjaxRequest(Request))

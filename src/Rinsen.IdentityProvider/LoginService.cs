@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Rinsen.IdentityProvider.LocalAccounts;
 using System;
 using System.Collections.Generic;
@@ -13,21 +14,34 @@ namespace Rinsen.IdentityProvider
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IIdentityService _identityService;
+        private readonly ILogger<LoginService> _log;
         private readonly ILocalAccountService _localAccountService;
 
         public LoginService(ILocalAccountService localAccountService,
             IIdentityService identityService,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, 
+            ILogger<LoginService> log)
         {
             _localAccountService = localAccountService;
             _httpContextAccessor = httpContextAccessor;
             _identityService = identityService;
+            _log = log;
         }
 
         public async Task<LoginResult> LoginAsync(string email, string password, bool rememberMe)
         {
-            var identityId = await _localAccountService.GetIdentityIdAsync(email, password);
+            Guid? identityId;
+            try
+            {
+                identityId = await _localAccountService.GetIdentityIdAsync(email, password);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                _log.LogWarning(e, $"Login failed for email {email}", email);
 
+                return LoginResult.Failure();
+            }
+            
             if (identityId == null)
             {
                 return LoginResult.Failure();
@@ -46,9 +60,11 @@ namespace Rinsen.IdentityProvider
                 RedirectUri = "?"
             };
 
-            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(new ClaimsIdentity(claims, "RinsenPassword")), authenticationProperties);
+            var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "RinsenPassword"));
 
-            return LoginResult.Success(identity);
+            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authenticationProperties);
+
+            return LoginResult.Success(principal);
         }
 
         private async Task<List<Claim>> GetClaimsForIdentityAsync(Identity identity, bool rememberMe)

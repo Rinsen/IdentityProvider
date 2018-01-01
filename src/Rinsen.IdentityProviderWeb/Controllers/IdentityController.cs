@@ -34,16 +34,19 @@ namespace Rinsen.IdentityProviderWeb.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl, string host, string applicationName)
         {
+            var model = new LoginModel { ReturnUrl = returnUrl, Host = host, ApplicationName = applicationName };
+
             if (User.Identity.IsAuthenticated)
             {
-                return await RedirectToLocalOrTrustedHostOnlyAsync(applicationName, returnUrl, host);
+                 model.RedirectUrl = await RedirectToLocalOrTrustedHostOnlyAsync(applicationName, returnUrl, host);
             }
 
-            return View(new LoginModel { ReturnUrl = returnUrl, Host = host, ApplicationName = applicationName } );
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginModel model)
         {
             if (ModelState.IsValid)
@@ -52,10 +55,16 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
                 if (result.Succeeded)
                 {
-                    return await RedirectToLocalOrTrustedHostOnlyAsync(model.ApplicationName, model.ReturnUrl, model.Host);
-                }
+                    // Set loged in user to the one just created as this only will be provided at next request by the framework
+                    HttpContext.User = result.Principal;
 
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    model.RedirectUrl = await RedirectToLocalOrTrustedHostOnlyAsync(model.ApplicationName, model.ReturnUrl, model.Host);
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                }
+                
             }
 
             return View(model);
@@ -73,6 +82,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> Create(CreateIdentityModel model)
         {
             if (ModelState.IsValid)
@@ -89,7 +99,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
                         if (loginResult.Succeeded)
                         {
-                            return await RedirectToLocalOrTrustedHostOnlyAsync(model.ApplicationName, model.ReturnUrl, model.Host);
+                            model.RedirectUrl = await RedirectToLocalOrTrustedHostOnlyAsync(model.ApplicationName, model.ReturnUrl, model.Host);
                         }
                     }
                 }
@@ -109,7 +119,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
             return View();
         }
 
-        private async Task<IActionResult> RedirectToLocalOrTrustedHostOnlyAsync(string applicationName, string returnUrl, string host)
+        private async Task<string> RedirectToLocalOrTrustedHostOnlyAsync(string applicationName, string returnUrl, string host)
         {
             if (!string.IsNullOrEmpty(host))
             {
@@ -124,7 +134,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
                     // Always enforce https, no options on this
                     var uri = $"https://{host}{returnUrl}" + QueryString.Create("AuthToken", result.Token).ToUriComponent();
 
-                    return Redirect(uri);
+                    return uri;
                 }
                 
                 throw new UnauthorizedAccessException($"External application is not found from Host {host}");
@@ -132,10 +142,10 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
             if (Url.IsLocalUrl(returnUrl))
             {
-                return Redirect(returnUrl);
+                return returnUrl;
             }
 
-            return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).Substring(0, nameof(HomeController).Length - 10));
+            return string.Empty;
         }
     }
 }

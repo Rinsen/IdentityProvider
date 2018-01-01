@@ -38,7 +38,7 @@ namespace Rinsen.IdentityProvider.ExternalApplications
                                             extapp.ApplicationKey
                                         FROM 
                                             ExternalApplications extapp
-                                        JOIN ExternalApplicationHostName hostname ON hostname.ExternalApplicationId = extapp.ExternalApplicationId
+                                        JOIN ExternalApplicationHostNames hostname ON hostname.ExternalApplicationId = extapp.ExternalApplicationId
                                         WHERE 
                                             extapp.Name=@Name AND hostname.HostName = @HostName";
 
