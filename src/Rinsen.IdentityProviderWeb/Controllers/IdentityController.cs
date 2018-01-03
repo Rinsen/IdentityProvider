@@ -7,6 +7,7 @@ using Rinsen.IdentityProvider.ExternalApplications;
 using Rinsen.IdentityProvider.LocalAccounts;
 using Rinsen.IdentityProviderWeb.Models;
 using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -32,13 +33,13 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(string returnUrl, string host, string applicationName)
+        public async Task<IActionResult> Login(string externalUrl, string host, string applicationName)
         {
-            var model = new LoginModel { ReturnUrl = returnUrl, Host = host, ApplicationName = applicationName };
+            var model = new LoginModel { ExternalUrl = externalUrl, Host = host, ApplicationName = applicationName };
 
             if (User.Identity.IsAuthenticated)
             {
-                 model.RedirectUrl = await RedirectToLocalOrTrustedHostOnlyAsync(applicationName, returnUrl, host);
+                 model.RedirectUrl = await RedirectToLocalOrTrustedExternalHostOnlyAsync(applicationName, externalUrl, host);
             }
 
             return View(model);
@@ -58,7 +59,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
                     // Set loged in user to the one just created as this only will be provided at next request by the framework
                     HttpContext.User = result.Principal;
 
-                    model.RedirectUrl = await RedirectToLocalOrTrustedHostOnlyAsync(model.ApplicationName, model.ReturnUrl, model.Host);
+                    model.RedirectUrl = await RedirectToLocalOrTrustedExternalHostOnlyAsync(model.ApplicationName, model.ExternalUrl, model.Host);
                 }
                 else
                 {
@@ -99,7 +100,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
 
                         if (loginResult.Succeeded)
                         {
-                            model.RedirectUrl = await RedirectToLocalOrTrustedHostOnlyAsync(model.ApplicationName, model.ReturnUrl, model.Host);
+                            model.RedirectUrl = await RedirectToLocalOrTrustedExternalHostOnlyAsync(model.ApplicationName, model.ExternalUrl, model.Host);
                         }
                     }
                 }
@@ -119,7 +120,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
             return View();
         }
 
-        private async Task<string> RedirectToLocalOrTrustedHostOnlyAsync(string applicationName, string returnUrl, string host)
+        private async Task<string> RedirectToLocalOrTrustedExternalHostOnlyAsync(string applicationName, string externalUrl, string host)
         {
             if (!string.IsNullOrEmpty(host))
             {
@@ -132,7 +133,7 @@ namespace Rinsen.IdentityProviderWeb.Controllers
                 if (result.Succeeded)
                 {
                     // Always enforce https, no options on this
-                    var uri = $"https://{host}{returnUrl}" + QueryString.Create("AuthToken", result.Token).ToUriComponent();
+                    var uri = $"https://{host}{externalUrl}" + QueryString.Create("AuthToken", result.Token).ToUriComponent();
 
                     return uri;
                 }
@@ -140,9 +141,9 @@ namespace Rinsen.IdentityProviderWeb.Controllers
                 throw new UnauthorizedAccessException($"External application is not found from Host {host}");
             }
 
-            if (Url.IsLocalUrl(returnUrl))
+            if (Url.IsLocalUrl(externalUrl))
             {
-                return returnUrl;
+                return externalUrl;
             }
 
             return string.Empty;

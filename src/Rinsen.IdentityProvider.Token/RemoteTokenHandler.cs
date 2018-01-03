@@ -98,11 +98,11 @@ namespace Rinsen.IdentityProvider.Token
                 throw new InvalidOperationException("Possible auth loop detected");
             }
 
-            var redirectUrl = Options.CallbackPath;// OriginalPathBase + Request.Path + Request.QueryString; What to do with this?!
+            var externalUrl = Options.CallbackPath;// OriginalPathBase + Request.Path + Request.QueryString; What to do with this?!
 
             var loginUri = Options.IdentityServiceUrl + "/Identity/Login" + QueryString.Create(new[]
                         {
-                                    new KeyValuePair<string, string>(Options.ReturnUrlParamterName, redirectUrl),
+                                    new KeyValuePair<string, string>(Options.ExternalUrlParamterName, externalUrl),
                                     new KeyValuePair<string, string>(Options.HostParameterName, Request.Host.Value),
                                     new KeyValuePair<string, string>(Options.ApplicationNameParameterName, Options.ApplicationName)
                                 }).ToUriComponent();

@@ -13,7 +13,7 @@ namespace Rinsen.IdentityProvider.Token
         public TokenOptions Value { get { return this; } }
 
         public string AuthenticationScheme { get; set; } = "Cookies";
-        public string ReturnUrlParamterName { get; set; } = "ReturnUrl";
+        public string ExternalUrlParamterName { get; set; } = "ExternalUrl";
         public string ApplicationKeyParameterName { get; set; } = "ApplicationKey";
         public string ApplicationNameParameterName { get; set; } = "ApplicationName";
         public string TokenParameterName { get; set; } = "AuthToken";

@@ -36,7 +36,7 @@ namespace Rinsen.IdentityProviderWeb.Models
         public string InviteCode { get; set; }
 
         public string ApplicationName { get; set; }
-        public string ReturnUrl { get; set; }
+        public string ExternalUrl { get; set; }
         public string Host { get; set; }
         public string RedirectUrl { get; internal set; }
 

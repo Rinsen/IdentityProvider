@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Rinsen.IdentityProvider.Token</id>
-    <version>0.1.8</version>
+    <version>0.2.0</version>
     <title>Rinsen Identity Provider Token</title>
     <authors>Fredrik Rinsén</authors>
     <owners>Fredrik Rinsén</owners>
@@ -11,13 +11,14 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Identity provider for single sign on with Tokens from IdentityProviderWeb</description>
     <releaseNotes>
+      0.2.0 A lot of refactorings on how distributed identities is handled to give support for future single sign out
       0.1.8 Added an extension method for default configurations for Token and Cookie Auth together 
       0.1.7 Updated to aspnet core 2.0 with some large refactorings and enhancements
       0.1.6 asp net core 1.2
       0.1.5 asp net core 1.1
       0.1.4 Extensions for more customizable identitys
     </releaseNotes>
-    <copyright>Copyright 2017</copyright>
+    <copyright>Copyright 2018</copyright>
     <tags>aspnetcore identity</tags>
   </metadata>
   <files>

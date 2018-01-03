@@ -57,7 +57,6 @@ namespace Rinsen.IdentityProvider
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMonths(1),
                 IsPersistent = rememberMe,
                 IssuedUtc = DateTimeOffset.UtcNow,
-                RedirectUri = "?"
             };
 
             var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "RinsenPassword"));

@@ -5,13 +5,12 @@
     <hr />
     @if (User.Identity.IsAuthenticated)
     {
-        @*if (!string.IsNullOrEmpty(Model.RedirectUrl))
+        if (!string.IsNullOrEmpty(Model.RedirectUrl))
         {
             <script>
                 window.location.href = "@Model.RedirectUrl";
             </script>
-        }*@
-        <div>Hej</div>
+        }
     }
     else
     {
@@ -56,7 +55,7 @@
 
                     </div>
 
-                    @Html.HiddenFor(m => m.ReturnUrl)
+                    @Html.HiddenFor(m => m.ExternalUrl)
                     @Html.HiddenFor(m => m.Host)
                     @Html.HiddenFor(m => m.ApplicationName)
                 </div>
