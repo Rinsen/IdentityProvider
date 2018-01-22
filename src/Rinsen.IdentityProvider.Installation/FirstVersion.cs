@@ -15,8 +15,8 @@ namespace Rinsen.IdentityProvider.Installation
 
         public override void AddDbChanges(List<IDbChange> dbChangeList)
         {
-            var identitiesTable = dbChangeList.AddNewTable<Identity>("Identities");
-            identitiesTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
+            var identitiesTable = dbChangeList.AddNewTable<Identity>("Identities").SetPrimaryKeyNonClustered();
+            identitiesTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false).Unique().Clustered();
             identitiesTable.AddColumn(m => m.IdentityId).PrimaryKey();
             identitiesTable.AddColumn(m => m.Created);
             identitiesTable.AddColumn(m => m.Email, 256).Unique();
@@ -26,19 +26,15 @@ namespace Rinsen.IdentityProvider.Installation
             identitiesTable.AddColumn(m => m.PhoneNumber, 128);
             identitiesTable.AddColumn(m => m.PhoneNumberConfirmed);
             identitiesTable.AddColumn(m => m.Updated);
-
-            var identityAttributesTable = dbChangeList.AddNewTable<IdentityAttribute>();
-            identityAttributesTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
-            identityAttributesTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId").Unique().NotNull();
-            identityAttributesTable.AddColumn(m => m.Attribute, 256);
-
-            var identityAttributesTableUniqueIndex = dbChangeList.AddNewUniqueIndex<IdentityAttribute>("IdentityAndAttribute");
-            identityAttributesTableUniqueIndex.AddColumn(m => m.IdentityId);
-            identityAttributesTableUniqueIndex.AddColumn(m => m.Attribute);
-
+            
+            var identityAttributesTable = dbChangeList.AddNewTable<IdentityAttribute>().SetPrimaryKeyNonClustered();
+            identityAttributesTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false).Unique().Clustered();
+            identityAttributesTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId").Unique("UQ_IdentityAndAttribute");
+            identityAttributesTable.AddColumn(m => m.Attribute, 256).Unique("UQ_IdentityAndAttribute");
+            
             var localAccountsTable = dbChangeList.AddNewTable<LocalAccount>();
             localAccountsTable.AddAutoIncrementColumn(m => m.Id);
-            localAccountsTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId").Unique().NotNull();
+            localAccountsTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId").Unique();
             localAccountsTable.AddColumn(m => m.Created);
             localAccountsTable.AddColumn(m => m.FailedLoginCount);
             localAccountsTable.AddColumn(m => m.IsDisabled);
@@ -48,8 +44,8 @@ namespace Rinsen.IdentityProvider.Installation
             localAccountsTable.AddColumn(m => m.PasswordSalt, 16);
             localAccountsTable.AddColumn(m => m.Updated);
 
-            var sessionsTable = dbChangeList.AddNewTable<Session>();
-            sessionsTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
+            var sessionsTable = dbChangeList.AddNewTable<Session>().SetPrimaryKeyNonClustered();
+            sessionsTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false).Unique().Clustered();
             sessionsTable.AddColumn(m => m.SessionId, 60).PrimaryKey();
             sessionsTable.AddColumn(m => m.IdentityId).ForeignKey("Identities", "IdentityId");
             sessionsTable.AddColumn(m => m.CorrelationId);
@@ -57,8 +53,8 @@ namespace Rinsen.IdentityProvider.Installation
             sessionsTable.AddColumn(m => m.Expires);
             sessionsTable.AddColumn(m => m.SerializedTicket);
 
-            var externalApplicationTable = dbChangeList.AddNewTable<ExternalApplication>();
-            externalApplicationTable.AddAutoIncrementColumn(m => m.Id, primaryKey: false);
+            var externalApplicationTable = dbChangeList.AddNewTable<ExternalApplication>().SetPrimaryKeyNonClustered();
+            externalApplicationTable.AddAutoIncrementColumn(m => m.Id, primaryKey: false).Unique().Clustered();
             externalApplicationTable.AddColumn(m => m.ExternalApplicationId).PrimaryKey();
             externalApplicationTable.AddColumn(m => m.Active);
             externalApplicationTable.AddColumn(m => m.ActiveUntil);
@@ -66,15 +62,15 @@ namespace Rinsen.IdentityProvider.Installation
             externalApplicationTable.AddColumn(m => m.Created);
             externalApplicationTable.AddColumn(m => m.Name, 256).Unique();
 
-            var externalApplicationHostNameTable = dbChangeList.AddNewTable<ExternalApplicationHostName>();
+            var externalApplicationHostNameTable = dbChangeList.AddNewTable<ExternalApplicationHostName>().SetPrimaryKeyNonClustered();
             externalApplicationHostNameTable.AddColumn(m => m.ExternalApplicationId).ForeignKey<ExternalApplication>(m => m.ExternalApplicationId);
             externalApplicationHostNameTable.AddColumn(m => m.Hostname, 512).PrimaryKey();
             externalApplicationHostNameTable.AddColumn(m => m.Active);
             externalApplicationHostNameTable.AddColumn(m => m.ActiveUntil);
             externalApplicationHostNameTable.AddColumn(m => m.Created);
 
-            var tokenTable = dbChangeList.AddNewTable<Token>();
-            tokenTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false);
+            var tokenTable = dbChangeList.AddNewTable<Token>().SetPrimaryKeyNonClustered();
+            tokenTable.AddAutoIncrementColumn(m => m.ClusteredId, primaryKey: false).Unique().Clustered();
             tokenTable.AddColumn(m => m.ExternalApplicationId).ForeignKey<ExternalApplication>(m => m.ExternalApplicationId);
             tokenTable.AddColumn(m => m.Created);
             tokenTable.AddColumn(m => m.CorrelationId);

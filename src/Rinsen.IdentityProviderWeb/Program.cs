@@ -18,6 +18,7 @@ namespace Rinsen.IdentityProviderWeb
                     loggingBuilder
                         .AddFilter("Microsoft", LogLevel.Warning)
                         .AddFilter("System", LogLevel.Warning)
+                        .AddFilter("Rinsen", LogLevel.Information)
                         .AddRinsenLogger(hostingContext.Configuration, hostingContext.HostingEnvironment.EnvironmentName);
                 })
                 .UseStartup<Startup>()

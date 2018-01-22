@@ -22,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
-    <PackageReference Include="Rinsen.Logger" Version="0.2.9-beta" />
-    <PackageReference Include="Rinsen.DatabaseInstaller" Version="0.4.0-beta" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+    <PackageReference Include="Rinsen.Logger" Version="0.2.10-beta" />
+    <PackageReference Include="Rinsen.DatabaseInstaller" Version="0.4.2-beta" />
   </ItemGroup>
   
 </Project>

@@ -7,7 +7,6 @@ using Rinsen.IdentityProvider.ExternalApplications;
 using Rinsen.IdentityProvider.LocalAccounts;
 using Rinsen.IdentityProviderWeb.Models;
 using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 

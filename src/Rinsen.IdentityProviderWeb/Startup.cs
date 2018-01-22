@@ -67,7 +67,6 @@ namespace Rinsen.IdentityProviderWeb
             }
             else
             {
-                //app.UseStatusCodePagesWithRedirects("~/errors/Code{0}");
                 app.UseExceptionHandler("/Home/Error");
             }
 

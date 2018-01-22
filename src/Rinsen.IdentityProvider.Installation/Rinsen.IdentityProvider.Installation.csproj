@@ -5,8 +5,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Rinsen.IdentityProvider.Installation</AssemblyName>
     <PackageId>Rinsen.IdentityProvider.Installation</PackageId>
-    <!--<NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>-->
-    <!--<PackageTargetFallback>$(PackageTargetFallback);netcoreapp1.1</PackageTargetFallback>-->
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
@@ -17,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Rinsen.DatabaseInstaller" Version="0.4.0-beta" />
+    <PackageReference Include="Rinsen.DatabaseInstaller" Version="0.4.2-beta" />
   </ItemGroup>
 
 </Project>
